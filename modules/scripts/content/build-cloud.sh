@@ -13,9 +13,7 @@ echo '[build-cloud]: starting'
 
 export TF_VAR_ENVIRONMENT_NAME=$ENVIRONMENT_NAME
 
-if [[ -v $MODULE_DIR ]]; then
-  echo "[build-cloud]: terraform child directory set to: $MODULE_DIR"
-else
+if [[ "$MODULE_DIR" == "" ]]; then
   echo "[build-cloud]: terraform child directory is not set, using default: $(pwd)"
   MODULE_DIR=$(pwd)
 fi
