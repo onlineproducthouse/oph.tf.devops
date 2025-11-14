@@ -6,6 +6,7 @@ set -euo pipefail
 
 # AWS_REGION e.g. 'eu-west-1'
 # LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
+# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
 # MODULE_DIR e.g. "./module"
 
@@ -20,6 +21,11 @@ fi
 
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
   echo "[build-container]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
+  exit 1
+fi
+
+if [[ "$ENV_VARS_S3_URL" == "" ]];then
+  echo "[build-container]: .env file AWS S3 URL not set. please set .env file AWS S3 URL"
   exit 1
 fi
 
@@ -40,7 +46,7 @@ echo '[deploy-cloud]: starting'
 LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
 
-source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $(pwd)
+source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $(pwd)
 
 terraform -chdir=$MODULE_DIR apply tfplan -input=false -auto-approve
 

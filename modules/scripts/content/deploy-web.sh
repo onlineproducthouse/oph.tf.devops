@@ -41,8 +41,8 @@ echo '{
   "CallerReference": "'$CODEBUILD_BUILD_NUMBER'"
 }' >$INVALIDATION_CONFIG_PATH
 
-echo $(aws cloudfront create-invalidation \
+aws cloudfront create-invalidation \
   --distribution-id $CDN_ID \
-  --invalidation-batch "file://$INVALIDATION_CONFIG_PATH")
+  --invalidation-batch "file://$INVALIDATION_CONFIG_PATH"
 
 echo "[deploy-web]: done."
