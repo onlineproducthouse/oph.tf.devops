@@ -44,8 +44,11 @@ variable "stages" {
   })
 
   default = {
-    unit_test = false
-    int_test  = false
+    test = {
+      unit = false
+      int  = false
+    }
+
     deploy = {
       qa   = false
       prod = false

@@ -1,3 +1,17 @@
+resource "aws_s3_object" "scripts" {
+  for_each = {
+    for v in local.scripts : v.name => v
+  }
+
+  bucket = var.bucket_id
+
+  key                    = each.value.key
+  source                 = each.value.source_path
+  content_base64         = each.value.content_base64
+  server_side_encryption = "AES256"
+  etag                   = filemd5(each.value.source_path)
+}
+
 locals {
   scripts = [
     { name = "build_cloud", key = "/oph/scripts/build-cloud.sh", source_path = "./content/build-cloud.sh" },
@@ -14,18 +28,4 @@ locals {
     { name = "load_env_vars", key = "/oph/scripts/load-env-vars.sh", source_path = "./content/load-env-vars.sh" },
     { name = "local_env_vars", key = "/oph/scripts/local-env-vars.sh", source_path = "./content/local-env-vars.sh" },
   ]
-}
-
-resource "aws_s3_object" "scripts" {
-  for_each = {
-    for v in local.scripts : v.name => v
-  }
-
-  bucket = var.bucket_id
-
-  key                    = each.value.key
-  source                 = each.value.source_path
-  content_base64         = each.value.content_base64
-  server_side_encryption = "AES256"
-  etag                   = filemd5(each.value.source_path)
 }

@@ -1,3 +1,64 @@
+resource "aws_iam_policy" "devops" {
+  name        = "${var.name}-devops"
+  path        = "/devops/ci/"
+  description = "${var.name} policy for devops ci"
+  policy      = jsonencode(local.policy)
+}
+
+resource "aws_iam_role" "devops" {
+  name = "${var.name}-devops"
+  path = "/devops/ci/"
+
+  force_detach_policies = true
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal : {
+          Service : "codebuild.amazonaws.com"
+        },
+      },
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal : {
+          Service : "codepipeline.amazonaws.com"
+        },
+      },
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal : {
+          Service : "ec2.amazonaws.com"
+        },
+      },
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal : {
+          Service : "ecs.amazonaws.com"
+        },
+      },
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal : {
+          Service : "ecs-tasks.amazonaws.com"
+        },
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "devops" {
+  role       = aws_iam_role.devops.name
+  policy_arn = aws_iam_policy.devops.arn
+}
+
 locals {
   policy = {
     Version = "2012-10-17",
@@ -205,65 +266,4 @@ locals {
       }
     ]
   }
-}
-
-resource "aws_iam_policy" "devops" {
-  name        = "${var.name}-devops"
-  path        = "/devops/ci/"
-  description = "${var.name} policy for devops ci"
-  policy      = jsonencode(local.policy)
-}
-
-resource "aws_iam_role" "devops" {
-  name = "${var.name}-devops"
-  path = "/devops/ci/"
-
-  force_detach_policies = true
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal : {
-          Service : "codebuild.amazonaws.com"
-        },
-      },
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal : {
-          Service : "codepipeline.amazonaws.com"
-        },
-      },
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal : {
-          Service : "ec2.amazonaws.com"
-        },
-      },
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal : {
-          Service : "ecs.amazonaws.com"
-        },
-      },
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal : {
-          Service : "ecs-tasks.amazonaws.com"
-        },
-      },
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "devops" {
-  role       = aws_iam_role.devops.name
-  policy_arn = aws_iam_policy.devops.arn
 }
