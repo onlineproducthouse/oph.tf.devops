@@ -15,3 +15,17 @@ locals {
     { name = "local_env_vars", key = "/oph/scripts/local-env-vars.sh", source_path = "./content/local-env-vars.sh" },
   ]
 }
+
+resource "aws_s3_object" "scripts" {
+  for_each = {
+    for v in local.scripts : v.name => v
+  }
+
+  bucket = var.bucket_id
+
+  key                    = each.value.key
+  source                 = each.value.source_path
+  content_base64         = each.value.content_base64
+  server_side_encryption = "AES256"
+  etag                   = filemd5(each.value.source_path)
+}
