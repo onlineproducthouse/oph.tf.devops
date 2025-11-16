@@ -1,9 +1,6 @@
 version: 0.2
 
-# CI_ACTION
-# CI_ACTION_ITEM
-# ARTIFACT_PATH
-# AWS_S3_SCRIPT_STORE
+# JOB_SCRIPT_STORE_URL
 
 phases:
   install:
@@ -11,16 +8,13 @@ phases:
       - apt-get update -y
       - apt-get install -y jq
 
-  pre_build:
-    commands:
-      - JOB_SCRIPT="$CI_ACTION-$CI_ACTION_ITEM.sh"
-
   build:
     commands:
-      - aws s3 cp "$AWS_S3_SCRIPT_STORE/$JOB_SCRIPT" "./$JOB_SCRIPT"
-      - bash "./$JOB_SCRIPT"
+      - JOB_SCRIPT=./job.sh
+      - aws s3 cp $JOB_SCRIPT_STORE_URL $JOB_SCRIPT
+      - bash $JOB_SCRIPT
 
 artifacts:
   type: zip
   files:
-    - ${ARTIFACT_PATH}
+    - "**/**/*"

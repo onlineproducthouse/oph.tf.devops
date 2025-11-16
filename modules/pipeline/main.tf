@@ -1,6 +1,12 @@
+module "ecr" {
+  source = "../docker/ecr"
+  count  = var.is_container ? 1 : 0
+  name   = var.git_repo
+}
+
 resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for i, v in local.pipelines : v.name => v
+    for i, v in var.pipeline : v.name => v
   }
 
   name     = "${var.name}-${each.value.name}"
@@ -43,7 +49,7 @@ resource "aws_codepipeline" "pipeline" {
       version          = "1"
 
       configuration = {
-        ProjectName = module.job[each.value.name].name
+        ProjectName = module.job["${each.value.name}-local"].name
       }
     }
   }
@@ -63,7 +69,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job[each.value.name].name
+          ProjectName = module.job["${each.value.name}-local"].name
         }
       }
     }
@@ -84,7 +90,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job[each.value.name].name
+          ProjectName = module.job["release-test"].name
         }
       }
     }
@@ -105,7 +111,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job[each.value.name].name
+          ProjectName = module.job["release-test"].name
         }
       }
     }
@@ -142,7 +148,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job[each.value.name].name
+          ProjectName = module.job["release-qa"].name
         }
       }
     }
@@ -179,7 +185,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job[each.value.name].name
+          ProjectName = module.job["release-prod"].name
         }
       }
     }
@@ -190,20 +196,19 @@ module "job" {
   source = "./job"
 
   for_each = {
-    for i, v in local.pipelines : v.name => v
+    for v in var.job : v.name => v
   }
 
-  name         = "${var.job.name}-${each.value.name}"
-  vpc_id       = var.job.vpc_id
-  vpc_subnets  = var.job.vpc_subnets
-  role_arn     = var.job.role_arn
-  timeout      = var.job.timeout
-  buildspec    = var.job.buildspec
-  is_container = var.job.is_container
+  name         = each.value.name
+  vpc_id       = each.value.vpc_id
+  vpc_subnets  = each.value.vpc_subnets
+  role_arn     = each.value.role_arn
+  timeout      = each.value.timeout
+  buildspec    = each.value.buildspec
+  is_container = var.is_container
 
   env_variables = concat(var.job.env_variables, [
-    { key = "RELEASE_MANIFEST", value = "release_manifest.sh" },
-    { key = "GIT_BRANCH", value = each.value.branch_name },
+    { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
   ])
 }
 
@@ -217,17 +222,4 @@ locals {
       version  = "1"
     }
   }
-
-  pipelines = [
-    {
-      name         = "dev"
-      branch_name  = "dev"
-      environments = ["local"]
-    },
-    {
-      name         = "release"
-      branch_name  = "release/*"
-      environments = ["test", "qa", "prod"]
-    },
-  ]
 }

@@ -14,7 +14,7 @@ AWS_SSM_PARAMETER_PATHS=$2 # e.g. "path1;path2;..."
 ENV_VARS_S3_URL=$3
 WORKING_DIR=$4
 
-ENV_FILE="$(pwd)/.env"
+ENV_FILE="$WORKING_DIR/.env"
 
 if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]]; then
   echo "AWS_SSM_PARAMETER_PATHS variable not set"
@@ -25,13 +25,13 @@ else
   IFS=';'
 
   for i in $AWS_SSM_PARAMETER_PATHS; do
-    echo "Loading environment variables at path: $i"
+    echo "[load-env-vars]: Loading environment variables at path: $i"
 
     AWS_SSM_PARAMS_RESULT=$(echo $(aws ssm get-parameters-by-path --path "$i" --region "$AWS_REGION" --recursive --with-decryption --output "json") | jq '.Parameters')
     AWS_SSM_PARAMS_COUNT=$(echo $AWS_SSM_PARAMS_RESULT | jq '. | length')
 
     for ((j = 0; j < $((AWS_SSM_PARAMS_COUNT * 1)); j++)); do
-      echo "Current index: $j"
+      echo "[load-env-vars]: Current index: $j"
 
       PARAM_NAME=$(echo $AWS_SSM_PARAMS_RESULT | jq ".[$j].Name")
       PARAM_VALUE=$(echo $AWS_SSM_PARAMS_RESULT | jq ".[$j].Value")
@@ -44,9 +44,9 @@ else
       echo $PARAM >>$ENV_FILE
     done
 
-    echo "Total parameters retrieved from AWS SSM: $AWS_SSM_PARAMS_COUNT"
+    echo "echo "[load-env-vars]: Total parameters retrieved from AWS SSM: $AWS_SSM_PARAMS_COUNT"
 
-    echo "Done loading environment variables at path: $i"
+    echo "echo "[load-env-vars]: Done loading environment variables at path: $i"
   done
 
   aws s3 cp $ENV_FILE $ENV_VARS_S3_URL

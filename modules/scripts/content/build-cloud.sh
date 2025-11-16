@@ -4,39 +4,39 @@ set -euo pipefail
 
 #region required variables
 
-# AWS_REGION e.g. 'eu-west-1'
 # LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
-# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# AWS_REGION e.g. 'eu-west-1'
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
-# MODULE_DIR e.g. "./module"
+# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# WORKING_DIR e.g. "./module"
 
 #endregion
 
 #region validations
 
-if [[ "$AWS_REGION" == "" ]];then
-  echo "[build-container]: AWS Region not set. please set AWS Region"
-  exit 1
-fi
-
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
-  echo "[build-container]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
+  echo "[build-cloud]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
   exit 1
 fi
 
-if [[ "$ENV_VARS_S3_URL" == "" ]];then
-  echo "[build-container]: .env file AWS S3 URL not set. please set .env file AWS S3 URL"
+if [[ "$AWS_REGION" == "" ]];then
+  echo "[build-cloud]: AWS Region not set. please set AWS Region"
   exit 1
 fi
 
 if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]];then
-  echo "[build-container]: AWS SSM Parameter Store path(s) not set. please set AWS SSM Parameter Store path(s)"
+  echo "[build-cloud]: AWS SSM Parameter Store path(s) not set. please set AWS SSM Parameter Store path(s)"
   exit 1
 fi
 
-if [[ "$MODULE_DIR" == "" ]]; then
+if [[ "$ENV_VARS_S3_URL" == "" ]];then
+  echo "[build-cloud]: .env file AWS S3 URL not set. please set .env file AWS S3 URL"
+  exit 1
+fi
+
+if [[ "$WORKING_DIR" == "" ]]; then
   echo "[build-cloud]: terraform child directory is not set, using default: $(pwd)"
-  MODULE_DIR=$(pwd)
+  WORKING_DIR=$(pwd)
 fi
 
 #endregion
@@ -46,11 +46,11 @@ echo '[build-cloud]: starting'
 LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
 
-source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $(pwd)
+source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
 
-terraform -chdir=$MODULE_DIR init
-terraform -chdir=$MODULE_DIR validate
-terraform -chdir=$MODULE_DIR plan -input=false -out=tfplan
+terraform -chdir=$WORKING_DIR init
+terraform -chdir=$WORKING_DIR validate
+terraform -chdir=$WORKING_DIR plan -input=false -out=tfplan
 
 echo '[build-cloud]: done.'
 exit 0

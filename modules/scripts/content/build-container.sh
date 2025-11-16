@@ -4,6 +4,8 @@ set -euo pipefail
 
 #region required variables
 
+# GIT_BRANCH
+# RELEASE_MANIFEST
 # IMAGE_REGISTRY_BASE_URL
 # IMAGE_REPOSITORY_NAME
 # DOCKERFILE
@@ -12,6 +14,16 @@ set -euo pipefail
 #endregion
 
 #region validations
+
+if [[ "$GIT_BRANCH" == "" ]];then
+  echo "[build-container]: git branch name not set. please set git branch name"
+  exit 1
+fi
+
+if [[ "$RELEASE_MANIFEST" == "" ]];then
+  echo "[build-container]: release manifest name not set. please set release manifest name"
+  exit 1
+fi
 
 if [[ "$IMAGE_REGISTRY_BASE_URL" == "" ]];then
   echo "[build-container]: image registry base url not set. please set image registry base url"
@@ -28,9 +40,9 @@ if [[ "$DOCKERFILE" == "" ]];then
   exit 1
 fi
 
-if [[ "$WORKING_DIR" == "" ]];then
-  echo "[build-container]: working directory not set. setting working directory to: '.'"
-  WORKING_DIR=.
+if [[ "$WORKING_DIR" == "" ]]; then
+  echo "[build-container]: terraform child directory is not set, using default: $(pwd)"
+  WORKING_DIR=$(pwd)
 fi
 
 #endregion
@@ -63,7 +75,7 @@ docker buildx build --push --force-rm \
   $WORKING_DIR
 
 if [[ "$GIT_BRANCH" != "dev" ]]; then
-  echo "DKR_IMAGE=$FULL_IMAGE_TAG" >release-manifest
+  echo "DKR_IMAGE=$FULL_IMAGE_TAG" >$RELEASE_MANIFEST
 fi
 
 echo "[build-container]: Done."

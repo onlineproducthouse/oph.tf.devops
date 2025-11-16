@@ -28,6 +28,53 @@ variable "githook_arn" {
   nullable    = false
 }
 
+variable "is_container" {
+  description = "Is the project deployed as a docker container?"
+  type        = bool
+  default     = false
+}
+
+variable "job" {
+  description = "Codebuild job to create for the pipeline"
+  default     = []
+
+  type = list(object({
+    name        = string
+    vpc_id      = string
+    vpc_subnets = list(string)
+    role_arn    = string
+    timeout     = number
+
+    # AWS S3 Bucket ARN key to buildspec object
+    buildspec = string
+
+    env_variables = list(object({
+      key   = string
+      value = string
+    }))
+  }))
+}
+
+variable "pipeline" {
+  description = "List of pipelines to create"
+
+  type = list(object({
+    name        = string
+    branch_name = string
+  }))
+
+  default = [
+    {
+      name        = "dev"
+      branch_name = "dev"
+    },
+    {
+      name        = "release"
+      branch_name = "release/*"
+    },
+  ]
+}
+
 variable "stages" {
   description = "Stages to configure for the pipeline, in addition to source and build stages"
 
@@ -54,23 +101,4 @@ variable "stages" {
       prod = false
     }
   }
-}
-
-variable "job" {
-  description = "Codebuild job to create for the pipeline"
-  nullable    = false
-
-  type = object({
-    vpc_id       = string
-    vpc_subnets  = list(string)
-    role_arn     = string
-    timeout      = number
-    buildspec    = string
-    is_container = bool
-
-    env_variables = list(object({
-      key   = string
-      value = string
-    }))
-  })
 }

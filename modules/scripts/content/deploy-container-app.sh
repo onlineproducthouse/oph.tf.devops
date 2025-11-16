@@ -8,6 +8,9 @@ set -euo pipefail
 # LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
 # ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# WORKING_DIR
+# RELEASE_MANIFEST
+
 # TASK_FAMILY
 # TASK_ROLE_ARN
 # CONTAINER_PORT
@@ -21,57 +24,67 @@ set -euo pipefail
 #region validations
 
 if [[ "$AWS_REGION" == "" ]];then
-  echo "[build-container]: AWS Region not set. please set AWS Region"
+  echo "[deploy-container-app]: AWS Region not set. please set AWS Region"
   exit 1
 fi
 
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
-  echo "[build-container]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
+  echo "[deploy-container-app]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
   exit 1
 fi
 
 if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]];then
-  echo "[build-container]: AWS SSM Parameter Store path(s) not set. please set AWS SSM Parameter Store path(s)"
+  echo "[deploy-container-app]: AWS SSM Parameter Store path(s) not set. please set AWS SSM Parameter Store path(s)"
   exit 1
 fi
 
 if [[ "$ENV_VARS_S3_URL" == "" ]];then
-  echo "[build-container]: AWS S3 url for env variables not set. please set AWS S3 url for env variables"
+  echo "[deploy-container-app]: AWS S3 url for env variables not set. please set AWS S3 url for env variables"
+  exit 1
+fi
+
+if [[ "$WORKING_DIR" == "" ]]; then
+  echo "[deploy-container-app]: terraform child directory is not set, using default: $(pwd)"
+  WORKING_DIR=$(pwd)
+fi
+
+if [[ "$RELEASE_MANIFEST" == "" ]];then
+  echo "[deploy-container-app]: release manifest name not set. please set release manifest name"
   exit 1
 fi
 
 if [[ "$TASK_FAMILY" == "" ]];then
-  echo "[build-container]: AWS ECS task family not set. please set AWS ECS task family"
+  echo "[deploy-container-app]: AWS ECS task family not set. please set AWS ECS task family"
   exit 1
 fi
 
 if [[ "$TASK_ROLE_ARN" == "" ]];then
-  echo "[build-container]: AWS ECS task role arn not set. please set AWS ECS task role arn"
+  echo "[deploy-container-app]: AWS ECS task role arn not set. please set AWS ECS task role arn"
   exit 1
 fi
 
 if [[ "$CONTAINER_PORT" == "" ]];then
-  echo "[build-container]: AWS ECS container port not set. please set AWS ECS container port"
+  echo "[deploy-container-app]: AWS ECS container port not set. please set AWS ECS container port"
   exit 1
 fi
 
 if [[ "$CONTAINER_CPU" == "" ]];then
-  echo "[build-container]: AWS ECS container cpu not set. please set AWS ECS container cpu"
+  echo "[deploy-container-app]: AWS ECS container cpu not set. please set AWS ECS container cpu"
   exit 1
 fi
 
 if [[ "$CONTAINER_MEMORY_RESERVATION" == "" ]];then
-  echo "[build-container]: AWS ECS container memory reservation not set. please set AWS ECS container memory reservation"
+  echo "[deploy-container-app]: AWS ECS container memory reservation not set. please set AWS ECS container memory reservation"
   exit 1
 fi
 
 if [[ "$CLUSTER_NAME" == "" ]];then
-  echo "[build-container]: AWS ECS cluster name not set. please set AWS ECS cluster name"
+  echo "[deploy-container-app]: AWS ECS cluster name not set. please set AWS ECS cluster name"
   exit 1
 fi
 
 if [[ "$SERVICE_NAME" == "" ]];then
-  echo "[build-container]: AWS ECS service name not set. please set AWS ECS cluster name"
+  echo "[deploy-container-app]: AWS ECS service name not set. please set AWS ECS cluster name"
   exit 1
 fi
 
@@ -97,7 +110,7 @@ if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then
 fi
 
 # populate ecs json files
-source release-manifest \
+source $RELEASE_MANIFEST \
   && echo '{
     "family": "'$TASK_FAMILY'",
     "taskRoleArn": "'$TASK_ROLE_ARN'",
@@ -140,4 +153,4 @@ aws ecs update-service --force-new-deployment \
   --service $SERVICE_NAME \
   --task-definition $TASK_FAMILY:$TASK_REVISION
 
-echo "[deploy-container]: done."
+echo "[deploy-container-app]: done."

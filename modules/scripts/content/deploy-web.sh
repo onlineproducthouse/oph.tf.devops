@@ -5,7 +5,7 @@ set -euo pipefail
 #region required variables
 
 # S3_HOST_BUCKET_NAME
-# ARTIFACT_PATH
+# WORKING_DIR
 # CDN_ID
 
 #endregion
@@ -13,25 +13,25 @@ set -euo pipefail
 #region validations
 
 if [[ "$S3_HOST_BUCKET_NAME" == "" ]];then
-  echo "[build-container]: AWS S3 Bucket name not set. please set AWS S3 Bucket name"
+  echo "[deploy-web]: AWS S3 Bucket name not set. please set AWS S3 Bucket name"
   exit 1
 fi
 
-if [[ "$ARTIFACT_PATH" == "" ]];then
-  echo "[build-container]: artifact path not set. please set artifact path"
-  exit 1
+if [[ "$WORKING_DIR" == "" ]]; then
+  echo "[deploy-web]: terraform child directory is not set, using default: $(pwd)"
+  WORKING_DIR=$(pwd)
 fi
 
 if [[ "$CDN_ID" == "" ]];then
-  echo "[build-container]: AWS CloudFront CDN id not set. please set AWS CloudFront CDN id"
+  echo "[deploy-web]: AWS CloudFront CDN id not set. please set AWS CloudFront CDN id"
   exit 1
 fi
 
 #endregion
 
-aws s3 sync $ARTIFACT_PATH "s3://$S3_HOST_BUCKET_NAME"
+aws s3 sync $WORKING_DIR "s3://$S3_HOST_BUCKET_NAME"
 
-INVALIDATION_CONFIG_PATH=$(pwd)/ci/inv-batch.json
+INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
 
 echo '{
   "Paths": {
