@@ -207,7 +207,7 @@ module "job" {
   buildspec    = each.value.buildspec
   is_container = var.is_container
 
-  env_variables = concat(var.job.env_variables, [
+  env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
   ])
 }
