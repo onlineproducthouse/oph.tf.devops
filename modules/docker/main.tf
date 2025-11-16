@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    skopeo2 = {
+      source  = "bsquare-corp/skopeo2"
+      version = "~> 1.1.0"
+    }
+  }
+}
+
 locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
