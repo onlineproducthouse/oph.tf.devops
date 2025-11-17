@@ -78,6 +78,7 @@ module "pipeline" {
       { key = "AWS_REGION", value = var.region },
       { key = "AWS_SSM_PARAMETER_PATHS", value = job.ssm_param_paths },
       { key = "ENV_VARS_S3_URL", value = "s3://${module.store.id}/configs/${var.name}/${each.value.name}/${job.branch_name}-${job.environment_name}/.env" },
+      { key = "ENV_VARS_S3_ARN", value = "arn:aws:s3:::${module.store.id}/configs/${var.name}/${each.value.name}/${job.branch_name}-${job.environment_name}/.env" },
       { key = "WORKING_DIR", value = job.working_dir },
 
       { key = "RELEASE_MANIFEST", value = "release_manifest.txt" },

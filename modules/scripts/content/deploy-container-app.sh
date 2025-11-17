@@ -8,6 +8,7 @@ set -euo pipefail
 # LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
 # ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# ENV_VARS_S3_ARN: arn:aws:s3:::[bucket-name]/path/to/.env
 # WORKING_DIR
 # RELEASE_MANIFEST
 
@@ -40,6 +41,11 @@ fi
 
 if [[ "$ENV_VARS_S3_URL" == "" ]];then
   echo "[deploy-container-app]: AWS S3 url for env variables not set. please set AWS S3 url for env variables"
+  exit 1
+fi
+
+if [[ "$ENV_VARS_S3_ARN" == "" ]];then
+  echo "[deploy-container-app]: AWS S3 arn for env variables not set. please set AWS S3 arn for env variables"
   exit 1
 fi
 
@@ -137,7 +143,7 @@ source $RELEASE_MANIFEST \
         },
         "environmentFiles": [
           {
-            "value": "arn:aws:s3:::'$ENV_VARS_S3_URL'",
+            "value": "'$ENV_VARS_S3_ARN'",
             "type": "s3"
           }
         ]
