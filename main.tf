@@ -79,7 +79,6 @@ module "pipeline" {
     buildspec = module.scripts["codebuild_job"].arn
 
     env_variables = [
-      # confirmed
       { key = "JOB_SCRIPT_STORE_URL", value = module.scripts["${job.action}_${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
 
@@ -95,6 +94,14 @@ module "pipeline" {
       { key = "GIT_BRANCH", value = job.branch_name },
       { key = "IMAGE_REGISTRY_BASE_URL", value = module.docker.base_url },
       { key = "DOCKERFILE", value = each.value.dockerfile },
+
+      { key = "TASK_FAMILY", value = job.task_family },
+      { key = "TASK_ROLE_ARN", value = job.task_role },
+      { key = "CONTAINER_PORT", value = job.container_port },
+      { key = "CONTAINER_CPU", value = job.container_cpu },
+      { key = "CONTAINER_MEMORY_RESERVATION", value = job.container_memory_reservation },
+      { key = "CLUSTER_NAME", value = job.cluster_name },
+      { key = "SERVICE_NAME", value = job.service_name },
     ]
   }]
 }

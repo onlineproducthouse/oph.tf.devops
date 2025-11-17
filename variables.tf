@@ -68,6 +68,16 @@ variable "projects" {
       # If projects.jobs.action = build, must be one of: cloud, container, web
       # If projects.jobs.action = deploy, must be one of: cloud, container-app, container-db, web
       action_item = string
+
+      # The following fields are required:
+      # If projects.jobs.action = deploy and projects.jobs.action_item = container-app
+      task_family                  = string
+      task_role                    = string
+      container_port               = string
+      container_cpu                = string
+      container_memory_reservation = string
+      cluster_name                 = string
+      service_name                 = string
     }))
 
     stages = object({
