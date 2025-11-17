@@ -22,6 +22,18 @@ variable "githook_provider" {
   default     = "Bitbucket"
 }
 
+variable "config" {
+  description = "List of configuration variables to add to AWS SSM Parameter Store"
+  default     = []
+
+  type = list(object({
+    id             = string
+    ssm_param_path = string
+    key            = string
+    value          = string
+  }))
+}
+
 variable "projects" {
   description = "A list of CI/CD project configurations"
   default     = []
