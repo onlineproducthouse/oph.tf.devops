@@ -41,16 +41,6 @@ module "role" {
   name   = var.name
 }
 
-resource "aws_ssm_parameter" "parameters" {
-  for_each = {
-    for v in var.config : v.id => v
-  }
-
-  name  = "${each.value.ssm_param_path}/${each.value.key}"
-  type  = "SecureString"
-  value = each.value.value
-}
-
 module "pipeline" {
   source = "./modules/pipeline"
 
