@@ -7,6 +7,30 @@ terraform {
   }
 }
 
+module "repositories" {
+  source = "./ecr"
+
+  for_each = {
+    for v in local.image_info : v.key => v
+  }
+
+  name = each.value.name
+}
+
+resource "skopeo2_copy" "images" {
+  count = length(local.tags)
+
+  source_image      = "docker://${local.tags[count.index][0]}"
+  destination_image = "docker://${local.tags[count.index][1]}"
+
+  insecure         = false
+  copy_all_images  = true
+  preserve_digests = true
+  retries          = 3
+  retry_delay      = 10
+  keep_image       = false
+}
+
 locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
@@ -52,9 +76,7 @@ locals {
       }
     },
   ]
-}
 
-locals {
   images = {
     for v in local.image_info : v.key => {
       key  = v.key
@@ -65,7 +87,7 @@ locals {
           version = v.versions.main
           tag = {
             docker = "${v.name}:${v.versions.main}"
-            ecr    = "${module.repositories[v.key].url}:${v.versions.main}"
+            ecr    = "${local.base_url}/${v.name}:${v.versions.main}"
           }
         }
 
@@ -73,7 +95,7 @@ locals {
           version = v.versions.alpine
           tag = {
             docker = "${v.name}:${v.versions.alpine}"
-            ecr    = "${module.repositories[v.key].url}:${v.versions.alpine}"
+            ecr    = "${local.base_url}/${v.name}:${v.versions.alpine}"
           }
         }
       }
@@ -84,28 +106,4 @@ locals {
     [for v in [for img in local.images : img.versions.main] : v == null ? null : [for tag in v.tag : tag]],
     [for v in [for img in local.images : img.versions.alpine] : v == null ? null : [for tag in v.tag : tag]]
   ))), 2)
-}
-
-module "repositories" {
-  source = "./ecr"
-
-  for_each = {
-    for v in local.image_info : v.key => v
-  }
-
-  name = each.value.name
-}
-
-resource "skopeo2_copy" "images" {
-  count = length(local.tags)
-
-  source_image      = "docker://${local.tags[count.index][0]}"
-  destination_image = "docker://${local.tags[count.index][1]}"
-
-  insecure         = false
-  copy_all_images  = true
-  preserve_digests = true
-  retries          = 3
-  retry_delay      = 10
-  keep_image       = false
 }
