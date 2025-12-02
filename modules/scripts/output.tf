@@ -1,4 +1,4 @@
-output "scripts" {
+output "content" {
   value = {
     for v in local.scripts : v.name => {
       key = v.key,

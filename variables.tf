@@ -41,8 +41,22 @@ variable "projects" {
       branch_name = string
     }))
 
+    stages = object({
+      test = object({
+        unit = bool
+        int  = bool
+      })
+
+      deploy = object({
+        qa   = bool
+        prod = bool
+      })
+    })
+
     jobs = list(object({
+      # Must be one of: dev, release
       branch_name     = string
+
       timeout         = number
       working_dir     = string
       ssm_param_paths = string
@@ -67,17 +81,5 @@ variable "projects" {
       cluster_name                 = string
       service_name                 = string
     }))
-
-    stages = object({
-      test = object({
-        unit = bool
-        int  = bool
-      })
-
-      deploy = object({
-        qa   = bool
-        prod = bool
-      })
-    })
   }))
 }

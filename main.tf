@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "6.21.0"
+      version = "6.23.0"
     }
   }
 }
@@ -66,13 +66,13 @@ module "pipeline" {
     vpc_subnets = each.value.vpc_subnets
 
     role_arn  = module.role.arn
-    buildspec = module.scripts["codebuild_job"].arn
+    buildspec = module.scripts.content["codebuild_job"].arn
 
     env_variables = [
-      { key = "JOB_SCRIPT_STORE_URL", value = module.scripts["${job.action}_${job.action_item}"].url },
+      { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}_${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
 
-      { key = "LOAD_ENV_VARS_SCRIPT_S3_URL", value = module.scripts["load_env_vars"].url },
+      { key = "LOAD_ENV_VARS_SCRIPT_S3_URL", value = module.scripts.content["load_env_vars"].url },
 
       { key = "AWS_REGION", value = var.region },
       { key = "AWS_SSM_PARAMETER_PATHS", value = job.ssm_param_paths },
