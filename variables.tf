@@ -55,7 +55,7 @@ variable "projects" {
 
     jobs = list(object({
       # Must be one of: dev, release
-      branch_name     = string
+      branch_name = string
 
       timeout         = number
       working_dir     = string

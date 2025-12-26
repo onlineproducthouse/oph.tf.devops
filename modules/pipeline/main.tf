@@ -9,7 +9,7 @@ resource "aws_codepipeline" "pipeline" {
     for i, v in var.pipeline : v.name => v
   }
 
-  name     = "${var.name}-${each.value.name}"
+  name     = "${var.name}-${each.key}"
   role_arn = var.role_arn
 
   artifact_store {
@@ -26,7 +26,7 @@ resource "aws_codepipeline" "pipeline" {
       owner            = "AWS"
       provider         = "CodeStarSourceConnection"
       version          = "1"
-      output_artifacts = ["source-${var.name}-${each.value.name}"]
+      output_artifacts = ["source-${var.name}-${each.key}"]
 
       configuration = {
         ConnectionArn    = var.githook_arn
@@ -44,12 +44,12 @@ resource "aws_codepipeline" "pipeline" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = ["source-${var.name}-${each.value.name}"]
-      output_artifacts = ["build-${var.name}-${each.value.name}"]
+      input_artifacts  = ["source-${var.name}-${each.key}"]
+      output_artifacts = ["build-${var.name}-${each.key}"]
       version          = "1"
 
       configuration = {
-        ProjectName = module.job["${each.value.name}-local"].name
+        ProjectName = module.job["${each.key}-local"].name
       }
     }
   }
@@ -65,18 +65,18 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.value.name}"]
+        input_artifacts = ["build-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.value.name}-local"].name
+          ProjectName = module.job["${each.key}-local"].name
         }
       }
     }
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.test.int ? local.approval : {}
+    for_each = each.key == "release" && var.stages.test.int ? local.approval : {}
 
     content {
       name = "deploy_test"
@@ -86,7 +86,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.value.name}"]
+        input_artifacts = ["build-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
@@ -97,7 +97,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.test.int ? local.approval : {}
+    for_each = each.key == "release" && var.stages.test.int ? local.approval : {}
 
     content {
       name = "int_test"
@@ -107,7 +107,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.value.name}"]
+        input_artifacts = ["build-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
@@ -118,7 +118,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.deploy.qa ? local.approval : {}
+    for_each = each.key == "release" && var.stages.deploy.qa ? local.approval : {}
 
     content {
       name = "approve_deploy_qa"
@@ -134,7 +134,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.deploy.qa ? local.approval : {}
+    for_each = each.key == "release" && var.stages.deploy.qa ? local.approval : {}
 
     content {
       name = "deploy_qa"
@@ -144,7 +144,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.value.name}"]
+        input_artifacts = ["build-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
@@ -155,7 +155,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.deploy.prod ? local.approval : {}
+    for_each = each.key == "release" && var.stages.deploy.prod ? local.approval : {}
 
     content {
       name = "approve_deploy_prod"
@@ -171,7 +171,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.value.name == "release" && var.stages.deploy.prod ? local.approval : {}
+    for_each = each.key == "release" && var.stages.deploy.prod ? local.approval : {}
 
     content {
       name = "deploy_prod"
@@ -181,7 +181,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.value.name}"]
+        input_artifacts = ["build-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
@@ -199,7 +199,7 @@ module "job" {
     for v in var.job : v.name => v
   }
 
-  name         = each.value.name
+  name         = each.key
   vpc_id       = each.value.vpc_id
   vpc_subnets  = each.value.vpc_subnets
   role_arn     = each.value.role_arn
