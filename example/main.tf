@@ -5,14 +5,14 @@ provider "aws" {
 module "devops_cloud" {
   source = "./.."
 
-  name             = "hello_world"
-  account_id       = "123456789012"
-  region           = "us-east-1"
-  githook_provider = "Bitbucket"
+  name       = "hello_world"
+  account_id = "123456789012"
+  region     = "us-east-1"
 
   projects = [
     {
       name         = "cloud"
+      git_provider = "Bitbucket"
       git_repo     = "example-cloud"
       is_container = false
       dockerfile   = ""
@@ -136,14 +136,14 @@ module "devops_cloud" {
 module "devops_container_app" {
   source = "./.."
 
-  name             = "hello_world"
-  account_id       = "123456789012"
-  region           = "us-east-1"
-  githook_provider = "Bitbucket"
+  name       = "hello_world"
+  account_id = "123456789012"
+  region     = "us-east-1"
 
   projects = [
     {
       name         = "container-api"
+      git_provider = "Bitbucket"
       git_repo     = "example-container-api"
       is_container = true
       dockerfile   = "./Dockerfile"

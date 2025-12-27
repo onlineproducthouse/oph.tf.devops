@@ -4,6 +4,11 @@ module "ecr" {
   name   = var.git_repo
 }
 
+resource "aws_codestarconnections_connection" "githook" {
+  name          = "${var.name}-${var.git_provider}"
+  provider_type = var.git_provider
+}
+
 resource "aws_codepipeline" "pipeline" {
   for_each = {
     for i, v in var.pipeline : v.name => v
@@ -29,7 +34,7 @@ resource "aws_codepipeline" "pipeline" {
       output_artifacts = ["source-${var.name}-${each.key}"]
 
       configuration = {
-        ConnectionArn    = var.githook_arn
+        ConnectionArn    = aws_codestarconnections_connection.githook.arn
         FullRepositoryId = var.git_repo
         BranchName       = each.value.branch_name
       }

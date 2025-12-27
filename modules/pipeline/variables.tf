@@ -16,14 +16,14 @@ variable "artifact_store_bucket_id" {
   nullable    = false
 }
 
-variable "git_repo" {
-  description = "The name of the git repository for the pipeline"
+variable "git_provider" {
+  description = "The name of the git repository provider where the hook will be setup"
   type        = string
-  nullable    = false
+  default     = "Bitbucket"
 }
 
-variable "githook_arn" {
-  description = "AWS CodeStart Source Connection ARN"
+variable "git_repo" {
+  description = "The name of the git repository for the pipeline"
   type        = string
   nullable    = false
 }

@@ -13,11 +13,6 @@ module "tech_stack" {
   source = "./modules/stack"
 }
 
-resource "aws_codestarconnections_connection" "githook" {
-  name          = "${local.name}-${var.githook_provider}"
-  provider_type = var.githook_provider
-}
-
 module "store" {
   source = "./modules/store"
   name   = local.name
@@ -61,6 +56,7 @@ module "pipeline" {
   }
 
   name         = each.value.name
+  git_provider = each.value.git_provider
   git_repo     = each.value.git_repo
   is_container = each.value.is_container
   stages       = each.value.stages
@@ -68,7 +64,6 @@ module "pipeline" {
 
   role_arn                 = module.role["${local.name}-pipelines"].arn
   artifact_store_bucket_id = module.store.id
-  githook_arn              = aws_codestarconnections_connection.githook.arn
 
   job = [for job in each.value.jobs : {
     name    = "${job.branch_name}-${job.environment_name}"
@@ -148,7 +143,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = aws_codestarconnections_connection.githook.arn,
+              Resource = "*",
               Action   = "codestar-connections:UseConnection",
             },
             {

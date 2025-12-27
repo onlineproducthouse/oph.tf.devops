@@ -16,19 +16,16 @@ variable "region" {
   nullable    = false
 }
 
-variable "githook_provider" {
-  description = "The name of the git repository provider where the hook will be setup"
-  type        = string
-  default     = "Bitbucket"
-}
-
 variable "projects" {
   description = "A list of CI/CD project configurations"
   default     = []
 
   type = list(object({
-    name         = string
+    name = string
+
+    git_provider = string // Bitbucket, GitHub
     git_repo     = string
+
     is_container = bool
     dockerfile   = string
 
