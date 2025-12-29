@@ -52,7 +52,7 @@ module "pipeline" {
   source = "./modules/pipeline"
 
   for_each = {
-    for v in var.projects : v.name => v
+    for v in var.repositories : v.name => v
   }
 
   name         = each.value.name

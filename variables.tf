@@ -16,8 +16,8 @@ variable "region" {
   nullable    = false
 }
 
-variable "projects" {
-  description = "A list of CI/CD project configurations"
+variable "repositories" {
+  description = "A list of CI/CD project repository configurations"
   default     = []
 
   type = list(object({

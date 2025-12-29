@@ -9,7 +9,7 @@ module "devops_cloud" {
   account_id = "123456789012"
   region     = "us-east-1"
 
-  projects = [
+  repositories = [
     {
       name         = "cloud"
       git_provider = "Bitbucket"
@@ -140,7 +140,7 @@ module "devops_container_app" {
   account_id = "123456789012"
   region     = "us-east-1"
 
-  projects = [
+  repositories = [
     {
       name         = "container-api"
       git_provider = "Bitbucket"
