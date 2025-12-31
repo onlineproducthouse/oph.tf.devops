@@ -132,6 +132,8 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "codebuild:StartBuild",
+
                 "codepipeline:DisableStageTransition",
                 "codepipeline:EnableStageTransition",
                 "codepipeline:Get*",
@@ -233,7 +235,6 @@ locals {
                 "codebuild:List*",
                 "codebuild:UpdateProject",
                 "codebuild:UpdateWebhook",
-                "codebuild:StartBuild",
               ]
             },
             {
