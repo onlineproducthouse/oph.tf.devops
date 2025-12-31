@@ -3,10 +3,10 @@ version: 0.2
 # JOB_SCRIPT_STORE_URL
 
 phases:
-  # install:
-  #   commands:
-  #     - apt-get update -y
-  #     - apt-get install -y jq
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y jq
 
   build:
     commands:

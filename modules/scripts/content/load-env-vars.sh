@@ -9,9 +9,6 @@ set -euo pipefail
 # $4 = $WORKING_DIR
 #endregion
 
-apt-get update -y
-apt-get install -y jq
-
 AWS_REGION=$1
 AWS_SSM_PARAMETER_PATHS=$2 # e.g. "path1;path2;..."
 ENV_VARS_S3_URL=$3

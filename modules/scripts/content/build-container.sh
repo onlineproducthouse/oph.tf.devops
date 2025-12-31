@@ -13,9 +13,6 @@ set -euo pipefail
 
 #endregion
 
-apt-get update -y
-apt-get install -y jq
-
 #region validations
 
 if [[ "$GIT_BRANCH" == "" ]];then
