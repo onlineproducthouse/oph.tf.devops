@@ -38,7 +38,7 @@ fi
 
 echo '[build-cloud]: starting'
 
-if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]];then
+if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
   LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
   aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
   source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
