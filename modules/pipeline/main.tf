@@ -205,6 +205,7 @@ module "job" {
   }
 
   name         = each.key
+  image        = each.value.image
   vpc_id       = each.value.vpc_id
   vpc_subnets  = each.value.vpc_subnets
   role_arn     = each.value.role_arn

@@ -4,6 +4,12 @@ variable "name" {
   nullable    = false
 }
 
+variable "image" {
+  description = "The name codebuild job image"
+  type        = string
+  default     = "aws/codebuild/standard:7.0"
+}
+
 variable "vpc_id" {
   description = "VPC where the CI job runs"
   type        = string

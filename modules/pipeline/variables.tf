@@ -40,6 +40,7 @@ variable "job" {
 
   type = list(object({
     name        = string
+    image       = string
     vpc_id      = string
     vpc_subnets = list(string)
     role_arn    = string

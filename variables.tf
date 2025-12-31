@@ -54,6 +54,7 @@ variable "repositories" {
       # Must be one of: dev, release
       branch_name = string
 
+      image           = string
       timeout         = number
       working_dir     = string
       ssm_param_paths = string

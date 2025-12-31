@@ -67,6 +67,7 @@ module "pipeline" {
 
   job = [for job in each.value.jobs : {
     name    = "${job.branch_name}-${job.environment_name}"
+    image   = job.image
     timeout = job.timeout
 
     vpc_id      = each.value.vpc_id

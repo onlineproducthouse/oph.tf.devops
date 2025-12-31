@@ -60,6 +60,7 @@ module "devops_cloud" {
       jobs = [
         {
           branch_name      = "dev"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -78,6 +79,7 @@ module "devops_cloud" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -96,6 +98,7 @@ module "devops_cloud" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -114,6 +117,7 @@ module "devops_cloud" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -132,6 +136,7 @@ module "devops_cloud" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -191,6 +196,7 @@ module "devops_container_app" {
       jobs = [
         {
           branch_name      = "dev"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -209,6 +215,7 @@ module "devops_container_app" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -227,6 +234,7 @@ module "devops_container_app" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -245,6 +253,7 @@ module "devops_container_app" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -263,6 +272,7 @@ module "devops_container_app" {
         },
         {
           branch_name      = "release"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
