@@ -132,6 +132,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "codebuild:BatchGetBuilds",
                 "codebuild:StartBuild",
 
                 "codepipeline:DisableStageTransition",
