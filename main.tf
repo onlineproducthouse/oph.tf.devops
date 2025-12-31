@@ -232,7 +232,8 @@ locals {
                 "codebuild:ImportSourceCredentials",
                 "codebuild:List*",
                 "codebuild:UpdateProject",
-                "codebuild:UpdateWebhook"
+                "codebuild:UpdateWebhook",
+                "codebuild:StartBuild",
               ]
             },
             {
