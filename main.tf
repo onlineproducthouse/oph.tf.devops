@@ -130,7 +130,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:DisableStageTransition",
                 "codepipeline:EnableStageTransition",
@@ -148,7 +148,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:role/*",
+              Resource = "*",
               Action = [
                 "iam:GetPolicy",
                 "iam:GetRole",
@@ -162,7 +162,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -171,7 +171,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:${var.region}:${var.account_id}:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -223,7 +223,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:CreateProject",
                 "codebuild:CreateWebhook",
@@ -244,7 +244,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:CreatePipeline",
                 "codepipeline:DisableStageTransition",
@@ -260,7 +260,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -276,7 +276,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudfront:${var.region}:${var.account_id}:distribution/*",
+              Resource = "*",
               Action = [
                 "cloudfront:CreateDistribution",
                 "cloudfront:CreateInvalidation",
@@ -289,7 +289,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -306,7 +306,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ecr:${var.region}:${var.account_id}:repository/*",
+              Resource = "*",
               Action = [
                 "ecr:BatchGetImage",
                 "ecr:CreateRepository",
@@ -385,7 +385,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:*",
+              Resource = "*",
               Condition = {
                 StringLike = {
                   "iam:AWSServiceName" = "ecs.amazonaws.com"
@@ -412,14 +412,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -428,7 +428,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -480,7 +480,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:Describe*",
                 "codebuild:Get*",
@@ -490,7 +490,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:Get*",
                 "codepipeline:List*",
@@ -500,7 +500,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -516,7 +516,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -533,7 +533,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ecr:${var.region}:${var.account_id}:repository/*",
+              Resource = "*",
               Action = [
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
@@ -585,7 +585,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:*",
+              Resource = "*",
               Condition = {
                 StringLike = {
                   "iam:AWSServiceName" = "ecs.amazonaws.com"
@@ -606,14 +606,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -622,7 +622,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -660,7 +660,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:Describe*",
                 "codebuild:Get*",
@@ -670,7 +670,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:Get*",
                 "codepipeline:List*",
@@ -680,7 +680,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -696,7 +696,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudfront:${var.region}:${var.account_id}:distribution/*",
+              Resource = "*",
               Action = [
                 "cloudfront:CreateInvalidation",
                 "cloudfront:GetDistribution",
@@ -708,7 +708,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -725,14 +725,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -741,7 +741,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -793,7 +793,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:CreateProject",
                 "codebuild:CreateWebhook",
@@ -814,7 +814,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:CreatePipeline",
                 "codepipeline:DisableStageTransition",
@@ -830,7 +830,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -846,7 +846,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudfront:${var.region}:${var.account_id}:distribution/*",
+              Resource = "*",
               Action = [
                 "cloudfront:CreateDistribution",
                 "cloudfront:CreateInvalidation",
@@ -859,7 +859,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -876,7 +876,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ecr:${var.region}:${var.account_id}:repository/*",
+              Resource = "*",
               Action = [
                 "ecr:BatchGetImage",
                 "ecr:CreateRepository",
@@ -955,7 +955,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:*",
+              Resource = "*",
               Condition = {
                 StringLike = {
                   "iam:AWSServiceName" = "ecs.amazonaws.com"
@@ -982,14 +982,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -998,7 +998,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -1050,7 +1050,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:Describe*",
                 "codebuild:Get*",
@@ -1060,7 +1060,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:Get*",
                 "codepipeline:List*",
@@ -1070,7 +1070,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -1086,7 +1086,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -1103,7 +1103,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ecr:${var.region}:${var.account_id}:repository/*",
+              Resource = "*",
               Action = [
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
@@ -1153,7 +1153,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:*",
+              Resource = "*",
               Condition = {
                 StringLike = {
                   "iam:AWSServiceName" = "ecs.amazonaws.com"
@@ -1174,14 +1174,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -1190,7 +1190,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -1228,7 +1228,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:Describe*",
                 "codebuild:Get*",
@@ -1238,7 +1238,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:Get*",
                 "codepipeline:List*",
@@ -1248,7 +1248,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -1264,7 +1264,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -1281,7 +1281,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ecr:${var.region}:${var.account_id}:repository/*",
+              Resource = "*",
               Action = [
                 "ecr:BatchGetImage",
                 "ecr:Describe*",
@@ -1295,7 +1295,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:iam::${var.account_id}:*",
+              Resource = "*",
               Condition = {
                 StringLike = {
                   "iam:AWSServiceName" = "ecs.amazonaws.com"
@@ -1316,14 +1316,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -1332,7 +1332,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
@@ -1370,7 +1370,7 @@ locals {
           Statement = [
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codebuild:${var.region}:${var.account_id}:project/*",
+              Resource = "*",
               Action = [
                 "codebuild:Describe*",
                 "codebuild:Get*",
@@ -1380,7 +1380,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:codepipeline:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "codepipeline:Get*",
                 "codepipeline:List*",
@@ -1390,7 +1390,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ec2:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateNetworkInterface",
@@ -1406,7 +1406,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudfront:${var.region}:${var.account_id}:distribution/*",
+              Resource = "*",
               Action = [
                 "cloudfront:CreateInvalidation",
                 "cloudfront:GetDistribution",
@@ -1418,7 +1418,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:logs:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
@@ -1435,14 +1435,14 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:ssm:${var.region}:${var.account_id}:*",
+              Resource = "*",
               Action = [
                 "ssm:GetParametersByPath"
               ],
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:s3:::${module.store.id}/*",
+              Resource = "*",
               Action = [
                 "s3:Get*",
                 "s3:PutObject",
@@ -1451,7 +1451,7 @@ locals {
             },
             {
               Effect   = "Allow",
-              Resource = "arn:aws:cloudformation:*:*:stack/awscodestar-*",
+              Resource = "*",
               Action = [
                 "cloudformation:DescribeStack*",
                 "cloudformation:GetTemplateSummary"
