@@ -22,6 +22,9 @@ set -euo pipefail
 
 #endregion
 
+apt-get update -y
+apt-get install -y jq
+
 #region validations
 
 if [[ "$AWS_REGION" == "" ]];then
