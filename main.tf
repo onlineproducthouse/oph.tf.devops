@@ -55,7 +55,7 @@ module "pipeline" {
     for v in var.repositories : v.name => v
   }
 
-  name         = each.value.name
+  name         = each.key
   git_provider = each.value.git_provider
   git_repo     = each.value.git_repo
   is_container = each.value.is_container
@@ -84,8 +84,8 @@ module "pipeline" {
 
       { key = "AWS_REGION", value = var.region },
       { key = "AWS_SSM_PARAMETER_PATHS", value = job.ssm_param_paths },
-      { key = "ENV_VARS_S3_URL", value = "s3://${module.store.id}/configs/${local.name}/${each.value.name}/${job.branch_name}-${job.environment_name}/.env" },
-      { key = "ENV_VARS_S3_ARN", value = "arn:aws:s3:::${module.store.id}/configs/${local.name}/${each.value.name}/${job.branch_name}-${job.environment_name}/.env" },
+      { key = "ENV_VARS_S3_URL", value = "s3://${module.store.id}/configs/${local.name}/${each.key}/${job.branch_name}-${job.environment_name}/.env" },
+      { key = "ENV_VARS_S3_ARN", value = "arn:aws:s3:::${module.store.id}/configs/${local.name}/${each.key}/${job.branch_name}-${job.environment_name}/.env" },
       { key = "WORKING_DIR", value = job.working_dir },
 
       { key = "RELEASE_MANIFEST", value = "release_manifest.txt" },
@@ -144,6 +144,13 @@ locals {
               Resource = "*",
               Action = [
                 "s3:PutObject",
+              ],
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "logs:CreateLogGroup",
               ],
             },
           ]
@@ -208,6 +215,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "logs:CreateLogGroup",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ]
@@ -306,6 +314,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "logs:CreateLogGroup",
                 "logs:CreateLogStream",
                 "logs:PutLogEvents",
               ]
@@ -319,6 +328,9 @@ locals {
                 "s3:GetEncryptionConfiguration",
                 "s3:GetObject",
                 "s3:GetObjectTagging",
+                "s3:ListBucketVersions",
+                "s3:PutBucketVersioning",
+                "s3:PutEncryptionConfiguration",
                 "s3:PutObject",
               ]
             },
@@ -339,6 +351,7 @@ locals {
                 "iam:GetPolicyVersion",
                 "iam:GetRole",
                 "iam:ListAttachedRolePolicies",
+                "iam:ListPolicyVersions",
                 "iam:ListRolePolicies",
               ]
             },

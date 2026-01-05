@@ -34,7 +34,6 @@ variable "repositories" {
     vpc_subnets = list(string)
 
     pipelines = list(object({
-      name        = string
       branch_name = string
     }))
 

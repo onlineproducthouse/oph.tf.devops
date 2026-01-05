@@ -60,7 +60,6 @@ variable "pipeline" {
   description = "List of pipelines to create"
 
   type = list(object({
-    name        = string
     branch_name = string
   }))
 
