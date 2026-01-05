@@ -66,12 +66,10 @@ variable "pipeline" {
 
   default = [
     {
-      name        = "dev"
       branch_name = "dev"
     },
     {
-      name        = "release"
-      branch_name = "release/*"
+      branch_name = "main"
     },
   ]
 }

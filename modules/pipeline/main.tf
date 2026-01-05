@@ -11,7 +11,7 @@ resource "aws_codestarconnections_connection" "githook" {
 
 resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for i, v in var.pipeline : v.name => v
+    for i, v in var.pipeline : v.branch_name => null
   }
 
   name     = "${var.name}-${each.key}"
@@ -36,7 +36,7 @@ resource "aws_codepipeline" "pipeline" {
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.githook.arn
         FullRepositoryId = var.git_repo
-        BranchName       = each.value.branch_name
+        BranchName       = each.key
       }
     }
   }
@@ -81,7 +81,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.test.int ? local.approval : {}
+    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
 
     content {
       name = "deploy_test"
@@ -95,14 +95,14 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["release-test"].name
+          ProjectName = module.job["${each.key}-test"].name
         }
       }
     }
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.test.int ? local.approval : {}
+    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
 
     content {
       name = "int_test"
@@ -116,14 +116,14 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["release-test"].name
+          ProjectName = module.job["${each.key}-test"].name
         }
       }
     }
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.deploy.qa ? local.approval : {}
+    for_each = each.key == "main" && var.stages.deploy.qa ? local.approval : {}
 
     content {
       name = "approve_deploy_qa"
@@ -139,7 +139,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.deploy.qa ? local.approval : {}
+    for_each = each.key == "main" && var.stages.deploy.qa ? local.approval : {}
 
     content {
       name = "deploy_qa"
@@ -153,14 +153,14 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["release-qa"].name
+          ProjectName = module.job["${each.key}-qa"].name
         }
       }
     }
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.deploy.prod ? local.approval : {}
+    for_each = each.key == "main" && var.stages.deploy.prod ? local.approval : {}
 
     content {
       name = "approve_deploy_prod"
@@ -176,7 +176,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.key == "release" && var.stages.deploy.prod ? local.approval : {}
+    for_each = each.key == "main" && var.stages.deploy.prod ? local.approval : {}
 
     content {
       name = "deploy_prod"
@@ -190,7 +190,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["release-prod"].name
+          ProjectName = module.job["${each.key}-prod"].name
         }
       }
     }
