@@ -136,24 +136,269 @@ locals {
                 "codebuild:BatchGetBuilds",
                 "codebuild:StartBuild",
 
-                "codepipeline:DisableStageTransition",
-                "codepipeline:EnableStageTransition",
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:PollForJobs",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource",
+                "codestar-connections:UseConnection",
               ],
             },
             {
               Effect   = "Allow",
               Resource = "*",
-              Action   = "codestar-connections:UseConnection",
+              Action = [
+                "s3:PutObject",
+              ],
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-build-cloud"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "codebuild:BatchGetProjects",
+                "codebuild:UpdateProject",
+
+                "codeconnections:GetConnection",
+                "codeconnections:ListTagsForResource",
+
+                "codepipeline:GetPipeline",
+                "codepipeline:ListTagsForResource",
+              ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "s3:DeleteObject",
+                "s3:GetBucketVersioning",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetObject",
+                "s3:GetObjectTagging",
+                "s3:PutObject",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "ecr:GetAuthorizationToken",
+                "ecr:GetLifecyclePolicy",
+                "ecr:ListTagsForResource",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListRolePolicies",
+              ]
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-deploy-cloud"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "codebuild:BatchGetProjects",
+                "codebuild:UpdateProject",
+
+                "codeconnections:GetConnection",
+                "codeconnections:ListTagsForResource",
+
+                "codepipeline:GetPipeline",
+                "codepipeline:ListTagsForResource",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "s3:DeleteObject",
+                "s3:GetBucketVersioning",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetObject",
+                "s3:GetObjectTagging",
+                "s3:PutObject",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "ecr:GetAuthorizationToken",
+                "ecr:GetLifecyclePolicy",
+                "ecr:ListTagsForResource",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListRolePolicies",
+              ]
+            },
+          ]
+        })
+      },
+    ]
+  }
+
+  _iam = {
+    policy = [
+      {
+        name = "${local.name}-pipelines"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codepipeline.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "codebuild:BatchGetBuilds",
+                "codebuild:StartBuild",
+
+                "codeconnections:Get*",
+                "codeconnections:List*",
+
+                "cloudformation:DescribeStack*",
+                "cloudformation:GetTemplateSummary",
+
+                "codepipeline:Get*",
+                "codepipeline:List*",
+                "codepipeline:PollForJobs",
+                "codepipeline:TagResource",
+                "codepipeline:UntagResource",
+
+                "codestar-connections:PassConnection",
+              ],
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "iam:AttachRolePolicy",
+                "iam:DeletePolicyVersion",
+                "iam:DetachRolePolicy",
                 "iam:GetPolicy",
                 "iam:GetRole",
                 "iam:GetRolePolicy",
@@ -173,14 +418,6 @@ locals {
                 "s3:List*",
               ],
             },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "cloudformation:DescribeStack*",
-                "cloudformation:GetTemplateSummary"
-              ],
-            }
           ]
         })
       },
@@ -304,7 +541,6 @@ locals {
                 "logs:DescribeDestinations",
                 "logs:DescribeLogGroups",
                 "logs:DescribeLogStreams",
-                "logs:PutLogEvents",
                 "logs:UpdateLogDelivery"
               ],
             },
