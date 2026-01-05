@@ -323,10 +323,13 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "s3:CreateBucket",
                 "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
                 "s3:GetBucketVersioning",
                 "s3:GetEncryptionConfiguration",
                 "s3:GetObject",
+                "s3:GetObjectVersion",
                 "s3:GetObjectTagging",
                 "s3:ListBucketVersions",
                 "s3:PutBucketVersioning",
@@ -347,6 +350,8 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
                 "iam:GetPolicy",
                 "iam:GetPolicyVersion",
                 "iam:GetRole",
