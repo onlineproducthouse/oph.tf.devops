@@ -12,6 +12,14 @@ set -euo pipefail
 
 #endregion
 
+#region install terraform
+apt-get update -y
+apt-get install -y gnupg software-properties-common curl
+curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+apt-get update && apt-get install terraform
+#endregion
+
 #region validations
 
 if [[ "$AWS_REGION" == "" ]];then
@@ -29,11 +37,6 @@ if [[ "$ENV_VARS_S3_URL" == "" ]];then
   exit 1
 fi
 
-if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]];then
-  echo "[deploy-cloud]: AWS SSM Parameter Store path(s) not set. please set AWS SSM Parameter Store path(s)"
-  exit 1
-fi
-
 if [[ "$WORKING_DIR" == "" ]]; then
   echo "[deploy-cloud]: terraform child directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
@@ -43,12 +46,13 @@ fi
 
 echo '[deploy-cloud]: starting'
 
-LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
-aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
+  LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
+  aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+  source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+fi
 
-source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
-
-terraform -chdir=$WORKING_DIR apply tfplan -input=false -auto-approve
+terraform -chdir=$WORKING_DIR apply -input=false tfplan
 
 echo '[deploy-cloud]: done.'
 exit 0
