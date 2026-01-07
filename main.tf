@@ -66,7 +66,7 @@ module "pipeline" {
   artifact_store_bucket_id = module.store.id
 
   job = [for job in each.value.jobs : {
-    name    = "${job.branch_name}-${job.environment_name}"
+    name    = "${each.key}-${job.branch_name}-${job.environment_name}"
     image   = job.image
     timeout = job.timeout
 
