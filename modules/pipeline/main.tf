@@ -54,7 +54,7 @@ resource "aws_codepipeline" "pipeline" {
       version          = "1"
 
       configuration = {
-        ProjectName = module.job["${each.key}-local"].name
+        ProjectName = module.job["${var.name}-${each.key}-local"].name
       }
     }
   }
@@ -74,7 +74,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.key}-local"].name
+          ProjectName = module.job["${var.name}-${each.key}-local"].name
         }
       }
     }
@@ -95,7 +95,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.key}-test"].name
+          ProjectName = module.job["${var.name}-${each.key}-test"].name
         }
       }
     }
@@ -116,7 +116,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.key}-test"].name
+          ProjectName = module.job["${var.name}-${each.key}-test"].name
         }
       }
     }
@@ -153,7 +153,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.key}-qa"].name
+          ProjectName = module.job["${var.name}-${each.key}-qa"].name
         }
       }
     }
@@ -190,7 +190,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${each.key}-prod"].name
+          ProjectName = module.job["${var.name}-${each.key}-prod"].name
         }
       }
     }
