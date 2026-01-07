@@ -300,8 +300,11 @@ locals {
               Resource = "*",
               Action = [
                 "codebuild:BatchGetProjects",
+                "codebuild:CreateProject",
+                "codebuild:DeleteProject",
                 "codebuild:UpdateProject",
 
+                "codeconnections:CreateConnection",
                 "codeconnections:GetConnection",
                 "codeconnections:ListTagsForResource",
 
