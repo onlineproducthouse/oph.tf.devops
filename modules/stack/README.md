@@ -1,1 +1,0 @@
-# OPH DevOps Terraform Modules - Stack
