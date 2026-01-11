@@ -128,26 +128,7 @@ locals {
             {
               Effect   = "Allow",
               Resource = "*",
-              Action = [
-                "codebuild:BatchGetBuilds",
-                "codebuild:StartBuild",
-
-                "codestar-connections:UseConnection",
-              ],
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "s3:PutObject",
-              ],
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "logs:CreateLogGroup",
-              ],
+              Action   = "*"
             },
           ]
         })
@@ -196,52 +177,7 @@ locals {
             {
               Effect   = "Allow",
               Resource = "*",
-              Action = [
-                "codebuild:*",
-
-                "codeconnections:GetConnection",
-                "codeconnections:ListTagsForResource",
-
-                "codepipeline:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "s3:DeleteObject",
-                "s3:Describe*",
-                "s3:Get*",
-                "s3:List*",
-                "s3:PutObject",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "ecr:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "iam:GetPolicy",
-                "iam:GetPolicyVersion",
-                "iam:GetRole",
-                "iam:ListAttachedRolePolicies",
-                "iam:ListRolePolicies",
-              ]
+              Action   = "*"
             },
           ]
         })
@@ -290,60 +226,7 @@ locals {
             {
               Effect   = "Allow",
               Resource = "*",
-              Action = [
-                "codebuild:*",
-
-                "codeconnections:CreateConnection",
-                "codeconnections:GetConnection",
-                "codeconnections:ListTagsForResource",
-
-                "codepipeline:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "s3:CreateBucket",
-                "s3:DeleteObject",
-                "s3:DeleteObjectVersion",
-                "s3:Describe*",
-                "s3:Get*",
-                "s3:List*",
-                "s3:PutBucketVersioning",
-                "s3:PutEncryptionConfiguration",
-                "s3:PutObject",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "ecr:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "iam:CreatePolicyVersion",
-                "iam:DeletePolicyVersion",
-                "iam:GetPolicy",
-                "iam:GetPolicyVersion",
-                "iam:GetRole",
-                "iam:ListAttachedRolePolicies",
-                "iam:ListPolicyVersions",
-                "iam:ListRolePolicies",
-              ]
+              Action   = "*"
             },
           ]
         })
@@ -392,52 +275,7 @@ locals {
             {
               Effect   = "Allow",
               Resource = "*",
-              Action = [
-                "codebuild:*",
-
-                "codeconnections:GetConnection",
-                "codeconnections:ListTagsForResource",
-
-                "codepipeline:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "s3:DeleteObject",
-                "s3:Describe*",
-                "s3:Get*",
-                "s3:List*",
-                "s3:PutObject",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "ecr:*",
-              ]
-            },
-            {
-              Effect   = "Allow",
-              Resource = "*",
-              Action = [
-                "iam:GetPolicy",
-                "iam:GetPolicyVersion",
-                "iam:GetRole",
-                "iam:ListAttachedRolePolicies",
-                "iam:ListRolePolicies",
-              ]
+              Action   = "*"
             },
           ]
         })
