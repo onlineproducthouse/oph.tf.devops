@@ -833,20 +833,14 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*"
+                "codebuild:*"
               ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource"
+                "codepipeline:*"
               ],
             },
             {
@@ -886,15 +880,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:BatchGetImage",
-                "ecr:Describe*",
-                "ecr:Get*",
-                "ecr:ListImages",
-                "ecr:ListTagsForResource",
-                "ecr:PutImage",
-                "ecr:StartImageScan",
-                "ecr:TagResource",
-                "ecr:UntagResource",
+                "ecr:*",
               ],
             },
             {
@@ -1016,20 +1002,14 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*"
+                "codebuild:*"
               ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource"
+                "codepipeline:*"
               ],
             },
             {
@@ -1149,14 +1129,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:CreateProject",
-                "codebuild:CreateWebhook",
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*",
-                "codebuild:UpdateProject",
-                "codebuild:UpdateWebhook"
+                "codebuild:*"
               ]
             },
             {
@@ -1170,16 +1143,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:CreatePipeline",
-                "codepipeline:DisableStageTransition",
-                "codepipeline:EnableStageTransition",
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:PutWebhook",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource",
-                "codepipeline:UpdateActionType",
-                "codepipeline:UpdatePipeline",
+                "codepipeline:*",
               ],
             },
             {
@@ -1232,17 +1196,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:BatchGetImage",
-                "ecr:CreateRepository",
-                "ecr:Describe*",
-                "ecr:Get*",
-                "ecr:ListImages",
-                "ecr:ListTagsForResource",
-                "ecr:PutImage",
-                "ecr:PutLifecyclePolicy",
-                "ecr:StartImageScan",
-                "ecr:TagResource",
-                "ecr:UntagResource",
+                "ecr:*",
               ],
             },
             {
@@ -1406,20 +1360,14 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*"
+                "codebuild:*"
               ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource"
+                "codepipeline:*"
               ],
             },
             {
@@ -1459,13 +1407,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:BatchGetImage",
-                "ecr:Describe*",
-                "ecr:Get*",
-                "ecr:ListImages",
-                "ecr:ListTagsForResource",
-                "ecr:TagResource",
-                "ecr:UntagResource",
+                "ecr:*",
               ],
             },
             {
@@ -1584,20 +1526,14 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*"
+                "codebuild:*"
               ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource"
+                "codepipeline:*"
               ],
             },
             {
@@ -1637,14 +1573,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:BatchGetImage",
-                "ecr:Describe*",
-                "ecr:Get*",
-                "ecr:ListImages",
-                "ecr:ListTagsForResource",
-                "ecr:StartImageScan",
-                "ecr:TagResource",
-                "ecr:UntagResource",
+                "ecr:*",
               ],
             },
             {
@@ -1726,20 +1655,14 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:Describe*",
-                "codebuild:Get*",
-                "codebuild:ImportSourceCredentials",
-                "codebuild:List*"
+                "codebuild:*"
               ]
             },
             {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codepipeline:Get*",
-                "codepipeline:List*",
-                "codepipeline:TagResource",
-                "codepipeline:UntagResource"
+                "codepipeline:*"
               ],
             },
             {
