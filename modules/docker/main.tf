@@ -39,8 +39,8 @@ locals {
       key  = "golang"
       name = "golang"
       versions = {
-        main   = "1.23.2"
-        alpine = "1.23.2-alpine"
+        main   = "1.25.5"
+        alpine = "1.25.5-alpine"
       }
     },
     {
