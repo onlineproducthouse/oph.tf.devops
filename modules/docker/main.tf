@@ -47,8 +47,8 @@ locals {
       key  = "node"
       name = "node"
       versions = {
-        main   = "22.13.1"
-        alpine = "22.13.1-alpine3.21"
+        main   = "25.2.1"
+        alpine = "25.2.1-alpine"
       }
     },
     {
