@@ -358,6 +358,104 @@ locals {
           ]
         })
       },
+      {
+        name = "${local.name}-build-container"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "codebuild:BatchGetProjects",
+                "codebuild:UpdateProject",
+
+                "codeconnections:GetConnection",
+                "codeconnections:ListTagsForResource",
+
+                "codepipeline:GetPipeline",
+                "codepipeline:ListTagsForResource",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "s3:DeleteObject",
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+                "s3:PutObject",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "ecr:GetAuthorizationToken",
+                "ecr:GetLifecyclePolicy",
+                "ecr:ListTagsForResource",
+              ]
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListRolePolicies",
+              ]
+            },
+          ]
+        })
+      },
     ]
   }
 
