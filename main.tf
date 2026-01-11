@@ -902,6 +902,7 @@ locals {
               Resource = "*",
               Action = [
                 "ecs:CreateCapacityProvider",
+                "ecs:CreateRepository",
                 "ecs:CreateService",
                 "ecs:CreateTaskSet",
                 "ecs:DeleteCapacityProvider",
@@ -944,6 +945,8 @@ locals {
               },
               Action = [
                 "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:CreateRole",
                 "iam:DetachRolePolicy",
                 "iam:GetPolicy",
                 "iam:GetRole",
