@@ -197,14 +197,12 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:BatchGetProjects",
-                "codebuild:UpdateProject",
+                "codebuild:*",
 
                 "codeconnections:GetConnection",
                 "codeconnections:ListTagsForResource",
 
-                "codepipeline:GetPipeline",
-                "codepipeline:ListTagsForResource",
+                "codepipeline:*",
               ]
             },
             {
@@ -231,9 +229,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:GetAuthorizationToken",
-                "ecr:GetLifecyclePolicy",
-                "ecr:ListTagsForResource",
+                "ecr:*",
               ]
             },
             {
@@ -295,17 +291,13 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:BatchGetProjects",
-                "codebuild:CreateProject",
-                "codebuild:DeleteProject",
-                "codebuild:UpdateProject",
+                "codebuild:*",
 
                 "codeconnections:CreateConnection",
                 "codeconnections:GetConnection",
                 "codeconnections:ListTagsForResource",
 
-                "codepipeline:GetPipeline",
-                "codepipeline:ListTagsForResource",
+                "codepipeline:*",
               ]
             },
             {
@@ -336,9 +328,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:GetAuthorizationToken",
-                "ecr:GetLifecyclePolicy",
-                "ecr:ListTagsForResource",
+                "ecr:*",
               ]
             },
             {
@@ -403,14 +393,12 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "codebuild:BatchGetProjects",
-                "codebuild:UpdateProject",
+                "codebuild:*",
 
                 "codeconnections:GetConnection",
                 "codeconnections:ListTagsForResource",
 
-                "codepipeline:GetPipeline",
-                "codepipeline:ListTagsForResource",
+                "codepipeline:*",
               ]
             },
             {
@@ -437,9 +425,7 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
-                "ecr:GetAuthorizationToken",
-                "ecr:GetLifecyclePolicy",
-                "ecr:ListTagsForResource",
+                "ecr:*",
               ]
             },
             {
