@@ -280,6 +280,153 @@ locals {
           ]
         })
       },
+      {
+        name = "${local.name}-deploy-container-app"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action   = "*"
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-deploy-container-db"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action   = "*"
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-deploy-web"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ecs-tasks.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action   = "*"
+            },
+          ]
+        })
+      },
     ]
   }
 
