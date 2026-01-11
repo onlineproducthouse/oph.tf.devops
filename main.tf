@@ -9,10 +9,6 @@ terraform {
   }
 }
 
-module "tech_stack" {
-  source = "./modules/stack"
-}
-
 module "store" {
   source = "./modules/store"
   name   = local.name
