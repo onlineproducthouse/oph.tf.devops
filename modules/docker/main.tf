@@ -32,7 +32,7 @@ resource "skopeo2_copy" "images" {
 }
 
 locals {
-  base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
+  base_url = "https://${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
   image_info = [
     {
