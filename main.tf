@@ -52,6 +52,8 @@ module "pipeline" {
   }
 
   name         = each.key
+  account_id   = var.account_id
+  region       = var.region
   git_provider = each.value.git_provider
   git_repo     = each.value.git_repo
   is_container = each.value.is_container

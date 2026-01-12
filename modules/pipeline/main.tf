@@ -215,6 +215,7 @@ module "job" {
 
   env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
+    { key = "IMAGE_REGISTRY_BASE_URL", value = var.is_container ? "https://${var.account_id}.dkr.ecr.${var.region}.amazonaws.com" : "" },
   ])
 }
 

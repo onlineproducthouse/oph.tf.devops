@@ -41,8 +41,8 @@ module "devops_cloud" {
       vpc_subnets = []
 
       pipelines = [
-        { name = "dev", branch_name = "dev" },
-        { name = "release", branch_name = "release/*" },
+        { name = "develop", branch_name = "develop" },
+        { name = "main", branch_name = "main" },
       ]
 
       stages = {
@@ -59,7 +59,7 @@ module "devops_cloud" {
 
       jobs = [
         {
-          branch_name      = "dev"
+          branch_name      = "develop"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -78,7 +78,7 @@ module "devops_cloud" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -97,7 +97,7 @@ module "devops_cloud" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -116,7 +116,7 @@ module "devops_cloud" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -135,7 +135,7 @@ module "devops_cloud" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -177,8 +177,8 @@ module "devops_container_app" {
       vpc_subnets = []
 
       pipelines = [
-        { name = "dev", branch_name = "dev" },
-        { name = "release", branch_name = "release/*" },
+        { name = "develop", branch_name = "develop" },
+        { name = "main", branch_name = "main" },
       ]
 
       stages = {
@@ -195,7 +195,7 @@ module "devops_container_app" {
 
       jobs = [
         {
-          branch_name      = "dev"
+          branch_name      = "develop"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -214,7 +214,7 @@ module "devops_container_app" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -233,7 +233,7 @@ module "devops_container_app" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -252,7 +252,7 @@ module "devops_container_app" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -271,7 +271,7 @@ module "devops_container_app" {
           service_name                 = ""
         },
         {
-          branch_name      = "release"
+          branch_name      = "main"
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
