@@ -128,9 +128,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -177,9 +177,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -226,9 +226,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -247,27 +247,6 @@ locals {
                 Service : "codebuild.amazonaws.com"
               },
             },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ec2.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs-tasks.amazonaws.com"
-              },
-            },
           ]
         })
 
@@ -275,9 +254,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -324,9 +303,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -345,27 +324,6 @@ locals {
                 Service : "codebuild.amazonaws.com"
               },
             },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ec2.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs-tasks.amazonaws.com"
-              },
-            },
           ]
         })
 
@@ -373,9 +331,9 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
@@ -394,27 +352,6 @@ locals {
                 Service : "codebuild.amazonaws.com"
               },
             },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ec2.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs.amazonaws.com"
-              },
-            },
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "ecs-tasks.amazonaws.com"
-              },
-            },
           ]
         })
 
@@ -422,31 +359,13 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Allow",
+              Effect   = "Deny",
               Resource = "*",
-              Action   = local.action_list,
+              Action   = "*",
             },
           ]
         })
       },
     ]
   }
-
-  action_list = [
-    "autoscaling:*",
-    "cloudformation:*",
-    "cloudfront:*",
-    "codebuild:*",
-    "codeconnections:*",
-    "codepipeline:*",
-    "codestar-connections:*",
-    "ec2:*",
-    "ecr:*",
-    "ecs:*",
-    "elasticloadbalancing:*",
-    "iam:*",
-    "logs:*",
-    "s3:*",
-    "ssm:*",
-  ]
 }
