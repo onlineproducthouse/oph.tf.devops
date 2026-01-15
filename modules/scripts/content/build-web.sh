@@ -10,10 +10,6 @@ set -euo pipefail
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
 # WORKING_DIR
 
-#endregion
-
-#region validations
-
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
   echo "[build-web]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
   exit 1
@@ -42,9 +38,7 @@ fi
 #endregion
 
 LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
-
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
-
 source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR \
   && npm run build
 

@@ -11,10 +11,6 @@ set -euo pipefail
 # DOCKERFILE
 # WORKING_DIR
 
-#endregion
-
-#region validations
-
 if [[ "$GIT_BRANCH" == "" ]];then
   echo "[build-container]: git branch name not set. please set git branch name"
   exit 1
@@ -62,11 +58,8 @@ curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/bu
 mkdir -p ~/.docker/cli-plugins
 mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
 chmod +x ~/.docker/cli-plugins/docker-buildx
-
 docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
-
 docker buildx create --use --name multiarch
-
 docker buildx build --push --force-rm \
   --platform=linux/arm64,linux/amd64 \
   --tag $FULL_IMAGE_TAG \

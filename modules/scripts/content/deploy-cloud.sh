@@ -2,16 +2,6 @@
 
 set -euo pipefail
 
-#region required variables
-
-# AWS_REGION e.g. 'eu-west-1'
-# LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
-# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
-# AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
-# WORKING_DIR e.g. "./module"
-
-#endregion
-
 #region install terraform
 apt-get update -y
 apt-get install -y gnupg software-properties-common curl
@@ -20,7 +10,13 @@ apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_re
 apt-get update && apt-get install terraform
 #endregion
 
-#region validations
+#region required variables
+
+# AWS_REGION e.g. 'eu-west-1'
+# LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
+# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
+# WORKING_DIR e.g. "./module"
 
 if [[ "$AWS_REGION" == "" ]];then
   echo "[deploy-cloud]: AWS Region not set. please set AWS Region"
@@ -52,7 +48,9 @@ if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
   source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
 fi
 
-terraform -chdir=$WORKING_DIR apply -input=false tfplan
+terraform -chdir=$WORKING_DIR init
+terraform -chdir=$WORKING_DIR validate
+terraform -chdir=$WORKING_DIR apply -input=false
 
 echo '[deploy-cloud]: done.'
 exit 0

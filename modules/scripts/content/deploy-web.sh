@@ -8,10 +8,6 @@ set -euo pipefail
 # WORKING_DIR
 # CDN_ID
 
-#endregion
-
-#region validations
-
 if [[ "$S3_HOST_BUCKET_NAME" == "" ]];then
   echo "[deploy-web]: AWS S3 Bucket name not set. please set AWS S3 Bucket name"
   exit 1
@@ -29,10 +25,7 @@ fi
 
 #endregion
 
-aws s3 sync $WORKING_DIR "s3://$S3_HOST_BUCKET_NAME"
-
 INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
-
 echo '{
   "Paths": {
     "Quantity": 1,
@@ -41,6 +34,7 @@ echo '{
   "CallerReference": "'$CODEBUILD_BUILD_NUMBER'"
 }' >$INVALIDATION_CONFIG_PATH
 
+aws s3 sync $WORKING_DIR "s3://$S3_HOST_BUCKET_NAME"
 aws cloudfront create-invalidation \
   --distribution-id $CDN_ID \
   --invalidation-batch "file://$INVALIDATION_CONFIG_PATH"

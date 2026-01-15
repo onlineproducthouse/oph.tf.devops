@@ -20,10 +20,6 @@ set -euo pipefail
 # CLUSTER_NAME
 # SERVICE_NAME
 
-#endregion
-
-#region validations
-
 if [[ "$AWS_REGION" == "" ]];then
   echo "[deploy-container-app]: AWS Region not set. please set AWS Region"
   exit 1
@@ -97,11 +93,11 @@ fi
 #endregion
 
 LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
-aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
-
-# mkdir $CI_FOLDER
 ECS_TASK=./ci/ecs/task-ecs.json
 touch $ECS_TASK
+
+aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
 
 LOCAL_PORT_MAPPING='[]'
 if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then

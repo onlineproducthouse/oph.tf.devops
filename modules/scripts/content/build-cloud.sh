@@ -2,16 +2,6 @@
 
 set -euo pipefail
 
-#region required variables
-
-# LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
-# AWS_REGION e.g. 'eu-west-1'
-# AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
-# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
-# WORKING_DIR e.g. "./module"
-
-#endregion
-
 #region install terraform
 apt-get update -y
 apt-get install -y gnupg software-properties-common curl
@@ -20,8 +10,13 @@ apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_re
 apt-get update && apt-get install terraform
 #endregion
 
+#region required variables
 
-#region validations
+# LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
+# AWS_REGION e.g. 'eu-west-1'
+# AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
+# ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
+# WORKING_DIR e.g. "./module"
 
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
   echo "[build-cloud]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
@@ -55,7 +50,7 @@ fi
 
 terraform -chdir=$WORKING_DIR init
 terraform -chdir=$WORKING_DIR validate
-terraform -chdir=$WORKING_DIR plan -input=false -out=tfplan
+terraform -chdir=$WORKING_DIR plan -input=false
 
 echo '[build-cloud]: done.'
 exit 0
