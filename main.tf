@@ -11,7 +11,7 @@ terraform {
 
 module "store" {
   source = "./modules/store"
-  name   = local.name
+  name   = "${local.name}-devops-store"
 }
 
 module "scripts" {
