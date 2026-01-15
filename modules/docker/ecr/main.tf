@@ -12,13 +12,17 @@ resource "aws_ecr_repository_policy" "ecr" {
   repository = aws_ecr_repository.ecr.name
 
   policy = jsonencode({
-    "Version" : "2008-10-17",
-    "Statement" : [
+    Version = "2008-10-17"
+    Statement = [
       {
-        "Sid" : "new policy",
-        "Effect" : "Allow",
-        "Principal" : "*",
-        "Action" : [
+        Effect = "Allow"
+
+        Principal = {
+          type        = "AWS"
+          identifiers = ["arn:aws:iam::${var.account_id}:role/*"]
+        }
+
+        Action = [
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",

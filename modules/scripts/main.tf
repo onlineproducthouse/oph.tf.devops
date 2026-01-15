@@ -3,8 +3,7 @@ resource "aws_s3_object" "scripts" {
     for v in local.scripts : v.name => v
   }
 
-  bucket = var.bucket_id
-
+  bucket                 = var.bucket_id
   key                    = each.value.key
   source                 = each.value.source_path
   server_side_encryption = "AES256"

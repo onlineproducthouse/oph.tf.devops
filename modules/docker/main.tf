@@ -14,7 +14,8 @@ module "repositories" {
     for v in local.image_info : v.key => v
   }
 
-  name = each.value.name
+  name       = each.value.name
+  account_id = var.account_id
 }
 
 resource "skopeo2_copy" "images" {
