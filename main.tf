@@ -143,6 +143,11 @@ locals {
                 "codestar-connections:UseConnection",
 
                 "iam:PassRole",
+
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+                "s3:Put*",
               ],
             },
           ]
