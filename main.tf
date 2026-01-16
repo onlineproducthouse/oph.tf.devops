@@ -128,9 +128,11 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "codeconnections:UseConnection"
+              ],
             },
           ]
         })
@@ -177,9 +179,27 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:CompleteLayerUpload",
+                "ecr:CreateRepository",
+                "ecr:DeleteLifecyclePolicy",
+                "ecr:DeleteRegistryPolicy",
+                "ecr:DeleteRepository",
+                "ecr:DeleteRepositoryPolicy",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:InitiateLayerUpload",
+                "ecr:List*",
+                "ecr:PutImage",
+                "ecr:PutLifecyclePolicy",
+                "ecr:PutRegistryPolicy",
+                "ecr:SetRepositoryPolicy",
+                "ecr:TagResource",
+                "ecr:UntagResource",
+              ],
             },
           ]
         })
