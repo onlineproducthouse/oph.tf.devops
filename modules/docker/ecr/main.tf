@@ -18,8 +18,7 @@ resource "aws_ecr_repository_policy" "ecr" {
         Effect = "Allow"
 
         Principal = {
-          type        = "AWS"
-          identifiers = ["arn:aws:iam::${var.account_id}:role/*"]
+          AWS = [var.account_id]
         }
 
         Action = [
