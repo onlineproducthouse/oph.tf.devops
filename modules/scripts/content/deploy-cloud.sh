@@ -50,7 +50,7 @@ fi
 
 terraform -chdir=$WORKING_DIR init
 terraform -chdir=$WORKING_DIR validate
-terraform -chdir=$WORKING_DIR apply -input=false
+terraform -chdir=$WORKING_DIR apply -input=false -auto-approve
 
 echo '[deploy-cloud]: done.'
 exit 0
