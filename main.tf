@@ -357,6 +357,7 @@ locals {
                 "logs:CreateDelivery",
                 "logs:CreateLogDelivery",
                 "logs:CreateLogGroup",
+                "logs:CreateLogStream",
                 "logs:Delete*",
                 "logs:Describe*",
                 "logs:Get*",
