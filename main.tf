@@ -131,8 +131,18 @@ locals {
               Effect   = "Allow",
               Resource = "*",
               Action = [
+                "codebuild:BatchGet*",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+
                 "codeconnections:PassConnection",
                 "codeconnections:UseConnection",
+
+                "codepipeline:StartPipelineExecution",
+
+                "codestar-connections:UseConnection",
+
+                "iam:PassRole",
               ],
             },
           ]
