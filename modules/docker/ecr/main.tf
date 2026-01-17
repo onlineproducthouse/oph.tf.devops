@@ -51,11 +51,11 @@ resource "aws_ecr_lifecycle_policy" "ecr" {
     "rules" : [
       {
         "rulePriority" : 1,
-        "description" : "Expire images older than 1 hours",
+        "description" : "Expire images older than 1 days",
         "selection" : {
           "tagStatus" : "untagged",
           "countType" : "sinceImagePushed",
-          "countUnit" : "hours",
+          "countUnit" : "days",
           "countNumber" : 1
         },
         "action" : {
