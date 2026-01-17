@@ -11,18 +11,20 @@ module "repositories" {
   source = "./ecr"
 
   for_each = {
-    for v in local.image_info : v.key => v
+    for v in local.image_info : v.key => v.name
   }
 
-  name       = each.value.name
+  name       = each.value
   account_id = var.account_id
 }
 
-resource "skopeo2_copy" "images" {
-  count = length(local.tags)
+resource "skopeo2_copy" "image" {
+  for_each = {
+    for v in local.images : v.key => v
+  }
 
-  source_image      = "docker://${local.tags[count.index][0]}"
-  destination_image = "docker://${local.tags[count.index][1]}"
+  source_image      = "docker://${each.key}:${each.value.tag}"
+  destination_image = "docker://${module.repositories[each.value.name].repository_url}:${each.value.tag}"
 
   insecure         = false
   copy_all_images  = true
@@ -36,75 +38,20 @@ locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
   image_info = [
-    {
-      key  = "golang"
-      name = "golang"
-      versions = {
-        main   = "1.25.5"
-        alpine = "1.25.5-alpine"
-      }
-    },
-    {
-      key  = "node"
-      name = "node"
-      versions = {
-        main   = "25.2.1"
-        alpine = "25.2.1-alpine"
-      }
-    },
-    {
-      key  = "postgis"
-      name = "postgis/postgis"
-      versions = {
-        main   = "14-3.2"
-        alpine = null
-      }
-    },
-    {
-      key  = "redis"
-      name = "redis"
-      versions = {
-        main   = "latest"
-        alpine = null
-      }
-    },
-    {
-      key  = "tonistiigibinfmt"
-      name = "tonistiigi/binfmt"
-      versions = {
-        main   = "latest"
-        alpine = null
-      }
-    },
+    { key = "golang", name = "golang" },
+    { key = "node", name = "node" },
+    { key = "postgis", name = "postgis/postgis" },
+    { key = "redis", name = "redis" },
+    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt" },
   ]
 
-  images = {
-    for v in local.image_info : v.key => {
-      key  = v.key
-      name = v.name
-
-      versions = {
-        main = v.versions.main == null ? null : {
-          version = v.versions.main
-          tag = {
-            docker = "${v.name}:${v.versions.main}"
-            ecr    = "${local.base_url}/${v.name}:${v.versions.main}"
-          }
-        }
-
-        alpine = v.versions.alpine == null ? null : {
-          version = v.versions.alpine
-          tag = {
-            docker = "${v.name}:${v.versions.alpine}"
-            ecr    = "${local.base_url}/${v.name}:${v.versions.alpine}"
-          }
-        }
-      }
-    }
-  }
-
-  tags = chunklist(compact(flatten(concat(
-    [for v in [for img in local.images : img.versions.main] : v == null ? null : [for tag in v.tag : tag]],
-    [for v in [for img in local.images : img.versions.alpine] : v == null ? null : [for tag in v.tag : tag]]
-  ))), 2)
+  images = [
+    { key = "golang", name = "golang", tag = "1.25.5" },
+    { key = "golang-alpine", name = "golang", tag = "1.25.5-alpine" },
+    { key = "node", name = "node", tag = "25.2.1" },
+    { key = "node-alpine", name = "node", tag = "25.2.1-alpine" },
+    { key = "postgis", name = "postgis/postgis", tag = "14-3.2" },
+    { key = "redis", name = "redis", tag = "latest" },
+    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt", tag = "latest" },
+  ]
 }
