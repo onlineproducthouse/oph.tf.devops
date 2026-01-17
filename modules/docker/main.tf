@@ -24,7 +24,7 @@ resource "skopeo2_copy" "image" {
   }
 
   source_image      = "docker://${each.key}:${each.value.tag}"
-  destination_image = "docker://${module.repositories[each.value.name].repository_url}:${each.value.tag}"
+  destination_image = "docker://${module.repositories[each.value.name].url}:${each.value.tag}"
 
   insecure         = false
   copy_all_images  = true
