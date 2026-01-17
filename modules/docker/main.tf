@@ -29,7 +29,7 @@ resource "skopeo2_copy" "images" {
   preserve_digests = true
   retries          = 3
   retry_delay      = 10
-  keep_image       = false
+  keep_image       = true
 }
 
 locals {
