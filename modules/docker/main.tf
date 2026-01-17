@@ -29,12 +29,12 @@ resource "skopeo2_copy" "main" {
   source_image      = "docker://${each.value.name}:${each.value.tag}"
   destination_image = "docker://${module.repositories[each.key].url}:${each.value.tag}"
 
-  insecure         = false
+  insecure         = true
   copy_all_images  = true
   preserve_digests = true
   retries          = 3
   retry_delay      = 10
-  keep_image       = true
+  keep_image       = false
 }
 
 resource "skopeo2_copy" "alpine" {
@@ -48,12 +48,12 @@ resource "skopeo2_copy" "alpine" {
   source_image      = "docker://${each.value.name}:${each.value.tag}"
   destination_image = "docker://${module.repositories[each.key].url}:${each.value.tag}"
 
-  insecure         = false
+  insecure         = true
   copy_all_images  = true
   preserve_digests = true
   retries          = 3
   retry_delay      = 10
-  keep_image       = true
+  keep_image       = false
 }
 
 locals {
