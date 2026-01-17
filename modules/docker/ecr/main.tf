@@ -36,7 +36,8 @@ resource "aws_ecr_repository_policy" "ecr" {
           "ecr:DeleteRepository",
           "ecr:BatchDeleteImage",
           "ecr:SetRepositoryPolicy",
-          "ecr:DeleteRepositoryPolicy"
+          "ecr:DeleteRepositoryPolicy",
+          "ecr:ReplicateImage",
         ]
       }
     ]
