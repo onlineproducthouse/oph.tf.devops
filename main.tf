@@ -275,6 +275,7 @@ locals {
                 "ecr:Set*",
                 "ecr:Tag*",
                 "ecr:Untag*",
+                "ecr:UploadLayerPart",
 
                 "ecs:CreateCapacityProvider",
                 "ecs:CreateCluster",
@@ -596,6 +597,7 @@ locals {
                 "ecr:Set*",
                 "ecr:Tag*",
                 "ecr:Untag*",
+                "ecr:UploadLayerPart",
 
                 "ecs:CreateCapacityProvider",
                 "ecs:CreateCluster",
