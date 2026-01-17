@@ -18,9 +18,9 @@ module "repositories" {
   account_id = var.account_id
 }
 
-resource "skopeo2_copy" "main" {
+resource "skopeo2_copy" "repo" {
   for_each = {
-    for v in local.images.main : v.key => {
+    for v in local.repositories : v.key => {
       name = v.name
       tag  = v.tag
     }
@@ -29,56 +29,23 @@ resource "skopeo2_copy" "main" {
   source_image      = "docker://${each.value.name}:${each.value.tag}"
   destination_image = "docker://${module.repositories[each.key].url}:${each.value.tag}"
 
-  insecure         = true
+  insecure         = false
   copy_all_images  = true
   preserve_digests = true
   retries          = 3
   retry_delay      = 10
   keep_image       = false
-}
-
-resource "skopeo2_copy" "alpine" {
-  for_each = {
-    for v in local.images.alpine : v.key => {
-      name = v.name
-      tag  = v.tag
-    }
-  }
-
-  source_image      = "docker://${each.value.name}:${each.value.tag}"
-  destination_image = "docker://${module.repositories[each.key].url}:${each.value.tag}"
-
-  insecure         = true
-  copy_all_images  = true
-  preserve_digests = true
-  retries          = 3
-  retry_delay      = 10
-  keep_image       = false
+  additional_tags  = v.include_alpine ? ["${each.value.name}:${each.value.tag}-alpine"] : []
 }
 
 locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
   repositories = [
-    { key = "golang", name = "golang" },
-    { key = "node", name = "node" },
-    { key = "postgis", name = "postgis/postgis" },
-    { key = "redis", name = "redis" },
-    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt" },
+    { key = "golang", name = "golang", tag = "1.25.5", include_alpine = true },
+    { key = "node", name = "node", tag = "25.2.1", include_alpine = true },
+    { key = "postgis", name = "postgis/postgis", tag = "14-3.2", include_alpine = false },
+    { key = "redis", name = "redis", tag = "8.4.0", include_alpine = false },
+    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt", tag = "latest", include_alpine = false },
   ]
-
-  images = {
-    main = [
-      { key = "golang", name = "golang", tag = "1.25.5" },
-      { key = "node", name = "node", tag = "25.2.1" },
-      { key = "postgis", name = "postgis/postgis", tag = "14-3.2" },
-      { key = "redis", name = "redis", tag = "latest" },
-      { key = "tonistiigibinfmt", name = "tonistiigi/binfmt", tag = "latest" },
-    ]
-
-    alpine = [
-      { key = "golang", name = "golang", tag = "1.25.5-alpine" },
-      { key = "node", name = "node", tag = "25.2.1-alpine" },
-    ]
-  }
 }
