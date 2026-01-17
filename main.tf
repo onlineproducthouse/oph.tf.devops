@@ -261,6 +261,8 @@ locals {
                 "codestar-connections:UseConnection",
 
                 "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGet*",
+                "ecr:BatchImportUpstreamImage",
                 "ecr:CompleteLayerUpload",
                 "ecr:CreateRepository",
                 "ecr:Delete*",
@@ -579,6 +581,8 @@ locals {
                 "codestar-connections:UseConnection",
 
                 "ecr:BatchCheckLayerAvailability",
+                "ecr:BatchGet*",
+                "ecr:BatchImportUpstreamImage",
                 "ecr:CompleteLayerUpload",
                 "ecr:CreateRepository",
                 "ecr:Delete*",

@@ -25,6 +25,7 @@ resource "aws_ecr_repository_policy" "ecr" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:BatchGetImage",
           "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchImportUpstreamImage",
           "ecr:PutImage",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
