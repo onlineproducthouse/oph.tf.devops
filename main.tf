@@ -751,6 +751,7 @@ locals {
                 "ec2:Detach*",
                 "ec2:Disassociate*",
                 "ec2:ModifySecurityGroupRules",
+                "ec2:ModifyVpcAttribute",
                 "ec2:PutResourcePolicy",
                 "ec2:ReleaseAddress",
                 "ec2:ReplaceRoute",
