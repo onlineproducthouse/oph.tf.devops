@@ -21,8 +21,9 @@ module "repositories" {
 resource "skopeo2_copy" "repo" {
   for_each = {
     for v in local.repositories : v.key => {
-      name = v.name
-      tag  = v.tag
+      name           = v.name
+      tag            = v.tag
+      include_alpine = v.include_alpine
     }
   }
 
@@ -35,7 +36,7 @@ resource "skopeo2_copy" "repo" {
   retries          = 3
   retry_delay      = 10
   keep_image       = false
-  additional_tags  = v.include_alpine ? ["${each.value.name}:${each.value.tag}-alpine"] : []
+  additional_tags  = each.value.include_alpine ? ["${each.value.name}:${each.value.tag}-alpine"] : []
 }
 
 locals {
