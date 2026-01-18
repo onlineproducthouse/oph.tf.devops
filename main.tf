@@ -699,6 +699,7 @@ locals {
                 "ssm:Untag*",
 
                 "autoscaling:AttachInstances",
+                "autoscaling:AttachLoadBalancerTargetGroups",
                 "autoscaling:AttachLoadBalancers",
                 "autoscaling:CreateAutoScalingGroup",
                 "autoscaling:CreateLaunchConfiguration",
