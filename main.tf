@@ -682,12 +682,12 @@ locals {
                 "logs:Untag*",
                 "logs:Put*",
 
-                "route53:ChangeTagsForResource",
                 "route53:CreateHostedZone",
+                "route53:ChangeResourceRecordSets",
+                "route53:ChangeTagsForResource",
                 "route53:Get*",
                 "route53:list*",
                 "route53:UpdateHosted*",
-                "route53:ChangeTagsForResource",
 
                 "ssm:AddTagsToResource",
                 "ssm:Delete*",
