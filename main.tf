@@ -629,6 +629,7 @@ locals {
                 "iam:AttachRolePolicy",
                 "iam:CreateInstanceProfile",
                 "iam:CreateLoginProfile",
+                "iam:CreatePolicy",
                 "iam:CreatePolicyVersion",
                 "iam:CreateRole",
                 "iam:CreateServiceLinkedRole",
