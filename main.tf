@@ -736,6 +736,7 @@ locals {
                 "ec2:CreateSubnet",
                 "ec2:CreateTags",
                 "ec2:CreateVpc",
+                "ec2:DeleteInternetGateway",
                 "ec2:DeleteLaunchTemplate",
                 "ec2:DeleteLaunchTemplateVersions",
                 "ec2:DeleteNatGateway",
