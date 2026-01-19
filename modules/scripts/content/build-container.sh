@@ -43,7 +43,7 @@ fi
 
 #endregion
 
-if [[ "$GIT_BRANCH" == "dev" ]]; then
+if [[ "$GIT_BRANCH" == "develop" ]]; then
   IMAGE_TAG="$IMAGE_REPOSITORY_NAME:latest"
 else
   IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
@@ -67,7 +67,7 @@ docker buildx build --push --force-rm \
   --file $DOCKERFILE \
   $WORKING_DIR
 
-if [[ "$GIT_BRANCH" != "dev" ]]; then
+if [[ "$GIT_BRANCH" != "develop" ]]; then
   echo "DKR_IMAGE=$FULL_IMAGE_TAG" >$RELEASE_MANIFEST
 fi
 
