@@ -44,6 +44,7 @@ variable "repositories" {
       })
 
       deploy = object({
+        test = bool
         qa   = bool
         prod = bool
       })
@@ -57,6 +58,7 @@ variable "repositories" {
       timeout         = number
       working_dir     = string
       ssm_param_paths = string
+      test_commands   = list(string)
 
       # Must be one of: local, test, qa, prod
       environment_name = string

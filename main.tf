@@ -64,9 +64,10 @@ module "pipeline" {
   artifact_store_bucket_id = module.store.id
 
   job = [for job in each.value.jobs : {
-    name    = "${each.key}-${job.branch_name}-${job.environment_name}"
-    image   = job.image
-    timeout = job.timeout
+    name          = "${each.key}-${job.branch_name}-${job.environment_name}"
+    image         = job.image
+    timeout       = job.timeout
+    test_commands = job.test_commands
 
     vpc_id      = each.value.vpc_id
     vpc_subnets = each.value.vpc_subnets
@@ -970,7 +971,91 @@ locals {
         })
       },
       {
+        name = "${local.name}-build-web"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Deny",
+              Resource = "*",
+              Action   = "*",
+            },
+          ]
+        })
+      },
+      {
         name = "${local.name}-deploy-web"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Deny",
+              Resource = "*",
+              Action   = "*",
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-run-unit-test"
+
+        assume_role_content = jsonencode({
+          Version = "2012-10-17"
+
+          Statement = [
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+          ]
+        })
+
+        content = jsonencode({
+          Version = "2012-10-17",
+          Statement = [
+            {
+              Effect   = "Deny",
+              Resource = "*",
+              Action   = "*",
+            },
+          ]
+        })
+      },
+      {
+        name = "${local.name}-run-int-test"
 
         assume_role_content = jsonencode({
           Version = "2012-10-17"

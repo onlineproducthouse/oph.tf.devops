@@ -82,7 +82,23 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
+    for_each = each.key == "main" && (var.stages.test.int || var.stages.deploy.test) ? local.approval : {}
+
+    content {
+      name = "approve_deploy_test"
+
+      action {
+        name     = "approve_deploy_test"
+        category = stage.value.category
+        owner    = stage.value.owner
+        provider = stage.value.provider
+        version  = stage.value.version
+      }
+    }
+  }
+
+  dynamic "stage" {
+    for_each = each.key == "main" && var.stages.deploy.test ? local.approval : {}
 
     content {
       name = "deploy_test"
@@ -216,6 +232,7 @@ module "job" {
 
   env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
+    { key = "RUN_TEST_COMMAND", value = join(" && ", each.value.test_commands) },
   ])
 }
 

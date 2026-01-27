@@ -22,7 +22,7 @@ provider "skopeo2" {
   }
 }
 
-module "devops_cloud" {
+module "devops" {
   source = "./.."
 
   name       = "hello_world"
@@ -31,163 +31,28 @@ module "devops_cloud" {
 
   repositories = [
     {
-      name         = "cloud"
+      name         = "api"
       git_provider = "Bitbucket"
-      git_repo     = "example-cloud"
-      is_container = false
-      dockerfile   = ""
-      vpc_id       = ""
-
-      vpc_subnets = []
-
-      pipelines = [
-        { name = "develop", branch_name = "develop" },
-        { name = "main", branch_name = "main" },
-      ]
-
-      stages = {
-        test = {
-          unit = true
-          int  = false
-        }
-
-        deploy = {
-          qa   = true
-          prod = true
-        }
-      }
-
-      jobs = [
-        {
-          branch_name      = "develop"
-          image            = "aws/codebuild/standard:7.0"
-          timeout          = 5
-          working_dir      = "./"
-          ssm_param_paths  = ""
-          environment_name = "local"
-
-          action      = "build"
-          action_item = "cloud"
-
-          task_family                  = ""
-          task_role                    = ""
-          container_port               = ""
-          container_cpu                = ""
-          container_memory_reservation = ""
-          cluster_name                 = ""
-          service_name                 = ""
-        },
-        {
-          branch_name      = "main"
-          image            = "aws/codebuild/standard:7.0"
-          timeout          = 5
-          working_dir      = "./"
-          ssm_param_paths  = ""
-          environment_name = "local"
-
-          action      = "build"
-          action_item = "cloud"
-
-          task_family                  = ""
-          task_role                    = ""
-          container_port               = ""
-          container_cpu                = ""
-          container_memory_reservation = ""
-          cluster_name                 = ""
-          service_name                 = ""
-        },
-        {
-          branch_name      = "main"
-          image            = "aws/codebuild/standard:7.0"
-          timeout          = 5
-          working_dir      = "./"
-          ssm_param_paths  = ""
-          environment_name = "test"
-
-          action      = "deploy"
-          action_item = "cloud"
-
-          task_family                  = ""
-          task_role                    = ""
-          container_port               = ""
-          container_cpu                = ""
-          container_memory_reservation = ""
-          cluster_name                 = ""
-          service_name                 = ""
-        },
-        {
-          branch_name      = "main"
-          image            = "aws/codebuild/standard:7.0"
-          timeout          = 5
-          working_dir      = "./"
-          ssm_param_paths  = ""
-          environment_name = "qa"
-
-          action      = "deploy"
-          action_item = "cloud"
-
-          task_family                  = ""
-          task_role                    = ""
-          container_port               = ""
-          container_cpu                = ""
-          container_memory_reservation = ""
-          cluster_name                 = ""
-          service_name                 = ""
-        },
-        {
-          branch_name      = "main"
-          image            = "aws/codebuild/standard:7.0"
-          timeout          = 5
-          working_dir      = "./"
-          ssm_param_paths  = ""
-          environment_name = "prod"
-
-          action      = "deploy"
-          action_item = "cloud"
-
-          task_family                  = ""
-          task_role                    = ""
-          container_port               = ""
-          container_cpu                = ""
-          container_memory_reservation = ""
-          cluster_name                 = ""
-          service_name                 = ""
-        },
-      ]
-    }
-  ]
-}
-
-module "devops_container_app" {
-  source = "./.."
-
-  name       = "hello_world"
-  account_id = "123456789012"
-  region     = "us-east-1"
-
-  repositories = [
-    {
-      name         = "container-api"
-      git_provider = "Bitbucket"
-      git_repo     = "example-container-api"
+      git_repo     = "example-api"
       is_container = true
-      dockerfile   = "./Dockerfile"
+      dockerfile   = "Dockerfile"
       vpc_id       = ""
 
       vpc_subnets = []
 
       pipelines = [
-        { name = "develop", branch_name = "develop" },
-        { name = "main", branch_name = "main" },
+        { branch_name = "develop" },
+        { branch_name = "main" },
       ]
 
       stages = {
         test = {
           unit = true
-          int  = false
+          int  = true
         }
 
         deploy = {
+          test = true
           qa   = true
           prod = true
         }
@@ -201,9 +66,35 @@ module "devops_container_app" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "local"
+          test_commands    = []
 
           action      = "build"
           action_item = "container"
+
+          task_family                  = ""
+          task_role                    = ""
+          container_port               = ""
+          container_cpu                = ""
+          container_memory_reservation = ""
+          cluster_name                 = ""
+          service_name                 = ""
+        },
+        {
+          branch_name      = "develop"
+          image            = "node:25.2.1"
+          timeout          = 5
+          working_dir      = "./"
+          ssm_param_paths  = ""
+          environment_name = "test"
+
+          test_commands = [
+            "npm i",
+            "npm run build",
+            "npm run unit-test",
+          ]
+
+          action      = "run"
+          action_item = "unit-test"
 
           task_family                  = ""
           task_role                    = ""
@@ -220,9 +111,36 @@ module "devops_container_app" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "local"
+          test_commands    = []
 
           action      = "build"
           action_item = "container"
+
+          task_family                  = ""
+          task_role                    = ""
+          container_port               = ""
+          container_cpu                = ""
+          container_memory_reservation = ""
+          cluster_name                 = ""
+          service_name                 = ""
+        },
+        {
+          branch_name      = "main"
+          image            = "node:25.2.1"
+          timeout          = 5
+          working_dir      = "./"
+          ssm_param_paths  = ""
+          environment_name = "unit-test"
+          test_commands    = []
+
+          test_commands = [
+            "npm i",
+            "npm run build",
+            "npm run unit-test",
+          ]
+
+          action      = "run"
+          action_item = "unit-test"
 
           task_family                  = ""
           task_role                    = ""
@@ -239,9 +157,35 @@ module "devops_container_app" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "test"
+          test_commands    = []
 
           action      = "deploy"
           action_item = "container-app"
+
+          task_family                  = ""
+          task_role                    = ""
+          container_port               = ""
+          container_cpu                = ""
+          container_memory_reservation = ""
+          cluster_name                 = ""
+          service_name                 = ""
+        },
+        {
+          branch_name      = "main"
+          image            = "node:25.2.1"
+          timeout          = 5
+          working_dir      = "./"
+          ssm_param_paths  = ""
+          environment_name = "int-test"
+
+          test_commands = [
+            "npm i",
+            "npm run build",
+            "npm run int-test",
+          ]
+
+          action      = "run"
+          action_item = "int-test"
 
           task_family                  = ""
           task_role                    = ""
@@ -258,6 +202,7 @@ module "devops_container_app" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "qa"
+          test_commands    = []
 
           action      = "deploy"
           action_item = "container-app"
@@ -277,6 +222,7 @@ module "devops_container_app" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "prod"
+          test_commands    = []
 
           action      = "deploy"
           action_item = "container-app"
