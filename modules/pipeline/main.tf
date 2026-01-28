@@ -75,7 +75,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-local"].name
+          ProjectName = module.job["${var.name}-${each.key}-unit-test"].name
         }
       }
     }
@@ -133,7 +133,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-test"].name
+          ProjectName = module.job["${var.name}-${each.key}-int-test"].name
         }
       }
     }
