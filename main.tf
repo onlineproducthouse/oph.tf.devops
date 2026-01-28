@@ -1002,6 +1002,23 @@ locals {
                 "codebuild:StartBuild",
                 "codebuild:StopBuild",
 
+                "codeconnections:Get*",
+                "codeconnections:List*",
+                "codeconnections:PassConnection",
+                "codeconnections:UseConnection",
+
+                "cloudformation:Describe*",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+
+                "codestar:Describe*",
+                "codestar:List*",
+
+                "codestar-connections:Get*",
+                "codestar-connections:List*",
+                "codestar-connections:PassConnection",
+                "codestar-connections:UseConnection",
+
                 "s3:Describe*",
                 "s3:Get*",
                 "s3:List*",
