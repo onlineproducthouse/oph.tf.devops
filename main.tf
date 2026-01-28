@@ -1047,9 +1047,42 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "codebuild:BatchGet*",
+                "codebuild:Describe*",
+                "codebuild:Get*",
+                "codebuild:ImportSourceCredentials",
+                "codebuild:List*",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+
+                "ecr:BatchGet*",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:List*",
+
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+
+                "logs:CreateDelivery",
+                "logs:CreateLogDelivery",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:Delete*",
+                "logs:Describe*",
+                "logs:Get*",
+                "logs:List*",
+                "logs:Tag*",
+                "logs:Untag*",
+                "logs:Put*",
+
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*",
+              ],
             },
           ]
         })
