@@ -1019,7 +1019,7 @@ locals {
                 "codestar-connections:PassConnection",
                 "codestar-connections:UseConnection",
 
-                "ecr:BatchGet*",
+                "ecr:BatchGetImage",
                 "ecr:Describe*",
                 "ecr:Get*",
                 "ecr:List*",
