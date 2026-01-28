@@ -21,7 +21,11 @@ echo '[run-unit-test]: starting'
 
 cd $WORKING_DIR
 
-$RUN_TEST_COMMAND
+run_test() {
+  $RUN_TEST_COMMAND
+}
+
+run_test
 
 echo '[run-unit-test]: done.'
 exit 0
