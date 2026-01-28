@@ -85,7 +85,7 @@ module "devops" {
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
-          environment_name = "test"
+          environment_name = "unit-test"
 
           test_commands = [
             "npm i",
@@ -94,7 +94,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "unit-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""
@@ -131,7 +131,6 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "unit-test"
-          test_commands    = []
 
           test_commands = [
             "npm i",
@@ -140,7 +139,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "unit-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""
@@ -185,7 +184,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "int-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""

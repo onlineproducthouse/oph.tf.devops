@@ -1027,35 +1027,7 @@ locals {
         })
       },
       {
-        name = "${local.name}-run-unit-test"
-
-        assume_role_content = jsonencode({
-          Version = "2012-10-17"
-
-          Statement = [
-            {
-              Action = "sts:AssumeRole",
-              Effect = "Allow",
-              Principal : {
-                Service : "codebuild.amazonaws.com"
-              },
-            },
-          ]
-        })
-
-        content = jsonencode({
-          Version = "2012-10-17",
-          Statement = [
-            {
-              Effect   = "Deny",
-              Resource = "*",
-              Action   = "*",
-            },
-          ]
-        })
-      },
-      {
-        name = "${local.name}-run-int-test"
+        name = "${local.name}-run-test"
 
         assume_role_content = jsonencode({
           Version = "2012-10-17"
