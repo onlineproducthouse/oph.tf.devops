@@ -40,6 +40,8 @@ load_env_vars() {
   fi
 }
 
+npm i
+
 load_env_vars && npm run build
 
 echo "[build-web]: done."
