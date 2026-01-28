@@ -1019,6 +1019,11 @@ locals {
                 "codestar-connections:PassConnection",
                 "codestar-connections:UseConnection",
 
+                "ecr:BatchGet*",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:List*",
+
                 "s3:Describe*",
                 "s3:Get*",
                 "s3:List*",
