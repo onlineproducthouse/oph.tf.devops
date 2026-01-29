@@ -232,7 +232,7 @@ module "job" {
 
   env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
-    { key = "RUN_TEST_COMMAND", value = join(" ", each.value.test_commands) },
+    { key = "RUN_TEST_COMMAND", value = join(" && ", each.value.test_commands) },
   ])
 }
 
