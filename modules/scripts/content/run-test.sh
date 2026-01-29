@@ -17,12 +17,10 @@ if [[ "$WORKING_DIR" == "" ]]; then
 fi
 #endregion
 
-echo '[run-test]: changing to working directory - $WORKING_DIR'
+echo "[run-test]: changing to working directory - $WORKING_DIR"
 cd $WORKING_DIR
 
 run_test() {
-  IFS=';'
-
   echo '[run-test]: starting test execution'
 
   for command in $1; do
