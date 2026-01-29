@@ -17,6 +17,9 @@ if [[ "$WORKING_DIR" == "" ]]; then
 fi
 #endregion
 
+echo "[run-test]: installing nodejs version 25.2.1"
+n 25.2.1
+
 echo "[run-test]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
 
