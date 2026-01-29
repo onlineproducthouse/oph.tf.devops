@@ -19,10 +19,11 @@ fi
 
 echo "[run-test]: installing nodejs version 25.2.1"
 n 25.2.1
-node --version
 
 echo "[run-test]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
+
+npm install
 
 echo "[run-test]: executing test command - $RUN_TEST_COMMAND"
 $RUN_TEST_COMMAND
