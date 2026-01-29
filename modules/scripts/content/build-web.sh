@@ -40,6 +40,8 @@ load_env_vars() {
   fi
 }
 
+n 25.2.1
+
 npm i
 
 load_env_vars && npm run build

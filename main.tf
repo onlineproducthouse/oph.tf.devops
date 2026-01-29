@@ -1078,7 +1078,7 @@ locals {
         })
       },
       {
-        name = "${local.name}-run-test"
+        name = "${local.name}-run-nodejs-test"
 
         assume_role_content = jsonencode({
           Version = "2012-10-17"

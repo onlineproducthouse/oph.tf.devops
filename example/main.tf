@@ -81,7 +81,7 @@ module "devops" {
         },
         {
           branch_name      = "develop"
-          image            = "node:25.2.1"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -94,7 +94,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "test"
+          action_item = "nodejs-test"
 
           task_family                  = ""
           task_role                    = ""
@@ -126,7 +126,7 @@ module "devops" {
         },
         {
           branch_name      = "main"
-          image            = "node:25.2.1"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -139,7 +139,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "test"
+          action_item = "nodejs-test"
 
           task_family                  = ""
           task_role                    = ""
@@ -171,7 +171,7 @@ module "devops" {
         },
         {
           branch_name      = "main"
-          image            = "node:25.2.1"
+          image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
@@ -184,7 +184,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "test"
+          action_item = "nodejs-test"
 
           task_family                  = ""
           task_role                    = ""
