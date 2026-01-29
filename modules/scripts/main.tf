@@ -25,6 +25,6 @@ locals {
 
     { name = "load-env-vars", key = "/oph/scripts/load-env-vars.sh", source_path = "${path.module}/content/load-env-vars.sh" },
     { name = "local-env-vars", key = "/oph/scripts/local-env-vars.sh", source_path = "${path.module}/content/local-env-vars.sh" },
-    { name = "run-nodejs-test", key = "/oph/scripts/run-nodejs-test.sh", source_path = "${path.module}/content/run-nodejs-test.sh" },
+    { name = "run-test", key = "/oph/scripts/run-test.sh", source_path = "${path.module}/content/run-test.sh" },
   ]
 }

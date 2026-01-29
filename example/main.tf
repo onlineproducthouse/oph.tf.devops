@@ -94,7 +94,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "nodejs-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""
@@ -139,7 +139,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "nodejs-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""
@@ -184,7 +184,7 @@ module "devops" {
           ]
 
           action      = "run"
-          action_item = "nodejs-test"
+          action_item = "test"
 
           task_family                  = ""
           task_role                    = ""
