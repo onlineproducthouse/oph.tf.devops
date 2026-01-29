@@ -22,7 +22,7 @@ echo '[run-test]: starting'
 cd $WORKING_DIR
 
 run_test() {
-  echo '[run-test]: executing command - $RUN_TEST_COMMAND'
+  echo "[run-test]: executing command - $RUN_TEST_COMMAND"
   $RUN_TEST_COMMAND
 }
 
