@@ -17,16 +17,23 @@ if [[ "$WORKING_DIR" == "" ]]; then
 fi
 #endregion
 
-echo '[run-test]: starting'
-
+echo '[run-test]: changing to working directory - $WORKING_DIR'
 cd $WORKING_DIR
 
 run_test() {
-  echo "[run-test]: executing command - $RUN_TEST_COMMAND"
-  $RUN_TEST_COMMAND
+  IFS=';'
+
+  echo '[run-test]: starting test execution'
+
+  for command in $1; do
+    echo "[run-test]: executing command - $command"
+    $command
+  done
+
+  echo '[run-test]: finish test execution'
 }
 
-run_test
+run_test $RUN_TEST_COMMAND
 
 echo '[run-test]: done.'
 exit 0
