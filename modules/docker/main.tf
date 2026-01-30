@@ -43,8 +43,8 @@ locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
   repositories = [
-    { key = "golang", name = "golang", tag = "1.25.5", include_alpine = true },
-    { key = "node", name = "node", tag = "25.2.1", include_alpine = true },
+    { key = "golang", name = "golang", tag = "1.25.5", include_alpine = false },
+    { key = "node", name = "node", tag = "25.2.1", include_alpine = false },
     { key = "postgis", name = "postgis/postgis", tag = "14-3.2", include_alpine = false },
     { key = "redis", name = "redis", tag = "8.4.0", include_alpine = false },
     { key = "tonistiigibinfmt", name = "tonistiigi/binfmt", tag = "latest", include_alpine = false },
