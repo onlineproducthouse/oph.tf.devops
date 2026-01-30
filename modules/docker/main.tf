@@ -26,7 +26,7 @@ resource "skopeo2_copy" "repo" {
     }
   }
 
-  source_image      = "docker://${each.value.name}:${each.value.tag}"
+  source_image      = "docker://${each.value.repository}:${each.value.tag}"
   destination_image = "docker://${module.repositories[each.value.repository].url}:${each.value.tag}"
 
   insecure         = false
