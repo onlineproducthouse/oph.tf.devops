@@ -20,15 +20,14 @@ module "repositories" {
 
 resource "skopeo2_copy" "repo" {
   for_each = {
-    for v in local.repositories : v.key => {
-      name           = v.name
-      tag            = v.tag
-      include_alpine = v.include_alpine
+    for v in local.images : v.key => {
+      repository = v.repository
+      tag        = v.tag
     }
   }
 
   source_image      = "docker://${each.value.name}:${each.value.tag}"
-  destination_image = "docker://${module.repositories[each.key].url}:${each.value.tag}"
+  destination_image = "docker://${module.repositories[each.value.repository].url}:${each.value.tag}"
 
   insecure         = false
   copy_all_images  = true
@@ -36,17 +35,26 @@ resource "skopeo2_copy" "repo" {
   retries          = 3
   retry_delay      = 10
   keep_image       = false
-  additional_tags  = each.value.include_alpine ? ["${each.value.name}:${each.value.tag}-alpine"] : []
 }
 
 locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
   repositories = [
-    { key = "golang", name = "golang", tag = "1.25.5", include_alpine = true },
-    { key = "node", name = "node", tag = "25.2.1", include_alpine = true },
-    { key = "postgis", name = "postgis/postgis", tag = "14-3.2", include_alpine = false },
-    { key = "redis", name = "redis", tag = "8.4.0", include_alpine = false },
-    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt", tag = "latest", include_alpine = false },
+    { key = "golang", name = "golang" },
+    { key = "node", name = "node" },
+    { key = "postgis", name = "postgis/postgis" },
+    { key = "redis", name = "redis" },
+    { key = "tonistiigibinfmt", name = "tonistiigi/binfmt" },
+  ]
+
+  images = [
+    { key = "golang", repository = "golang", tag = "1.25.5" },
+    { key = "golang-alpine", repository = "golang", tag = "1.25.5-alpine" },
+    { key = "node", repository = "node", tag = "25.2.1" },
+    { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
+    { key = "postgis", repository = "postgis", tag = "14-3.2" },
+    { key = "redis", repository = "redis", tag = "8.4.0" },
+    { key = "tonistiigibinfmt", repository = "tonistiigibinfmt", tag = "latest" },
   ]
 }
