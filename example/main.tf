@@ -36,9 +36,6 @@ module "devops" {
       git_repo     = "example-api"
       is_container = true
       dockerfile   = "Dockerfile"
-      vpc_id       = ""
-
-      vpc_subnets = []
 
       pipelines = [
         { branch_name = "develop" },
@@ -60,7 +57,11 @@ module "devops" {
 
       jobs = [
         {
-          branch_name      = "develop"
+          branch_name = "develop"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -80,7 +81,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "develop"
+          branch_name = "develop"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -105,7 +110,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -125,7 +134,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -150,7 +163,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -170,7 +187,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -195,7 +216,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"
@@ -215,7 +240,11 @@ module "devops" {
           service_name                 = ""
         },
         {
-          branch_name      = "main"
+          branch_name = "main"
+
+          vpc_id      = ""
+          vpc_subnets = []
+
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
           working_dir      = "./"

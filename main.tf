@@ -69,8 +69,8 @@ module "pipeline" {
     timeout       = job.timeout
     test_commands = job.test_commands
 
-    vpc_id      = each.value.vpc_id
-    vpc_subnets = each.value.vpc_subnets
+    vpc_id      = job.vpc_id
+    vpc_subnets = job.vpc_subnets
 
     role_arn  = module.role[replace("${local.name}-${job.action}-${job.action_item}", "_", "-")].arn
     buildspec = module.scripts.content["codebuild-job"].arn

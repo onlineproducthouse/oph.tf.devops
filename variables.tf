@@ -29,10 +29,6 @@ variable "repositories" {
     is_container = bool
     dockerfile   = string
 
-    # VPC where the CI job runs
-    vpc_id      = string
-    vpc_subnets = list(string)
-
     pipelines = list(object({
       branch_name = string
     }))
@@ -53,6 +49,10 @@ variable "repositories" {
     jobs = list(object({
       # Must be one of: dev, release
       branch_name = string
+
+      # VPC where the CI job runs
+      vpc_id      = string
+      vpc_subnets = list(string)
 
       image           = string
       timeout         = number
