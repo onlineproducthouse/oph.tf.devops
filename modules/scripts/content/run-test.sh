@@ -20,11 +20,13 @@ fi
 echo "[run-test]: installing nodejs version 25.2.1"
 n 25.2.1
 
-echo "[run-test]: changing directory to - $WORKING_DIR"
-cd $WORKING_DIR
+node -v
 
 npm install
 npm install -g typescript
+
+echo "[run-test]: changing directory to - $WORKING_DIR"
+cd $WORKING_DIR
 
 echo "[run-test]: executing test command - $RUN_TEST_COMMAND"
 $RUN_TEST_COMMAND
