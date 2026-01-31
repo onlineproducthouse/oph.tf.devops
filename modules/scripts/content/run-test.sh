@@ -24,6 +24,7 @@ echo "[run-test]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
 
 npm install
+npm install -g typescript
 
 echo "[run-test]: executing test command - $RUN_TEST_COMMAND"
 $RUN_TEST_COMMAND
