@@ -47,7 +47,7 @@ module "role" {
 module "pipeline" {
   source = "./modules/pipeline"
 
-  depends_on = [module.role]
+  depends_on = [module.role.*]
 
   for_each = {
     for v in var.repositories : v.name => v
@@ -148,32 +148,33 @@ locals {
             {
               Effect   = "Allow",
               Resource = "*",
-              Action = [
-                "codebuild:BatchGet*",
-                "codebuild:StartBuild",
-                "codebuild:StopBuild",
+              Action   = ["*"],
+              # Action = [
+              #   "codebuild:BatchGet*",
+              #   "codebuild:StartBuild",
+              #   "codebuild:StopBuild",
 
-                "codeconnections:PassConnection",
-                "codeconnections:UseConnection",
+              #   "codeconnections:PassConnection",
+              #   "codeconnections:UseConnection",
 
-                "codepipeline:StartPipelineExecution",
+              #   "codepipeline:StartPipelineExecution",
 
-                "codestar-connections:UseConnection",
+              #   "codestar-connections:UseConnection",
 
-                "iam:PassRole",
+              #   "iam:PassRole",
 
-                "s3:Describe*",
-                "s3:Get*",
-                "s3:List*",
-                "s3:Put*",
+              #   "s3:Describe*",
+              #   "s3:Get*",
+              #   "s3:List*",
+              #   "s3:Put*",
 
-                "ec2:CreateNetworkInterface",
-                "ec2:CreateNetworkInterfacePermission",
-                "ec2:Describe*",
-                "ec2:DescribeSecurityGroups",
-                "ec2:Get*",
-                "ec2:List*",
-              ],
+              #   "ec2:CreateNetworkInterface",
+              #   "ec2:CreateNetworkInterfacePermission",
+              #   "ec2:Describe*",
+              #   "ec2:DescribeSecurityGroups",
+              #   "ec2:Get*",
+              #   "ec2:List*",
+              # ],
             },
           ]
         })
@@ -545,7 +546,7 @@ locals {
             {
               Effect   = "Allow"
               Resource = "*"
-              Action = ["*"]
+              Action   = ["*"]
               # Action = [
               #   "acm:Add*",
               #   "acm:Delete*",
