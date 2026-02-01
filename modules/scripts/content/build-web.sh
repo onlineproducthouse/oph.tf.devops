@@ -9,6 +9,7 @@ set -euo pipefail
 # ENV_VARS_S3_URL: s3://[bucket-name]/path/to/.env
 # AWS_SSM_PARAMETER_PATHS e.g. "path1;path2;..."
 # WORKING_DIR
+# RUN_TEST_COMMAND e.g. "npm run test"
 
 if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
   echo "[build-web]: load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
@@ -26,9 +27,12 @@ if [[ "$ENV_VARS_S3_URL" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[build-web]: terraform child directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
 fi
+
+echo "[build-web]: working directory set to: $WORKING_DIR"
 
 #endregion
 
@@ -41,6 +45,9 @@ load_env_vars() {
 }
 
 n 25.2.1
+
+echo "[build-web]: changing directory to - $WORKING_DIR"
+cd $WORKING_DIR
 
 npm i
 
