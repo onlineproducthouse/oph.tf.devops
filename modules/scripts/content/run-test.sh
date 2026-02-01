@@ -79,7 +79,7 @@ echo "[run-test]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
 
 echo "[run-test]: executing test command - $RUN_TEST_COMMAND"
-load_env_vars && $RUN_TEST_COMMAND
+load_env_vars && eval $RUN_TEST_COMMAND
 
 echo '[run-test]: done.'
 exit 0
