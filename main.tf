@@ -127,6 +127,13 @@ locals {
               Action = "sts:AssumeRole",
               Effect = "Allow",
               Principal : {
+                Service : "codebuild.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
                 Service : "ec2.amazonaws.com"
               },
             },
@@ -157,6 +164,12 @@ locals {
                 "s3:Get*",
                 "s3:List*",
                 "s3:Put*",
+
+                "ec2:CreateNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission",
+                "ec2:Describe*",
+                "ec2:Get*",
+                "ec2:List*",
               ],
             },
           ]
@@ -672,13 +685,7 @@ locals {
                 "iam:Update*",
 
                 "s3:CreateBucket",
-                "s3:DeleteBucket",
-                "s3:DeleteBucketPolicy",
-                "s3:DeleteBucketWebsite",
-                "s3:DeleteObject",
-                "s3:DeleteObjectTagging",
-                "s3:DeleteObjectVersion",
-                "s3:DeleteObjectVersionTagging",
+                "s3:Delete*",
                 "s3:Describe*",
                 "s3:Get*",
                 "s3:List*",
