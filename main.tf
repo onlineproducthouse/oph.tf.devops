@@ -78,6 +78,7 @@ module "pipeline" {
     env_variables = [
       { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
+      { key = "TARGET_RUNTIME", value = job.target_runtime },
 
       { key = "LOAD_ENV_VARS_SCRIPT_S3_URL", value = module.scripts.content["load-env-vars"].url },
 
@@ -1108,6 +1109,10 @@ locals {
                 "codebuild:List*",
                 "codebuild:StartBuild",
                 "codebuild:StopBuild",
+
+                "ec2:Describe*",
+                "ec2:Get*",
+                "ec2:List*",
 
                 "ecr:BatchGet*",
                 "ecr:Describe*",

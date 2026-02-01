@@ -59,6 +59,7 @@ variable "repositories" {
       working_dir     = string
       ssm_param_paths = string
       test_commands   = list(string)
+      target_runtime  = string # e.g. node, go
 
       # Must be one of: local, test, qa, prod
       environment_name = string

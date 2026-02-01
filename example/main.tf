@@ -67,6 +67,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "local"
+          target_runtime   = ""
           test_commands    = []
 
           action      = "build"
@@ -90,6 +91,7 @@ module "devops" {
           timeout          = 5
           working_dir      = "./"
           ssm_param_paths  = ""
+          target_runtime   = ""
           environment_name = "unit-test"
 
           test_commands = [
@@ -120,6 +122,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "local"
+          target_runtime   = ""
           test_commands    = []
 
           action      = "build"
@@ -144,6 +147,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "unit-test"
+          target_runtime   = ""
 
           test_commands = [
             "npm i",
@@ -173,6 +177,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "test"
+          target_runtime   = ""
           test_commands    = []
 
           action      = "deploy"
@@ -197,6 +202,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "int-test"
+          target_runtime   = ""
 
           test_commands = [
             "npm i",
@@ -226,6 +232,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "qa"
+          target_runtime   = ""
           test_commands    = []
 
           action      = "deploy"
@@ -250,6 +257,7 @@ module "devops" {
           working_dir      = "./"
           ssm_param_paths  = ""
           environment_name = "prod"
+          target_runtime   = ""
           test_commands    = []
 
           action      = "deploy"
