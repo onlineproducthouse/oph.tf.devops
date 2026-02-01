@@ -123,6 +123,13 @@ locals {
                 Service : "codepipeline.amazonaws.com"
               },
             },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
+                Service : "ec2.amazonaws.com"
+              },
+            },
           ]
         })
 
