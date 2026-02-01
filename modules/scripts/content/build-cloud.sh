@@ -2,14 +2,6 @@
 
 set -euo pipefail
 
-#region install terraform
-apt-get update -y
-apt-get install -y gnupg software-properties-common curl
-curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
-apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-apt-get update && apt-get install terraform
-#endregion
-
 #region required variables
 
 # LOAD_ENV_VARS_SCRIPT_S3_URL: s3://[bucket-name]/path/to/script.sh
@@ -34,19 +26,41 @@ if [[ "$ENV_VARS_S3_URL" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[build-cloud]: terraform child directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
 fi
+
+echo "[build-cloud]: working directory set to: $WORKING_DIR"
 
 #endregion
 
+load_env_vars() {
+  if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
+    LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
+    aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+    source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+  fi
+}
+
+install_terraform() {
+  echo "[build-cloud]: installing terraform"
+  apt-get update -y
+  apt-get install -y gnupg software-properties-common curl
+  curl -fsSL https://apt.releases.hashicorp.com/gpg | apt-key add -
+  apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  apt-get update && apt-get install terraform
+  echo "[build-cloud]: finished installing terraform"
+}
+
 echo '[build-cloud]: starting'
 
-if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
-  LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
-  aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
-  source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
-fi
+install_terraform
+
+echo "[build-cloud]: changing directory to - $WORKING_DIR"
+cd $WORKING_DIR
+
+load_env_vars
 
 terraform -chdir=$WORKING_DIR init
 terraform -chdir=$WORKING_DIR validate
