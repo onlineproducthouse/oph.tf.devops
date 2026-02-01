@@ -500,6 +500,13 @@ locals {
               Action = "sts:AssumeRole",
               Effect = "Allow",
               Principal : {
+                Service : "codepipeline.amazonaws.com"
+              },
+            },
+            {
+              Action = "sts:AssumeRole",
+              Effect = "Allow",
+              Principal : {
                 Service : "ec2.amazonaws.com"
               },
             },
@@ -743,6 +750,7 @@ locals {
                 "ec2:CreateNatGateway",
                 "ec2:CreateNetworkAcl",
                 "ec2:CreateNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission",
                 "ec2:CreatePlacementGroup",
                 "ec2:CreateRoute",
                 "ec2:CreateRouteTable",
