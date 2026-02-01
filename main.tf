@@ -47,7 +47,7 @@ module "role" {
 module "pipeline" {
   source = "./modules/pipeline"
 
-  depends_on = [module.role]
+  depends_on = [module.role["${local.name}-pipelines"]]
 
   for_each = {
     for v in var.repositories : v.name => v
