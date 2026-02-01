@@ -813,11 +813,11 @@ locals {
                 "elasticloadbalancing:SetSecurityGroups",
                 "elasticloadbalancing:SetSubnets",
               ],
-              Condition = {
-                StringEquals = {
-                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
-                }
-              }
+              # Condition = {
+              #   StringEquals = {
+              #     "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+              #   }
+              # }
             },
           ]
         })
