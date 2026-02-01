@@ -15,6 +15,5 @@ phases:
       - bash $JOB_SCRIPT
 
 artifacts:
-  type: zip
   files:
-    - "**/**/*"
+    - '**/*'
