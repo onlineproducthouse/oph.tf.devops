@@ -150,6 +150,10 @@ locals {
                 "s3:Get*",
                 "s3:List*",
                 "s3:Put*",
+
+                "ec2:Describe*",
+                "ec2:Get*",
+                "ec2:List*",
               ],
             },
           ]
