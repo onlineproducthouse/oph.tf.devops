@@ -71,19 +71,11 @@ variable "job" {
 
 variable "pipeline" {
   description = "List of pipelines to create"
+  default     = []
 
   type = list(object({
     branch_name = string
   }))
-
-  default = [
-    {
-      branch_name = "dev"
-    },
-    {
-      branch_name = "main"
-    },
-  ]
 }
 
 variable "stages" {
