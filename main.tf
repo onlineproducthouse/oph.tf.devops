@@ -807,6 +807,31 @@ locals {
                 "elasticloadbalancing:SetSubnets",
               ],
             },
+            {
+              Effect = "Allow",
+              Action = [
+                "iam:CreateServiceLinkedRole",
+                "iam:UpdateRoleDescription"
+              ],
+              Resource = "arn:aws:iam::*:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS*",
+              Condition = {
+                StringLike = {
+                  "iam:AWSServiceName" = "ecs.amazonaws.com"
+                }
+              }
+            },
+            {
+              Effect = "Allow",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Resource = "*",
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
+            },
           ]
         })
       },
