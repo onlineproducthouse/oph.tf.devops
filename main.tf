@@ -47,8 +47,6 @@ module "role" {
 module "pipeline" {
   source = "./modules/pipeline"
 
-  depends_on = [module.role]
-
   for_each = {
     for v in var.repositories : v.name => v
   }
@@ -166,13 +164,6 @@ locals {
                 "s3:Get*",
                 "s3:List*",
                 "s3:Put*",
-
-                "ec2:CreateNetworkInterface",
-                "ec2:CreateNetworkInterfacePermission",
-                "ec2:Describe*",
-                "ec2:DescribeSecurityGroups",
-                "ec2:Get*",
-                "ec2:List*",
               ],
             },
           ]
@@ -776,7 +767,6 @@ locals {
                 "ec2:DeleteTags",
                 "ec2:DeleteVpc",
                 "ec2:Describe*",
-                "ec2:DescribeSecurityGroups",
                 "ec2:Get*",
                 "ec2:List*",
                 "ec2:Detach*",
@@ -811,7 +801,21 @@ locals {
                 "elasticloadbalancing:RemoveTags",
                 "elasticloadbalancing:SetSecurityGroups",
                 "elasticloadbalancing:SetSubnets",
+
+                "sts:AssumeRole",
               ],
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
             },
           ]
         })
@@ -961,9 +965,144 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow"
+              Resource = "*"
+              Action = [
+                "codebuild:BatchGet*",
+                "codebuild:Describe*",
+                "codebuild:Get*",
+                "codebuild:ImportSourceCredentials",
+                "codebuild:List*",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+
+                "codeconnections:Get*",
+                "codeconnections:List*",
+                "codeconnections:PassConnection",
+                "codeconnections:UseConnection",
+
+                "cloudformation:Describe*",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+                "cloudformation:Tag*",
+                "cloudformation:Untag*",
+
+                "codestar:Describe*",
+                "codestar:List*",
+                "codestar:Tag*",
+                "codestar:Untag*",
+
+                "codestar-connections:Get*",
+                "codestar-connections:List*",
+                "codestar-connections:PassConnection",
+                "codestar-connections:UseConnection",
+
+                "ecr:BatchGet*",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:List*",
+
+                "ecs:CreateTaskSet",
+                "ecs:DeregisterTaskDefinition",
+                "ecs:Describe*",
+                "ecs:List*",
+                "ecs:Register*",
+                "ecs:RunTask",
+                "ecs:StartTask",
+                "ecs:StopTask",
+                "ecs:Tag*",
+                "ecs:Untag*",
+                "ecs:Update*",
+
+                "iam:AddRoleToInstanceProfile",
+                "iam:AttachRolePolicy",
+                "iam:CreateLoginProfile",
+                "iam:CreateServiceLinkedRole",
+                "iam:DeleteInstanceProfile",
+                "iam:DeleteLoginProfile",
+                "iam:DeleteServiceLinkedRole",
+                "iam:DetachRolePolicy",
+                "iam:Get*",
+                "iam:List*",
+                "iam:PassRole",
+                "iam:TagInstanceProfile",
+                "iam:TagPolicy",
+                "iam:TagRole",
+                "iam:Untag*",
+
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+                "s3:Put*",
+
+                "logs:CreateDelivery",
+                "logs:CreateLogDelivery",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:Delete*",
+                "logs:Describe*",
+                "logs:Get*",
+                "logs:List*",
+                "logs:Tag*",
+                "logs:Untag*",
+                "logs:Put*",
+
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*",
+
+                "autoscaling:AttachInstances",
+                "autoscaling:AttachLoadBalancerTargetGroups",
+                "autoscaling:AttachLoadBalancers",
+                "autoscaling:CreateOrUpdateTags",
+                "autoscaling:Describe*",
+                "autoscaling:DetachInstances",
+                "autoscaling:DetachLoadBalancerTargetGroups",
+                "autoscaling:DetachLoadBalancers",
+                "autoscaling:LaunchInstances",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:SetInstanceHealth",
+                "autoscaling:UpdateAutoScalingGroup",
+
+                "ec2:AcceptVpcEndpointConnections",
+                "ec2:Associate*",
+                "ec2:Attach*",
+                "ec2:AuthorizeSecurityGroupEgress",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:CreateTags",
+                "ec2:DeleteTags",
+                "ec2:Describe*",
+                "ec2:Get*",
+                "ec2:List*",
+                "ec2:Detach*",
+                "ec2:Disassociate*",
+                "ec2:Modify*",
+                "ec2:PutResourcePolicy",
+                "ec2:RevokeSecurityGroupEgress",
+                "ec2:RevokeSecurityGroupIngress",
+
+                "elasticloadbalancing:AddTags",
+                "elasticloadbalancing:DeregisterTargets",
+                "elasticloadbalancing:Describe*",
+                "elasticloadbalancing:Get*",
+                "elasticloadbalancing:Modify*",
+                "elasticloadbalancing:RegisterTargets",
+                "elasticloadbalancing:RemoveTags",
+
+                "sts:AssumeRole",
+              ],
+            },
+            {
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
             },
           ]
         })
@@ -989,9 +1128,111 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow"
+              Resource = "*"
+              Action = [
+                "codebuild:BatchGet*",
+                "codebuild:Describe*",
+                "codebuild:Get*",
+                "codebuild:ImportSourceCredentials",
+                "codebuild:List*",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+
+                "codeconnections:Get*",
+                "codeconnections:List*",
+                "codeconnections:PassConnection",
+                "codeconnections:UseConnection",
+
+                "cloudformation:Describe*",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+                "cloudformation:Tag*",
+                "cloudformation:Untag*",
+
+                "codepipeline:Get*",
+                "codepipeline:List*",
+                "codepipeline:Put*",
+                "codepipeline:StartPipelineExecution",
+                "codepipeline:StopPipelineExecution",
+                "codepipeline:Tag*",
+                "codepipeline:Untag*",
+
+                "codestar:Describe*",
+                "codestar:List*",
+                "codestar:Tag*",
+                "codestar:Untag*",
+                "codestar:Update*",
+
+                "codestar-connections:Get*",
+                "codestar-connections:List*",
+                "codestar-connections:PassConnection",
+                "codestar-connections:Tag*",
+                "codestar-connections:Untag*",
+                "codestar-connections:UseConnection",
+
+                "ecr:BatchGet*",
+                "ecr:Describe*",
+                "ecr:Get*",
+                "ecr:List*",
+
+                "iam:Get*",
+                "iam:List*",
+                "iam:PassRole",
+                "iam:TagInstanceProfile",
+                "iam:TagPolicy",
+                "iam:TagRole",
+                "iam:Untag*",
+
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+                "s3:Put*",
+                "s3:Tag*",
+                "s3:Untag*",
+
+                "logs:CreateDelivery",
+                "logs:CreateLogDelivery",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:Delete*",
+                "logs:Describe*",
+                "logs:Get*",
+                "logs:List*",
+                "logs:Tag*",
+                "logs:Untag*",
+                "logs:Put*",
+
+                "ssm:AddTagsToResource",
+                "ssm:Delete*",
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*",
+                "ssm:PutParameter",
+                "ssm:Tag*",
+                "ssm:Untag*",
+
+                "ec2:CreateNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission",
+                "ec2:Describe*",
+                "ec2:DescribeSecurityGroups",
+                "ec2:Get*",
+                "ec2:List*",
+
+                "sts:AssumeRole",
+              ],
+            },
+            {
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
             },
           ]
         })
@@ -1096,9 +1337,111 @@ locals {
           Version = "2012-10-17",
           Statement = [
             {
-              Effect   = "Deny",
+              Effect   = "Allow"
+              Resource = "*"
+              Action = [
+                "codebuild:BatchGet*",
+                "codebuild:Delete*",
+                "codebuild:Describe*",
+                "codebuild:Get*",
+                "codebuild:ImportSourceCredentials",
+                "codebuild:List*",
+                "codebuild:StartBuild",
+                "codebuild:StopBuild",
+
+                "codeconnections:Get*",
+                "codeconnections:List*",
+                "codeconnections:PassConnection",
+                "codeconnections:UseConnection",
+
+                "cloudformation:Describe*",
+                "cloudformation:Get*",
+                "cloudformation:List*",
+                "cloudformation:Tag*",
+                "cloudformation:Untag*",
+
+                "codepipeline:Get*",
+                "codepipeline:List*",
+                "codepipeline:Put*",
+                "codepipeline:StartPipelineExecution",
+                "codepipeline:StopPipelineExecution",
+                "codepipeline:Tag*",
+                "codepipeline:Untag*",
+
+                "codestar:Describe*",
+                "codestar:List*",
+                "codestar:Tag*",
+                "codestar:Untag*",
+
+                "codestar-connections:Get*",
+                "codestar-connections:List*",
+                "codestar-connections:PassConnection",
+                "codestar-connections:Tag*",
+                "codestar-connections:Untag*",
+                "codestar-connections:UseConnection",
+
+                "cloudfront:AssociateAlias",
+                "cloudfront:CreateInvalidation",
+                "cloudfront:Describe*",
+                "cloudfront:Get*",
+                "cloudfront:List*",
+                "cloudfront:Tag*",
+                "cloudfront:Untag*",
+                "cloudfront:UpdateDistribution",
+
+                "iam:Describe*",
+                "iam:Get*",
+                "iam:List*",
+                "iam:PassRole",
+
+                "s3:Describe*",
+                "s3:Get*",
+                "s3:List*",
+                "s3:Put*",
+                "s3:Tag*",
+                "s3:Untag*",
+
+                "logs:CreateDelivery",
+                "logs:CreateLogDelivery",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:Delete*",
+                "logs:Describe*",
+                "logs:Get*",
+                "logs:List*",
+                "logs:Tag*",
+                "logs:Untag*",
+                "logs:Put*",
+
+                "route53:Describe*",
+                "route53:Get*",
+                "route53:list*",
+
+                "ssm:Describe*",
+                "ssm:Get*",
+                "ssm:List*",
+
+                "ec2:CreateNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission",
+                "ec2:Describe*",
+                "ec2:DescribeSecurityGroups",
+                "ec2:Get*",
+                "ec2:List*",
+
+                "sts:AssumeRole",
+              ],
+            },
+            {
+              Effect   = "Allow",
               Resource = "*",
-              Action   = "*",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
             },
           ]
         })
@@ -1135,15 +1478,6 @@ locals {
                 "codebuild:StartBuild",
                 "codebuild:StopBuild",
 
-                "ec2:Describe*",
-                "ec2:Get*",
-                "ec2:List*",
-
-                "ecr:BatchGet*",
-                "ecr:Describe*",
-                "ecr:Get*",
-                "ecr:List*",
-
                 "s3:Describe*",
                 "s3:Get*",
                 "s3:List*",
@@ -1163,7 +1497,26 @@ locals {
                 "ssm:Describe*",
                 "ssm:Get*",
                 "ssm:List*",
+
+                "ec2:CreateNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission",
+                "ec2:Describe*",
+                "ec2:DescribeSecurityGroups",
+                "ec2:Get*",
+                "ec2:List*",
               ],
+            },
+            {
+              Effect   = "Allow",
+              Resource = "*",
+              Action = [
+                "ec2:CreateNetworkInterfacePermission"
+              ],
+              Condition = {
+                StringEquals = {
+                  "ec2:AuthorizedService" = "codebuild.amazonaws.com"
+                }
+              }
             },
           ]
         })
