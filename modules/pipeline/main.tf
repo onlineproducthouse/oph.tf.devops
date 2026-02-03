@@ -71,7 +71,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.key}"]
+        input_artifacts = ["source-${var.name}-${each.key}"]
         version         = "1"
 
         configuration = {
