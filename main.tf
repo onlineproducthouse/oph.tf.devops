@@ -69,8 +69,9 @@ module "pipeline" {
     timeout       = job.timeout
     test_commands = job.test_commands
 
-    vpc_id      = job.vpc_id
-    vpc_subnets = job.vpc_subnets
+    vpc_id                 = job.vpc_id
+    vpc_subnets            = job.vpc_subnets
+    vpc_security_group_ids = job.vpc_security_group_ids
 
     role_arn  = module.role[replace("${local.name}-${job.action}-${job.action_item}", "_", "-")].arn
     buildspec = module.scripts.content["codebuild-job"].arn
@@ -1214,6 +1215,7 @@ locals {
 
                 "ec2:CreateNetworkInterface",
                 "ec2:CreateNetworkInterfacePermission",
+                "ec2:DeleteNetworkInterface*",
                 "ec2:Describe*",
                 "ec2:DescribeSecurityGroups",
                 "ec2:Get*",

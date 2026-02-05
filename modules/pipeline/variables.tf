@@ -51,13 +51,14 @@ variable "job" {
   default     = []
 
   type = list(object({
-    name          = string
-    image         = string
-    vpc_id        = string
-    vpc_subnets   = list(string)
-    role_arn      = string
-    timeout       = number
-    test_commands = list(string)
+    name                   = string
+    image                  = string
+    vpc_id                 = string
+    vpc_subnets            = list(string)
+    vpc_security_group_ids = list(string)
+    role_arn               = string
+    timeout                = number
+    test_commands          = list(string)
 
     # AWS S3 Bucket ARN key to buildspec object
     buildspec = string

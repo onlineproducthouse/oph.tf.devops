@@ -51,8 +51,9 @@ variable "repositories" {
       branch_name = string
 
       # VPC where the CI job runs
-      vpc_id      = string
-      vpc_subnets = list(string)
+      vpc_id                 = string
+      vpc_subnets            = list(string)
+      vpc_security_group_ids = list(string)
 
       image           = string
       timeout         = number

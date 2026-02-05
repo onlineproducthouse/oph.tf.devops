@@ -1,26 +1,3 @@
-resource "aws_security_group" "job" {
-  count = var.vpc_id == "" ? 0 : 1
-
-  name   = "${var.name}-job"
-  vpc_id = var.vpc_id
-
-  lifecycle {
-    create_before_destroy = false
-  }
-}
-
-resource "aws_security_group_rule" "job" {
-  count = var.vpc_id == "" ? 0 : 1
-
-  security_group_id = aws_security_group.job[0].id
-
-  type        = "egress"
-  protocol    = "-1"
-  cidr_blocks = ["0.0.0.0/0"]
-  from_port   = 0
-  to_port     = 0
-}
-
 resource "aws_codebuild_project" "job" {
   name           = var.name
   service_role   = var.role_arn
@@ -59,7 +36,7 @@ resource "aws_codebuild_project" "job" {
     for_each = var.vpc_id == "" ? [] : [{
       vpc_id             = var.vpc_id
       subnets            = var.vpc_subnets
-      security_group_ids = [aws_security_group.job[0].id]
+      security_group_ids = var.vpc_security_group_ids
     }]
 
     content {

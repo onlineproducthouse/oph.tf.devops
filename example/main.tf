@@ -59,8 +59,9 @@ module "devops" {
         {
           branch_name = "develop"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -84,8 +85,9 @@ module "devops" {
         {
           branch_name = "develop"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -114,8 +116,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -139,8 +142,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -169,8 +173,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -194,8 +199,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -224,8 +230,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5
@@ -249,8 +256,9 @@ module "devops" {
         {
           branch_name = "main"
 
-          vpc_id      = ""
-          vpc_subnets = []
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
 
           image            = "aws/codebuild/standard:7.0"
           timeout          = 5

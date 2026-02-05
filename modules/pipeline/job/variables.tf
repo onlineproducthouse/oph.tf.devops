@@ -22,6 +22,12 @@ variable "vpc_subnets" {
   default     = []
 }
 
+variable "vpc_security_group_ids" {
+  description = "Security Group IDs for VPC Subnets where the CI job runs"
+  type        = list(string)
+  default     = []
+}
+
 variable "role_arn" {
   description = "The IAM Role ARN the job should run with"
   type        = string
