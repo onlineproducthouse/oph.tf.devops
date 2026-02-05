@@ -1071,6 +1071,7 @@ locals {
                 "ec2:AuthorizeSecurityGroupEgress",
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateTags",
+                "ec2:DeleteNetworkInterface*",
                 "ec2:DeleteTags",
                 "ec2:Describe*",
                 "ec2:Get*",
@@ -1425,6 +1426,7 @@ locals {
 
                 "ec2:CreateNetworkInterface",
                 "ec2:CreateNetworkInterfacePermission",
+                "ec2:DeleteNetworkInterface*",
                 "ec2:Describe*",
                 "ec2:DescribeSecurityGroups",
                 "ec2:Get*",
@@ -1502,6 +1504,7 @@ locals {
 
                 "ec2:CreateNetworkInterface",
                 "ec2:CreateNetworkInterfacePermission",
+                "ec2:DeleteNetworkInterface*",
                 "ec2:Describe*",
                 "ec2:DescribeSecurityGroups",
                 "ec2:Get*",
