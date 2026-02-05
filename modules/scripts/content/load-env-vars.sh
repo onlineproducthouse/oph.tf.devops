@@ -14,7 +14,9 @@ AWS_SSM_PARAMETER_PATHS=$2 # e.g. "path1;path2;..."
 ENV_VARS_S3_URL=$3
 WORKING_DIR=$4
 
-ENV_FILE="$WORKING_DIR/.env"
+if [[ "$ENV_FILE" == "" ]]; then
+  ENV_FILE="$WORKING_DIR/.env"
+fi
 
 if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]]; then
   echo "AWS_SSM_PARAMETER_PATHS variable not set"
