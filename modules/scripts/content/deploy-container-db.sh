@@ -43,12 +43,20 @@ fi
 
 #endregion
 
-LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
+ENV_FILE="$WORKING_DIR/.env"
+LOAD_ENV_VARS_SCRIPT_PATH="$WORKING_DIR/ci/load-env-vars.sh"
+
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+
 source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+
+# Authenticate ECR
+echo "ECR: Authenticating"
+echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
+echo "ECR: Authenticated"
 
 source $RELEASE_MANIFEST && \
   docker pull $DKR_IMAGE && \
-  docker run --env-file $LOAD_ENV_VARS_SCRIPT_PATH $DKR_IMAGE
+  docker run --env-file $ENV_FILE $DKR_IMAGE
 
 echo "[deploy-container-db]: done."
