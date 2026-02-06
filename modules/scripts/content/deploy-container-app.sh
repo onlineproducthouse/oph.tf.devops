@@ -45,11 +45,6 @@ if [[ "$ENV_VARS_S3_ARN" == "" ]];then
   exit 1
 fi
 
-if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[deploy-container-app]: terraform child directory is not set, using default: $(pwd)"
-  WORKING_DIR=$(pwd)
-fi
-
 if [[ "$RELEASE_MANIFEST" == "" ]];then
   echo "[deploy-container-app]: release manifest name not set. please set release manifest name"
   exit 1
@@ -62,11 +57,6 @@ fi
 
 if [[ "$TASK_ROLE_ARN" == "" ]];then
   echo "[deploy-container-app]: AWS ECS task role arn not set. please set AWS ECS task role arn"
-  exit 1
-fi
-
-if [[ "$CONTAINER_PORT" == "" ]];then
-  echo "[deploy-container-app]: AWS ECS container port not set. please set AWS ECS container port"
   exit 1
 fi
 
@@ -90,14 +80,22 @@ if [[ "$SERVICE_NAME" == "" ]];then
   exit 1
 fi
 
+if [[ "$WORKING_DIR" == "" ]]; then
+  WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
+fi
+
 #endregion
 
-LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
-ECS_TASK=./ci/ecs/task-ecs.json
+LOAD_ENV_VARS_SCRIPT_PATH=$WORKING_DIR/ci/load-env-vars.sh
+ECS_TASK=$WORKING_DIR/ci/ecs/task-ecs.json
 touch $ECS_TASK
 
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
 source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+
+echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
 
 LOCAL_PORT_MAPPING='[]'
 if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then
