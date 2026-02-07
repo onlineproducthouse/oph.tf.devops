@@ -34,8 +34,9 @@ if [[ "$ENV_VARS_S3_URL" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[deploy-cloud]: terraform child directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
 fi
 
 #endregion
@@ -43,8 +44,11 @@ fi
 echo '[deploy-cloud]: starting'
 
 if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
+  ENV_FILE="$WORKING_DIR/.env"
   LOAD_ENV_VARS_SCRIPT_PATH=./ci/load-env-vars.sh
+
   aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+
   source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
 fi
 
