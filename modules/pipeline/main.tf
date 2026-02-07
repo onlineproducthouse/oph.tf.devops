@@ -82,7 +82,7 @@ resource "aws_codepipeline" "pipeline" {
   }
 
   dynamic "stage" {
-    for_each = each.key == "main" && (var.stages.test.int || var.stages.deploy.test) ? local.approval : {}
+    for_each = each.key == "main" && var.stages.deploy.test ? local.approval : {}
 
     content {
       name = "approve_deploy_test"
@@ -114,6 +114,22 @@ resource "aws_codepipeline" "pipeline" {
         configuration = {
           ProjectName = module.job["${var.name}-${each.key}-test"].name
         }
+      }
+    }
+  }
+
+  dynamic "stage" {
+    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
+
+    content {
+      name = "approve_int_test"
+
+      action {
+        name     = "approve_int_test"
+        category = stage.value.category
+        owner    = stage.value.owner
+        provider = stage.value.provider
+        version  = stage.value.version
       }
     }
   }
