@@ -88,13 +88,9 @@ fi
 
 #endregion
 
-ECS_TASK_DIR=$WORKING_DIR/ci/ecs
-ECS_TASK="$ECS_TASK_DIR/task-ecs.json"
-
-mkdir $ECS_TASK_DIR
-touch $ECS_TASK
-
+ENV_FILE="$WORKING_DIR/.env"
 LOAD_ENV_VARS_SCRIPT_PATH=$WORKING_DIR/ci/load-env-vars.sh
+ECS_TASK="$WORKING_DIR/ci/task-ecs.json"
 
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
 
