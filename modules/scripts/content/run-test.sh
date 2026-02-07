@@ -75,6 +75,8 @@ setup_runtime() {
 
 setup_runtime
 
+ENV_FILE="$WORKING_DIR/.env"
+
 echo "[run-test]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
 
