@@ -88,11 +88,16 @@ fi
 
 #endregion
 
-LOAD_ENV_VARS_SCRIPT_PATH=$WORKING_DIR/ci/load-env-vars.sh
-ECS_TASK=$WORKING_DIR/ci/ecs/task-ecs.json
+ECS_TASK_DIR=$WORKING_DIR/ci/ecs
+ECS_TASK="$ECS_TASK_DIR/task-ecs.json"
+
+mkdir $ECS_TASK_DIR
 touch $ECS_TASK
 
+LOAD_ENV_VARS_SCRIPT_PATH=$WORKING_DIR/ci/load-env-vars.sh
+
 aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+
 source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
 
 echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
