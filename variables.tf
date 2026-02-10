@@ -81,6 +81,8 @@ variable "repositories" {
       container_memory_reservation = string
       cluster_name                 = string
       service_name                 = string
+      log_group_name               = string
+      log_stream_prefix            = string
     }))
   }))
 }

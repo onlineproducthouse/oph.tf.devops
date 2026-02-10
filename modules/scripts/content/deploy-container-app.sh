@@ -80,6 +80,16 @@ if [[ "$SERVICE_NAME" == "" ]];then
   exit 1
 fi
 
+if [[ "$LOG_GROUP_NAME" == "" ]];then
+  echo "[deploy-container-app]: AWS CloudWatch log group name not set. please set AWS CloudWatch log group name"
+  exit 1
+fi
+
+if [[ "$LOG_STREAM_PREFIX" == "" ]];then
+  echo "[deploy-container-app]: AWS CloudWatch log stream prefix not set. please set AWS CloudWatch log stream prefix"
+  exit 1
+fi
+
 if [[ "$WORKING_DIR" == "" ]]; then
   WORKING_DIR=$(pwd)
 else
@@ -131,9 +141,9 @@ source $RELEASE_MANIFEST \
         "logConfiguration": {
           "logDriver": "awslogs",
           "options": {
-            "awslogs-group": "'$TASK_FAMILY'",
+            "awslogs-group": "'$LOG_GROUP_NAME'",
             "awslogs-region": "'$AWS_REGION'",
-            "awslogs-stream-prefix": "'$TASK_FAMILY'"
+            "awslogs-stream-prefix": "'$LOG_STREAM_PREFIX'"
           }
         },
         "environmentFiles": [

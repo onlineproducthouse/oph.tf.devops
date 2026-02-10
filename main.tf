@@ -101,6 +101,8 @@ module "pipeline" {
       { key = "CONTAINER_MEMORY_RESERVATION", value = job.container_memory_reservation },
       { key = "CLUSTER_NAME", value = job.cluster_name },
       { key = "SERVICE_NAME", value = job.service_name },
+      { key = "LOG_GROUP_NAME", value = job.log_group_name },
+      { key = "LOG_STREAM_PREFIX", value = job.log_stream_prefix },
     ]
   }]
 }
