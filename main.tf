@@ -1483,6 +1483,7 @@ locals {
                 "s3:Describe*",
                 "s3:Get*",
                 "s3:List*",
+                "s3:PutObject",
 
                 "logs:CreateDelivery",
                 "logs:CreateLogDelivery",
