@@ -53,6 +53,7 @@ locals {
     { key = "golang-alpine", repository = "golang", tag = "1.25.5-alpine" },
     { key = "node", repository = "node", tag = "25.2.1" },
     { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
+    { key = "node-slim", repository = "node", tag = "25.2.1-slim" },
     { key = "postgis", repository = "postgis", tag = "14-3.2" },
     { key = "redis", repository = "redis", tag = "8.4.0" },
     { key = "tonistiigibinfmt", repository = "tonistiigibinfmt", tag = "latest" },
