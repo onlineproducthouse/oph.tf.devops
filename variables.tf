@@ -30,7 +30,9 @@ variable "repositories" {
     dockerfile   = string
 
     pipelines = list(object({
-      branch_name = string
+      type                = string
+      branch_name         = string
+      additional_branches = list(string)
     }))
 
     stages = object({
