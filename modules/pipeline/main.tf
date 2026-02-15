@@ -26,10 +26,13 @@ resource "aws_codepipeline" "pipeline" {
     type     = "S3"
   }
 
-  stage {
-    name = "source"
+  dynamic "stage" {
+    for_each = { for v in each.value.source_branches : v => null }
 
-    action {
+    content {
+      name = "source"
+
+      action {
       name             = "source"
       category         = "Source"
       owner            = "AWS"
@@ -37,10 +40,11 @@ resource "aws_codepipeline" "pipeline" {
       version          = "1"
       output_artifacts = ["source-${var.name}-${each.key}"]
 
-      configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.githook.arn
-        FullRepositoryId = var.git_repo
-        BranchName       = each.key
+        configuration = {
+          ConnectionArn    = aws_codestarconnections_connection.githook.arn
+          FullRepositoryId = var.git_repo
+          BranchName       = stage.key
+        }
       }
     }
   }
