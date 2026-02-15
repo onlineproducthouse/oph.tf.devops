@@ -36,7 +36,7 @@ resource "aws_codepipeline" "complete" {
     }
 
     content {
-      name = "source"
+      name = "source-${stage.key}-${stage.value.id}"
 
       action {
         name             = "source-${stage.key}-${stage.value.id}"
@@ -266,10 +266,10 @@ resource "aws_codepipeline" "build" {
     }
 
     content {
-      name = "source"
+      name = "source-${stage.key}-${stage.value.id}"
 
       action {
-        name             = "source-${stage.key}=${stage.value.id}"
+        name             = "source-${stage.key}-${stage.value.id}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
