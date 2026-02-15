@@ -34,10 +34,10 @@ resource "aws_codepipeline" "complete" {
     for_each = { for v in each.value.source_branches : v => null }
 
     content {
-      name = "source-${each.key}"
+      name = "source"
 
       action {
-        name             = "source"
+        name             = "source-${stage.key}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
@@ -261,10 +261,10 @@ resource "aws_codepipeline" "build" {
     for_each = { for v in each.value.source_branches : v => null }
 
     content {
-      name = "source-${each.key}"
+      name = "source"
 
       action {
-        name             = "source"
+        name             = "source-${stage.key}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
