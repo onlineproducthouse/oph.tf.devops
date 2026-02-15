@@ -36,7 +36,7 @@ resource "aws_codepipeline" "complete" {
     }
 
     content {
-      name = "source-${stage.key}-${stage.value.id}"
+      name = "source"
 
       action {
         name             = "source-${stage.key}-${stage.value.id}"
