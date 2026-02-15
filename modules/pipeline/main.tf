@@ -12,7 +12,10 @@ resource "aws_codestarconnections_connection" "githook" {
 
 resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for i, v in var.pipeline : v.branch_name => null
+    for v in var.pipeline : v.branch_name => {
+      type            = v.type
+      source_branches = distinct(concat([v.branch_name], v.additional_branches))
+    } if v.type == "complete"
   }
 
   name     = "${var.name}-${each.key}"
