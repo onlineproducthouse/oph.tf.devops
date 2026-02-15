@@ -31,13 +31,15 @@ resource "aws_codepipeline" "complete" {
   }
 
   dynamic "stage" {
-    for_each = { for v in each.value.source_branches : v => null }
+    for_each = {
+      for i, v in each.value.source_branches : v => { id = i }
+    }
 
     content {
       name = "source"
 
       action {
-        name             = "source-${stage.key}"
+        name             = "source-${stage.key}-${stage.value.id}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
@@ -243,7 +245,8 @@ resource "aws_codepipeline" "complete" {
 
 resource "aws_codepipeline" "build" {
   for_each = {
-    for v in var.pipeline : v.branch_name => {
+    for i, v in var.pipeline : v.branch_name => {
+      id              = i
       type            = v.type
       source_branches = distinct(concat([v.branch_name], v.additional_branches))
     } if v.type == "build"
@@ -258,13 +261,15 @@ resource "aws_codepipeline" "build" {
   }
 
   dynamic "stage" {
-    for_each = { for v in each.value.source_branches : v => null }
+    for_each = {
+      for i, v in each.value.source_branches : v => { id = i }
+    }
 
     content {
       name = "source"
 
       action {
-        name             = each.key == stage.key ? "source" : "source-${stage.key}"
+        name             = each.key == stage.key ? "source" : "source-${stage.key}=${stage.value.id}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
