@@ -10,7 +10,10 @@ resource "aws_codestarconnections_connection" "githook" {
   provider_type = var.git_provider
 }
 
-resource "aws_codepipeline" "pipeline" {
+resource "random_uuid" "artifact_keys" {
+  for_each = { for v in ["source", "build", "release"] : v => null }
+}
+
   for_each = {
     for v in var.pipeline : v.branch_name => {
       type            = v.type
@@ -36,9 +39,9 @@ resource "aws_codepipeline" "pipeline" {
       name             = "source"
       category         = "Source"
       owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
-      version          = "1"
-      output_artifacts = ["source-${var.name}-${each.key}"]
+        provider         = "CodeStarSourceConnection"
+        version          = "1"
+        output_artifacts = ["${random_uuid.artifact_keys["source"].result}/${stage.key}"]
 
         configuration = {
           ConnectionArn    = aws_codestarconnections_connection.githook.arn
@@ -57,8 +60,8 @@ resource "aws_codepipeline" "pipeline" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = ["source-${var.name}-${each.key}"]
-      output_artifacts = ["build-${var.name}-${each.key}"]
+      input_artifacts  = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
+      output_artifacts = ["${random_uuid.artifact_keys["build"].result}/${each.key}"]
       version          = "1"
 
       configuration = {
@@ -78,7 +81,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["source-${var.name}-${each.key}"]
+        input_artifacts = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
         version         = "1"
 
         configuration = {
@@ -115,7 +118,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.key}"]
+        input_artifacts = ["${random_uuid.artifact_keys["build"].result}/${each.key}"]
         version         = "1"
 
         configuration = {
@@ -152,7 +155,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["source-${var.name}-${each.key}"]
+        input_artifacts = ["${random_uuid.artifact_keys["source"].result}/${each.key}"]
         version         = "1"
 
         configuration = {
@@ -189,7 +192,7 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.key}"]
+        input_artifacts = ["${random_uuid.artifact_keys["build"].result}/${each.key}"]
         version         = "1"
 
         configuration = {
@@ -226,7 +229,17 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = ["build-${var.name}-${each.key}"]
+        input_artifacts = ["${random_uuid.artifact_keys["build"].result}/${each.key}"]
+        version         = "1"
+
+        configuration = {
+          ProjectName = module.job["${var.name}-${each.key}-prod"].name
+        }
+      }
+    }
+  }
+}
+
         version         = "1"
 
         configuration = {
