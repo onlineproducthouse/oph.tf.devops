@@ -42,7 +42,7 @@ resource "aws_codepipeline" "complete" {
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
         version          = "1"
-        output_artifacts = ["${random_uuid.artifact_keys["source"].result}/${stage.key}"]
+        output_artifacts = ["${stage.key}-${random_uuid.artifact_keys["source"].result}"]
 
         configuration = {
           ConnectionArn    = aws_codestarconnections_connection.githook.arn
@@ -61,7 +61,7 @@ resource "aws_codepipeline" "complete" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
+      input_artifacts  = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
       output_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
       version          = "1"
 
@@ -82,7 +82,7 @@ resource "aws_codepipeline" "complete" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
+        input_artifacts = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
         version         = "1"
 
         configuration = {
@@ -269,7 +269,7 @@ resource "aws_codepipeline" "build" {
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
         version          = "1"
-        output_artifacts = ["${random_uuid.artifact_keys["source"].result}/${stage.key}"]
+        output_artifacts = ["${stage.key}-${random_uuid.artifact_keys["source"].result}"]
 
         configuration = {
           ConnectionArn    = aws_codestarconnections_connection.githook.arn
@@ -288,7 +288,7 @@ resource "aws_codepipeline" "build" {
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
-      input_artifacts  = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
+      input_artifacts  = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
       output_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
       version          = "1"
 
@@ -309,7 +309,7 @@ resource "aws_codepipeline" "build" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [for branch in each.value.source_branches : "${random_uuid.artifact_keys["source"].result}/${branch}"]
+        input_artifacts = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
         version         = "1"
 
         configuration = {
@@ -348,7 +348,7 @@ resource "aws_codepipeline" "release" {
 
       configuration = {
         S3Bucket    = var.artifact_store_bucket_id
-        S3ObjectKey = "${random_uuid.artifact_keys["build"].result}/${each.key}.zip"
+        S3ObjectKey = "${each.key}-${random_uuid.artifact_keys["build"].result}.zip"
       }
     }
   }
