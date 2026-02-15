@@ -264,7 +264,7 @@ resource "aws_codepipeline" "build" {
       name = "source"
 
       action {
-        name             = "source-${stage.key}"
+        name             = each.key == stage.key ? "source" : "source-${stage.key}"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
