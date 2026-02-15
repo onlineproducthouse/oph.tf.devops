@@ -34,7 +34,7 @@ resource "aws_codepipeline" "complete" {
     for_each = { for v in each.value.source_branches : v => null }
 
     content {
-      name = "source"
+      name = "source-${each.key}"
 
       action {
         name             = "source"
@@ -261,7 +261,7 @@ resource "aws_codepipeline" "build" {
     for_each = { for v in each.value.source_branches : v => null }
 
     content {
-      name = "source"
+      name = "source-${each.key}"
 
       action {
         name             = "source"
