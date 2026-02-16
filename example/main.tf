@@ -630,3 +630,75 @@ module "release" {
     }
   ]
 }
+
+module "integration" {
+  source = "./.."
+
+  name       = "hello_world"
+  account_id = "123456789012"
+  region     = "us-east-1"
+
+  repositories = [
+    {
+      name         = "api"
+      git_provider = "Bitbucket"
+      git_repo     = "example-api"
+      is_container = true
+      dockerfile   = "Dockerfile"
+
+      pipelines = [
+        { type = "integration", branch_name = "main" },
+      ]
+
+      stages = {
+        test = {
+          unit = false
+          int  = true
+        }
+
+        deploy = {
+          test = false
+          qa   = false
+          prod = false
+        }
+      }
+
+      jobs = [
+        {
+          branch_name = "main"
+
+          vpc_id                 = ""
+          vpc_subnets            = []
+          vpc_security_group_ids = []
+
+          image            = "aws/codebuild/standard:7.0"
+          timeout          = 5
+          working_dir      = "./"
+          ssm_param_paths  = ""
+          environment_name = "int-test"
+          target_runtime   = ""
+
+          test_commands = [
+            "npm i",
+            "npm run build",
+            "npm run int-test",
+          ]
+
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
+
+          task_family                  = ""
+          task_role                    = ""
+          container_port               = ""
+          container_cpu                = ""
+          container_memory_reservation = ""
+          cluster_name                 = ""
+          service_name                 = ""
+          log_group_name               = ""
+          log_stream_prefix            = ""
+        },
+      ]
+    }
+  ]
+}

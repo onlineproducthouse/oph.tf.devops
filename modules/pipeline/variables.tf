@@ -76,7 +76,7 @@ variable "pipeline" {
   default     = []
 
   type = list(object({
-    type        = string // complete, build, release
+    type        = string // complete, build, release, integration
     branch_name = string
   }))
 }

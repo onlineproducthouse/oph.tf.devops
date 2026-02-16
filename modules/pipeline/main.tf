@@ -57,7 +57,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && each.value.type == "release"
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && (each.value.type == "release" || each.value.type == "integration")
     }
 
     content {
@@ -169,7 +169,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "integration" || each.value.type == "complete")
     }
 
     content {
@@ -187,7 +187,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.branch_name}-${v.type}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "integration" || each.value.type == "complete")
     }
 
     content {
