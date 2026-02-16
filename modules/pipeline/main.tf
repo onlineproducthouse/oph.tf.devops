@@ -73,7 +73,7 @@ resource "aws_codepipeline" "pipeline" {
 
         configuration = {
           S3Bucket    = var.artifact_store_bucket_id
-          S3ObjectKey = "${random_uuid.artifact_keys["release"].result}.zip"
+          S3ObjectKey = "artifacts/${each.value.branch_name}-${random_uuid.artifact_keys["release"].result}.zip"
         }
       }
     }

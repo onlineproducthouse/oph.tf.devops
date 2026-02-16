@@ -76,9 +76,8 @@ if [[ "$GIT_BRANCH" != "develop" ]]; then
 fi
 
 if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
-  cd ..
-  zip -r $RELEASE_ARTIFACT_ZIP_NAME $WORKING_DIR
-  aws s3 cp $RELEASE_ARTIFACT_ZIP_NAME $DEV_TOOLS_STORE
+  zip -r $RELEASE_ARTIFACT_ZIP_NAME ./*
+  aws s3 cp $RELEASE_ARTIFACT_ZIP_NAME $DEV_TOOLS_STORE/$RELEASE_ARTIFACT_ZIP_NAME
 fi
 
 echo "[build-container]: Done."

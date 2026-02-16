@@ -98,6 +98,9 @@ fi
 
 #endregion
 
+echo "[build-web]: changing directory to - $WORKING_DIR"
+cd $WORKING_DIR
+
 ENV_FILE="$WORKING_DIR/.env"
 LOAD_ENV_VARS_SCRIPT_PATH=$WORKING_DIR/ci/load-env-vars.sh
 ECS_TASK="$WORKING_DIR/ci/task-ecs.json"
