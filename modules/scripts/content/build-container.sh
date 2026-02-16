@@ -43,6 +43,7 @@ else
 fi
 
 echo "[run-test]: working directory set to: $WORKING_DIR"
+cd $WORKING_DIR
 
 #endregion
 
