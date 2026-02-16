@@ -16,7 +16,7 @@ resource "random_uuid" "artifact_keys" {
 
 resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for v in var.pipeline : "${v.type}-${v.branch_name}" => {
+    for v in var.pipeline : "${v.branch_name}-${v.type}" => {
       type        = v.type
       branch_name = v.branch_name
     }
