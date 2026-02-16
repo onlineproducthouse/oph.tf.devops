@@ -14,15 +14,12 @@ resource "random_uuid" "artifact_keys" {
   for_each = { for v in ["source", "build", "release"] : v => null }
 }
 
-resource "aws_codepipeline" "complete" {
+resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for v in var.pipeline : v.branch_name => {
-      type            = v.type
-      source_branches = distinct(concat([v.branch_name], v.additional_branches))
-    } if v.type == "complete"
+    for v in var.pipeline : v.branch_name => v.type
   }
 
-  name     = "${var.name}-${each.key}"
+  name     = each.value == "complete" ? "${var.name}-${each.key}" : "${var.name}-${each.key}-${each.value}"
   role_arn = var.role_arn
 
   artifact_store {
@@ -32,129 +29,87 @@ resource "aws_codepipeline" "complete" {
 
   dynamic "stage" {
     for_each = {
-      for i, v in each.value.source_branches : v => { id = i }
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && (each.value == "build" || each.value == "complete")
     }
 
     content {
       name = "source"
 
       action {
-        name             = "source-${stage.key}-${stage.value.id}"
+        name             = "source"
         category         = "Source"
         owner            = "AWS"
         provider         = "CodeStarSourceConnection"
         version          = "1"
-        output_artifacts = ["${stage.key}-${random_uuid.artifact_keys["source"].result}"]
+        output_artifacts = ["${each.key}-${random_uuid.artifact_keys["source"].result}"]
 
         configuration = {
           ConnectionArn    = aws_codestarconnections_connection.githook.arn
           FullRepositoryId = var.git_repo
-          BranchName       = stage.key
+          BranchName       = each.key
         }
       }
     }
   }
 
-  stage {
-    name = "build"
+  dynamic "stage" {
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && each.value == "release"
+    }
 
-    action {
-      name             = "build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
-      output_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
-      version          = "1"
+    content {
+      name = "source"
 
-      configuration = {
-        ProjectName = module.job["${var.name}-${each.key}-local"].name
+      action {
+        name             = "source"
+        category         = "Source"
+        owner            = "AWS"
+        provider         = "S3"
+        version          = "1"
+        output_artifacts = ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
+
+        configuration = {
+          S3Bucket    = var.artifact_store_bucket_id
+          S3ObjectKey = "${each.key}-${random_uuid.artifact_keys["build"].result}.zip"
+        }
       }
     }
   }
 
   dynamic "stage" {
-    for_each = var.stages.test.unit ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && (each.value == "build" || each.value == "complete")
+    }
+
+    content {
+      name = "build"
+
+      action {
+        name             = "build"
+        category         = "Build"
+        owner            = "AWS"
+        provider         = "CodeBuild"
+        input_artifacts  = ["${each.key}-${random_uuid.artifact_keys["source"].result}"]
+        output_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
+        version          = "1"
+
+        configuration = {
+          ProjectName = module.job["${var.name}-${each.key}-local"].name
+        }
+      }
+    }
+  }
+
+  dynamic "stage" {
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.unit && (each.value == "build" || each.value == "complete")
+    }
 
     content {
       name = "unit_test"
 
       action {
         name            = "unit_test"
-        category        = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
-        version         = "1"
-
-        configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-unit-test"].name
-        }
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.test ? local.approval : {}
-
-    content {
-      name = "approve_deploy_test"
-
-      action {
-        name     = "approve_deploy_test"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.test ? local.approval : {}
-
-    content {
-      name = "deploy_test"
-
-      action {
-        name            = "deploy_test"
-        category        = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
-        version         = "1"
-
-        configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-test"].name
-        }
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
-
-    content {
-      name = "approve_int_test"
-
-      action {
-        name     = "approve_int_test"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.test.int ? local.approval : {}
-
-    content {
-      name = "int_test"
-
-      action {
-        name            = "int_test"
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
@@ -162,220 +117,34 @@ resource "aws_codepipeline" "complete" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-int-test"].name
-        }
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.qa ? local.approval : {}
-
-    content {
-      name = "approve_deploy_qa"
-
-      action {
-        name     = "approve_deploy_qa"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.qa ? local.approval : {}
-
-    content {
-      name = "deploy_qa"
-
-      action {
-        name            = "deploy_qa"
-        category        = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
-        version         = "1"
-
-        configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-qa"].name
-        }
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.prod ? local.approval : {}
-
-    content {
-      name = "approve_deploy_prod"
-
-      action {
-        name     = "approve_deploy_prod"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = each.key == "main" && var.stages.deploy.prod ? local.approval : {}
-
-    content {
-      name = "deploy_prod"
-
-      action {
-        name            = "deploy_prod"
-        category        = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
-        version         = "1"
-
-        configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-prod"].name
-        }
-      }
-    }
-  }
-}
-
-resource "aws_codepipeline" "build" {
-  for_each = {
-    for i, v in var.pipeline : v.branch_name => {
-      id              = i
-      type            = v.type
-      source_branches = distinct(concat([v.branch_name], v.additional_branches))
-    } if v.type == "build"
-  }
-
-  name     = "${var.name}-${each.key}-${each.value.type}"
-  role_arn = var.role_arn
-
-  artifact_store {
-    location = var.artifact_store_bucket_id
-    type     = "S3"
-  }
-
-  dynamic "stage" {
-    for_each = {
-      for i, v in each.value.source_branches : v => { id = i }
-    }
-
-    content {
-      name = "source-${stage.key}-${stage.value.id}"
-
-      action {
-        name             = "source-${stage.key}-${stage.value.id}"
-        category         = "Source"
-        owner            = "AWS"
-        provider         = "CodeStarSourceConnection"
-        version          = "1"
-        output_artifacts = ["${stage.key}-${random_uuid.artifact_keys["source"].result}"]
-
-        configuration = {
-          ConnectionArn    = aws_codestarconnections_connection.githook.arn
-          FullRepositoryId = var.git_repo
-          BranchName       = stage.key
-        }
-      }
-    }
-  }
-
-  stage {
-    name = "build"
-
-    action {
-      name             = "build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      input_artifacts  = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
-      output_artifacts = ["${each.key}-${random_uuid.artifact_keys["build"].result}"]
-      version          = "1"
-
-      configuration = {
-        ProjectName = module.job["${var.name}-${each.key}-local"].name
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = var.stages.test.unit ? local.approval : {}
-
-    content {
-      name = "unit_test"
-
-      action {
-        name            = "unit_test"
-        category        = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        input_artifacts = [for branch in each.value.source_branches : "${branch}-${random_uuid.artifact_keys["source"].result}"]
-        version         = "1"
-
-        configuration = {
           ProjectName = module.job["${var.name}-${each.key}-unit-test"].name
         }
       }
     }
   }
-}
-
-resource "aws_codepipeline" "release" {
-  for_each = {
-    for v in var.pipeline : v.branch_name => {
-      type = v.type
-    } if v.type == "release" && v.branch_name == "main"
-  }
-
-  name     = "${var.name}-${each.key}-${each.value.type}"
-  role_arn = var.role_arn
-
-  artifact_store {
-    location = var.artifact_store_bucket_id
-    type     = "S3"
-  }
-
-  stage {
-    name = "source"
-
-    action {
-      name             = "source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "S3"
-      version          = "1"
-      output_artifacts = [random_uuid.artifact_keys["release"].result]
-
-      configuration = {
-        S3Bucket    = var.artifact_store_bucket_id
-        S3ObjectKey = "${each.key}-${random_uuid.artifact_keys["build"].result}.zip"
-      }
-    }
-  }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.test ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.test && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "approve_deploy_test"
 
       action {
         name     = "approve_deploy_test"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
+        category = local.approval.step.category
+        owner    = local.approval.step.owner
+        provider = local.approval.step.provider
+        version  = local.approval.step.version
       }
     }
   }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.test ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.test && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "deploy_test"
@@ -385,7 +154,7 @@ resource "aws_codepipeline" "release" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [random_uuid.artifact_keys["release"].result]
+        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
@@ -396,23 +165,27 @@ resource "aws_codepipeline" "release" {
   }
 
   dynamic "stage" {
-    for_each = var.stages.test.int ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.int && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "approve_int_test"
 
       action {
         name     = "approve_int_test"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
+        category = local.approval.step.category
+        owner    = local.approval.step.owner
+        provider = local.approval.step.provider
+        version  = local.approval.step.version
       }
     }
   }
 
   dynamic "stage" {
-    for_each = var.stages.test.int ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.int && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "int_test"
@@ -422,7 +195,7 @@ resource "aws_codepipeline" "release" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [random_uuid.artifact_keys["release"].result]
+        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["source"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
@@ -433,23 +206,27 @@ resource "aws_codepipeline" "release" {
   }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.qa ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.qa && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "approve_deploy_qa"
 
       action {
         name     = "approve_deploy_qa"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
+        category = local.approval.step.category
+        owner    = local.approval.step.owner
+        provider = local.approval.step.provider
+        version  = local.approval.step.version
       }
     }
   }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.qa ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.qa && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "deploy_qa"
@@ -459,7 +236,7 @@ resource "aws_codepipeline" "release" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [random_uuid.artifact_keys["release"].result]
+        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
@@ -470,23 +247,27 @@ resource "aws_codepipeline" "release" {
   }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.prod ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.prod && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "approve_deploy_prod"
 
       action {
         name     = "approve_deploy_prod"
-        category = stage.value.category
-        owner    = stage.value.owner
-        provider = stage.value.provider
-        version  = stage.value.version
+        category = local.approval.step.category
+        owner    = local.approval.step.owner
+        provider = local.approval.step.provider
+        version  = local.approval.step.version
       }
     }
   }
 
   dynamic "stage" {
-    for_each = var.stages.deploy.prod ? local.approval : {}
+    for_each = {
+      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.prod && each.key == "main" && (each.value == "release" || each.value == "complete")
+    }
 
     content {
       name = "deploy_prod"
@@ -496,7 +277,7 @@ resource "aws_codepipeline" "release" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = [random_uuid.artifact_keys["release"].result]
+        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
