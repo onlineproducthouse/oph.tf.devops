@@ -16,10 +16,13 @@ resource "random_uuid" "artifact_keys" {
 
 resource "aws_codepipeline" "pipeline" {
   for_each = {
-    for v in var.pipeline : v.branch_name => v.type
+    for v in var.pipeline : "${v.type}-${v.branch_name}" => {
+      type        = v.type
+      branch_name = v.branch_name
+    }
   }
 
-  name     = each.value == "complete" ? "${var.name}-${each.key}" : "${var.name}-${each.key}-${each.value}"
+  name     = each.value.type == "complete" ? "${var.name}-${each.value.branch_name}" : "${var.name}-${each.key}"
   role_arn = var.role_arn
 
   artifact_store {
@@ -29,7 +32,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && (each.value == "build" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && (each.value.type == "build" || each.value.type == "complete")
     }
 
     content {
@@ -46,7 +49,7 @@ resource "aws_codepipeline" "pipeline" {
         configuration = {
           ConnectionArn    = aws_codestarconnections_connection.githook.arn
           FullRepositoryId = var.git_repo
-          BranchName       = each.key
+          BranchName       = each.value.branch_name
         }
       }
     }
@@ -54,7 +57,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && each.value == "release"
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && each.value.type == "release"
     }
 
     content {
@@ -70,7 +73,7 @@ resource "aws_codepipeline" "pipeline" {
 
         configuration = {
           S3Bucket    = var.artifact_store_bucket_id
-          S3ObjectKey = "${each.key}-${random_uuid.artifact_keys["build"].result}.zip"
+          S3ObjectKey = "build-main-${random_uuid.artifact_keys["build"].result}.zip"
         }
       }
     }
@@ -78,7 +81,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && (each.value == "build" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && (each.value.type == "build" || each.value.type == "complete")
     }
 
     content {
@@ -94,7 +97,7 @@ resource "aws_codepipeline" "pipeline" {
         version          = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-local"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-local"].name
         }
       }
     }
@@ -102,7 +105,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.unit && (each.value == "build" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.test.unit && (each.value.type == "build" || each.value.type == "complete")
     }
 
     content {
@@ -117,7 +120,7 @@ resource "aws_codepipeline" "pipeline" {
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-unit-test"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-unit-test"].name
         }
       }
     }
@@ -125,7 +128,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.test && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.test && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -143,7 +146,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.test && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.test && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -154,11 +157,11 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
+        input_artifacts = each.value.type == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-test"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-test"].name
         }
       }
     }
@@ -166,7 +169,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.int && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -184,7 +187,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.test.int && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.test.int && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -195,11 +198,11 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["source"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
+        input_artifacts = each.value.type == "complete" ? ["${each.key}-${random_uuid.artifact_keys["source"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-int-test"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-int-test"].name
         }
       }
     }
@@ -207,7 +210,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.qa && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.qa && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -225,7 +228,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.qa && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.qa && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -236,11 +239,11 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
+        input_artifacts = each.value.type == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-qa"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-qa"].name
         }
       }
     }
@@ -248,7 +251,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.prod && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.prod && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -266,7 +269,7 @@ resource "aws_codepipeline" "pipeline" {
 
   dynamic "stage" {
     for_each = {
-      for v in var.pipeline : v.branch_name => null if each.key == v.branch_name && var.stages.deploy.prod && each.key == "main" && (each.value == "release" || each.value == "complete")
+      for v in var.pipeline : v.branch_name => null if each.key == "${v.type}-${v.branch_name}" && var.stages.deploy.prod && each.value.branch_name == "main" && (each.value.type == "release" || each.value.type == "complete")
     }
 
     content {
@@ -277,11 +280,11 @@ resource "aws_codepipeline" "pipeline" {
         category        = "Build"
         owner           = "AWS"
         provider        = "CodeBuild"
-        input_artifacts = each.value == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
+        input_artifacts = each.value.type == "complete" ? ["${each.key}-${random_uuid.artifact_keys["build"].result}"] : ["${each.key}-${random_uuid.artifact_keys["release"].result}"]
         version         = "1"
 
         configuration = {
-          ProjectName = module.job["${var.name}-${each.key}-prod"].name
+          ProjectName = module.job["${var.name}-${each.value.branch_name}-prod"].name
         }
       }
     }
