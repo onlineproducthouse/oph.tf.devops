@@ -65,6 +65,7 @@ module "pipeline" {
 
   job = [for job in each.value.jobs : {
     name          = "${each.key}-${job.branch_name}-${job.environment_name}"
+    branch_name   = job.branch_name
     image         = job.image
     timeout       = job.timeout
     test_commands = job.test_commands
@@ -91,7 +92,6 @@ module "pipeline" {
       { key = "WORKING_DIR", value = job.working_dir },
 
       { key = "RELEASE_MANIFEST", value = "release_manifest.txt" },
-      { key = "GIT_BRANCH", value = job.branch_name },
       { key = "IMAGE_REGISTRY_BASE_URL", value = module.docker.base_url },
       { key = "DOCKERFILE", value = each.value.dockerfile },
 
