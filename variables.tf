@@ -73,6 +73,8 @@ variable "repositories" {
       # If projects.jobs.action = deploy, must be one of: cloud, container-app, container-db, web
       action_item = string
 
+      upload_release_artifact_zip = bool
+
       # The following fields are required:
       # If projects.jobs.action = deploy and projects.jobs.action_item = container-app
       task_family                  = string

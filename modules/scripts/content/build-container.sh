@@ -74,5 +74,11 @@ if [[ "$GIT_BRANCH" != "develop" ]]; then
   echo "DKR_IMAGE=$FULL_IMAGE_TAG" >$RELEASE_MANIFEST
 fi
 
+if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
+  cd ..
+  zip -r $RELEASE_ARTIFACT_ZIP_NAME $WORKING_DIR
+  aws s3 cp $RELEASE_ARTIFACT_ZIP_NAME $DEV_TOOLS_STORE
+fi
+
 echo "[build-container]: Done."
 exit 0

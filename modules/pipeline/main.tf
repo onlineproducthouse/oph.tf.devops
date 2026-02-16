@@ -73,7 +73,7 @@ resource "aws_codepipeline" "pipeline" {
 
         configuration = {
           S3Bucket    = var.artifact_store_bucket_id
-          S3ObjectKey = "build-main-${random_uuid.artifact_keys["build"].result}.zip"
+          S3ObjectKey = "${random_uuid.artifact_keys["release"].result}.zip"
         }
       }
     }
@@ -311,6 +311,7 @@ module "job" {
   env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },
     { key = "RUN_TEST_COMMAND", value = join(" && ", each.value.test_commands) },
+    { key = "RELEASE_ARTIFACT_ZIP_NAME", value = "${random_uuid.artifact_keys["release"].result}.zip" },
   ])
 }
 

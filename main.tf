@@ -80,7 +80,8 @@ module "pipeline" {
       { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
       { key = "TARGET_RUNTIME", value = job.target_runtime },
-
+      { key = "DEV_TOOLS_STORE", value = module.store.id },
+      { key = "UPLOAD_RELEASE_ARTIFACT_ZIP", value = job.upload_release_artifact_zip },
       { key = "LOAD_ENV_VARS_SCRIPT_S3_URL", value = module.scripts.content["load-env-vars"].url },
 
       { key = "AWS_REGION", value = var.region },
