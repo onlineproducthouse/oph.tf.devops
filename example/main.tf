@@ -38,8 +38,8 @@ module "complete" {
       dockerfile   = "Dockerfile"
 
       pipelines = [
-        { type = "complete", branch_name = "develop", additional_branches = [] },
-        { type = "complete", branch_name = "main", additional_branches = [] },
+        { type = "complete", branch_name = "develop" },
+        { type = "complete", branch_name = "main" },
       ]
 
       stages = {
@@ -316,7 +316,7 @@ module "build" {
       dockerfile   = "Dockerfile"
 
       pipelines = [
-        { type = "build", branch_name = "main", additional_branches = ["develop"] },
+        { type = "build", branch_name = "main" },
       ]
 
       stages = {
@@ -476,7 +476,7 @@ module "release" {
       dockerfile   = "Dockerfile"
 
       pipelines = [
-        { type = "release", branch_name = "main", additional_branches = [] },
+        { type = "release", branch_name = "main" },
       ]
 
       stages = {
