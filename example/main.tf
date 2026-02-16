@@ -71,8 +71,9 @@ module "complete" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "build"
-          action_item = "container"
+          action                      = "build"
+          action_item                 = "container"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -104,8 +105,9 @@ module "complete" {
             "npm run unit-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -132,8 +134,9 @@ module "complete" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "build"
-          action_item = "container"
+          action                      = "build"
+          action_item                 = "container"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -165,8 +168,9 @@ module "complete" {
             "npm run unit-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -193,8 +197,9 @@ module "complete" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -226,8 +231,9 @@ module "complete" {
             "npm run int-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -254,8 +260,9 @@ module "complete" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -282,8 +289,9 @@ module "complete" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -348,8 +356,9 @@ module "build" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "build"
-          action_item = "container"
+          action                      = "build"
+          action_item                 = "container"
+          upload_release_artifact_zip = true
 
           task_family                  = ""
           task_role                    = ""
@@ -381,8 +390,9 @@ module "build" {
             "npm run unit-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -409,8 +419,9 @@ module "build" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "build"
-          action_item = "container"
+          action                      = "build"
+          action_item                 = "container"
+          upload_release_artifact_zip = true
 
           task_family                  = ""
           task_role                    = ""
@@ -442,8 +453,9 @@ module "build" {
             "npm run unit-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -508,8 +520,9 @@ module "release" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -541,8 +554,9 @@ module "release" {
             "npm run int-test",
           ]
 
-          action      = "run"
-          action_item = "test"
+          action                      = "run"
+          action_item                 = "test"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -569,8 +583,9 @@ module "release" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
@@ -597,8 +612,9 @@ module "release" {
           target_runtime   = ""
           test_commands    = []
 
-          action      = "deploy"
-          action_item = "container-app"
+          action                      = "deploy"
+          action_item                 = "container-app"
+          upload_release_artifact_zip = false
 
           task_family                  = ""
           task_role                    = ""
