@@ -14,7 +14,7 @@ if [[ "$S3_HOST_BUCKET_NAME" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[deploy-web]: terraform child directory is not set, using default: $(pwd)"
+  echo "[deploy-web]: working directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
 fi
 
@@ -24,6 +24,9 @@ if [[ "$CDN_ID" == "" ]];then
 fi
 
 #endregion
+
+echo "[deploy-web]: changing directory to - $WORKING_DIR"
+cd $WORKING_DIR
 
 INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
 echo '{
