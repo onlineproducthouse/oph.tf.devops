@@ -32,8 +32,9 @@ if [[ "$AWS_SSM_PARAMETER_PATHS" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[deploy-container-db]: terraform child directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
 fi
 
 if [[ "$RELEASE_MANIFEST" == "" ]];then

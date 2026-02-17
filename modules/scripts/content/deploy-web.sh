@@ -14,8 +14,9 @@ if [[ "$S3_HOST_BUCKET_NAME" == "" ]];then
 fi
 
 if [[ "$WORKING_DIR" == "" ]]; then
-  echo "[deploy-web]: working directory is not set, using default: $(pwd)"
   WORKING_DIR=$(pwd)
+else
+  WORKING_DIR="$(pwd)/$WORKING_DIR"
 fi
 
 if [[ "$CDN_ID" == "" ]];then
