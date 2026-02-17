@@ -29,7 +29,7 @@ fi
 # echo "[deploy-web]: changing directory to - $WORKING_DIR"
 # cd $WORKING_DIR
 
-INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
+INVALIDATION_CONFIG_PATH=$(pwd)/ci/inv-batch.json
 
 touch $INVALIDATION_CONFIG_PATH
 
