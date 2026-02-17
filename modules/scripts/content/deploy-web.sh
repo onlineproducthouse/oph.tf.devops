@@ -26,8 +26,8 @@ fi
 
 #endregion
 
-echo "[deploy-web]: changing directory to - $WORKING_DIR"
-cd $WORKING_DIR
+# echo "[deploy-web]: changing directory to - $WORKING_DIR"
+# cd $WORKING_DIR
 
 INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
 echo '{
