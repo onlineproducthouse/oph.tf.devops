@@ -30,6 +30,9 @@ fi
 # cd $WORKING_DIR
 
 INVALIDATION_CONFIG_PATH=$WORKING_DIR/ci/inv-batch.json
+
+touch $INVALIDATION_CONFIG_PATH
+
 echo '{
   "Paths": {
     "Quantity": 1,
