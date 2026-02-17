@@ -86,6 +86,10 @@ variable "repositories" {
       service_name                 = string
       log_group_name               = string
       log_stream_prefix            = string
+
+      # If projects.jobs.action = deploy and projects.jobs.action_item = web
+      s3_host_bucket_name = string
+      cdn_id              = string
     }))
   }))
 }

@@ -84,6 +84,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "develop"
@@ -118,6 +121,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -147,6 +153,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -181,6 +190,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -210,6 +222,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -244,6 +259,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -273,6 +291,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -302,6 +323,9 @@ module "complete" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
       ]
     }
@@ -369,6 +393,9 @@ module "build" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "develop"
@@ -403,6 +430,9 @@ module "build" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -432,6 +462,9 @@ module "build" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -466,6 +499,9 @@ module "build" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
       ]
     }
@@ -533,6 +569,9 @@ module "release" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -567,6 +606,9 @@ module "release" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -596,6 +638,9 @@ module "release" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
         {
           branch_name = "main"
@@ -625,6 +670,9 @@ module "release" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
       ]
     }
@@ -697,6 +745,9 @@ module "integration" {
           service_name                 = ""
           log_group_name               = ""
           log_stream_prefix            = ""
+
+          s3_host_bucket_name = ""
+          cdn_id              = ""
         },
       ]
     }

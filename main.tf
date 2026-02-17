@@ -104,6 +104,9 @@ module "pipeline" {
       { key = "SERVICE_NAME", value = job.service_name },
       { key = "LOG_GROUP_NAME", value = job.log_group_name },
       { key = "LOG_STREAM_PREFIX", value = job.log_stream_prefix },
+
+      { key = "S3_HOST_BUCKET_NAME", value = job.s3_host_bucket_name },
+      { key = "CDN_ID", value = job.cdn_id },
     ]
   }]
 }
