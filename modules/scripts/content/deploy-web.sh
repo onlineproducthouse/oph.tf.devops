@@ -26,9 +26,7 @@ fi
 
 #endregion
 
-INVALIDATION_CONFIG_PATH=$(pwd)/ci/inv-batch.json
-
-touch $INVALIDATION_CONFIG_PATH
+INVALIDATION_CONFIG_PATH=$(pwd)/inv-batch.json
 
 echo '{
   "Paths": {
