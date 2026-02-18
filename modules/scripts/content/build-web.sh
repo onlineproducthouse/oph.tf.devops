@@ -50,9 +50,9 @@ n 25.2.1
 echo "[build-web]: changing directory to - $WORKING_DIR"
 cd $WORKING_DIR
 
-npm i
+load_env_vars
 
-load_env_vars && npm run build
+npm i && npm run build
 
 if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
   zip -r $RELEASE_ARTIFACT_ZIP_NAME ./*
