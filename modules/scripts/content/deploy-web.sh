@@ -36,6 +36,8 @@ echo '{
   "CallerReference": "'$CODEBUILD_BUILD_NUMBER'"
 }' >$INVALIDATION_CONFIG_PATH
 
+cat $INVALIDATION_CONFIG_PATH
+
 aws s3 sync $WORKING_DIR "s3://$S3_HOST_BUCKET_NAME"
 aws cloudfront create-invalidation \
   --distribution-id $CDN_ID \
