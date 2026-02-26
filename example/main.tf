@@ -29,6 +29,19 @@ module "complete" {
   account_id = "123456789012"
   region     = "us-east-1"
 
+  copy_docker_repositories = [
+    { key = "golang", name = "golang" },
+    { key = "node", name = "node" },
+  ]
+
+  copy_docker_images = [
+    { key = "golang", repository = "golang", tag = "latest" },
+    { key = "node-latest", repository = "node", tag = "latest" },
+    { key = "node", repository = "node", tag = "25.2.1" },
+    { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
+    { key = "node-slim", repository = "node", tag = "25.2.1-slim" },
+  ]
+
   repositories = [
     {
       name         = "api"
@@ -339,6 +352,19 @@ module "build" {
   account_id = "123456789012"
   region     = "us-east-1"
 
+  copy_docker_repositories = [
+    { key = "golang", name = "golang" },
+    { key = "node", name = "node" },
+  ]
+
+  copy_docker_images = [
+    { key = "golang", repository = "golang", tag = "latest" },
+    { key = "node-latest", repository = "node", tag = "latest" },
+    { key = "node", repository = "node", tag = "25.2.1" },
+    { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
+    { key = "node-slim", repository = "node", tag = "25.2.1-slim" },
+  ]
+
   repositories = [
     {
       name         = "api"
@@ -511,9 +537,11 @@ module "build" {
 module "release" {
   source = "./.."
 
-  name       = "hello_world"
-  account_id = "123456789012"
-  region     = "us-east-1"
+  name                     = "hello_world"
+  account_id               = "123456789012"
+  region                   = "us-east-1"
+  copy_docker_repositories = []
+  copy_docker_images       = []
 
   repositories = [
     {
@@ -685,6 +713,14 @@ module "integration" {
   name       = "hello_world"
   account_id = "123456789012"
   region     = "us-east-1"
+
+  copy_docker_repositories = [
+    { key = "node", name = "node" },
+  ]
+
+  copy_docker_images = [
+    { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
+  ]
 
   repositories = [
     {

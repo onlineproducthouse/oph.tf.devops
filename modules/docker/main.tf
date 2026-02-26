@@ -40,22 +40,11 @@ resource "skopeo2_copy" "repo" {
 locals {
   base_url = "${var.account_id}.dkr.ecr.${var.region}.amazonaws.com"
 
-  repositories = [
-    { key = "golang", name = "golang" },
-    { key = "node", name = "node" },
-    { key = "postgis", name = "postgis/postgis" },
-    { key = "redis", name = "redis" },
+  repositories = concat(var.copy_docker_repositories, [
     { key = "tonistiigibinfmt", name = "tonistiigi/binfmt" },
-  ]
+  ])
 
-  images = [
-    { key = "golang", repository = "golang", tag = "1.25.5" },
-    { key = "golang-alpine", repository = "golang", tag = "1.25.5-alpine" },
-    { key = "node", repository = "node", tag = "25.2.1" },
-    { key = "node-alpine", repository = "node", tag = "25.2.1-alpine" },
-    { key = "node-slim", repository = "node", tag = "25.2.1-slim" },
-    { key = "postgis", repository = "postgis", tag = "14-3.2" },
-    { key = "redis", repository = "redis", tag = "8.4.0" },
+  images = concat(var.copy_docker_images, [
     { key = "tonistiigibinfmt", repository = "tonistiigibinfmt", tag = "latest" },
-  ]
+  ])
 }

@@ -22,9 +22,11 @@ module "scripts" {
 module "docker" {
   source = "./modules/docker"
 
-  name       = local.name
-  account_id = var.account_id
-  region     = var.region
+  name                     = local.name
+  account_id               = var.account_id
+  region                   = var.region
+  copy_docker_repositories = var.copy_docker_repositories
+  copy_docker_images       = var.copy_docker_images
 }
 
 module "role" {

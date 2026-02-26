@@ -16,6 +16,27 @@ variable "region" {
   nullable    = false
 }
 
+variable "copy_docker_repositories" {
+  description = "A list of docker repositories to copy into AWS ECR"
+  default     = []
+
+  type = list(object({
+    key  = string
+    name = string
+  }))
+}
+
+variable "copy_docker_images" {
+  description = "A list of docker images to copy into AWS ECR"
+  default     = []
+
+  type = list(object({
+    key        = string
+    repository = string
+    tag        = string
+  }))
+}
+
 variable "repositories" {
   description = "A list of CI/CD project repository configurations"
   default     = []
