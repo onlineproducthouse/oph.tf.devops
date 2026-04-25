@@ -95,12 +95,8 @@ phases:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
-          if [[ ! -f '.terraform/terraform.tfstate' ]]
-            echo 'terraform init'
-            terraform init
-          fi
-
-          terraform validate \
+          terraform init
+            && terraform validate \
             && terraform plan -input=false -out=tfplan
         fi
 
