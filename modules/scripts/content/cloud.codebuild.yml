@@ -18,9 +18,9 @@ env:
     LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
 
 cache:
-  key: tf-key-$(codebuild-hash-files .terraform.lock.hcl)
+  key: tf-key-$(codebuild-hash-files "./.terraform.lock.hcl")
   fallback-keys:
-    - tf-key-$(codebuild-hash-files .terraform.lock.hcl)
+    - tf-key-$(codebuild-hash-files "./.terraform.lock.hcl")
     - tf-key-
     - tf-
   paths:
