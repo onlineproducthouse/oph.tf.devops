@@ -115,5 +115,5 @@ phases:
 
   post_build:
     commands:
-      - ls -al
+      - ls -R
       - echo "Terraform $JOB_ACTION finished"
