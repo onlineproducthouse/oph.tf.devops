@@ -9,6 +9,11 @@ resource "aws_codebuild_project" "job" {
     location = "CODEPIPELINE"
   }
 
+  cache {
+    type     = "S3"
+    location = "${var.artifact_store_bucket_id}/cache/${var.name}"
+  }
+
   source {
     type      = "CODEPIPELINE"
     buildspec = var.buildspec

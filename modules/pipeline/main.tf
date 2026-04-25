@@ -298,15 +298,16 @@ module "job" {
     for v in var.job : v.name => v
   }
 
-  name                   = each.key
-  image                  = each.value.image
-  vpc_id                 = each.value.vpc_id
-  vpc_subnets            = each.value.vpc_subnets
-  vpc_security_group_ids = each.value.vpc_security_group_ids
-  role_arn               = each.value.role_arn
-  timeout                = each.value.timeout
-  buildspec              = each.value.buildspec
-  is_container           = var.is_container
+  name                     = each.key
+  image                    = each.value.image
+  vpc_id                   = each.value.vpc_id
+  vpc_subnets              = each.value.vpc_subnets
+  vpc_security_group_ids   = each.value.vpc_security_group_ids
+  role_arn                 = each.value.role_arn
+  timeout                  = each.value.timeout
+  buildspec                = each.value.buildspec
+  is_container             = var.is_container
+  artifact_store_bucket_id = var.artifact_store_bucket_id
 
   env_variables = concat(each.value.env_variables, [
     { key = "IMAGE_REPOSITORY_NAME", value = var.is_container ? module.ecr[0].name : "" },

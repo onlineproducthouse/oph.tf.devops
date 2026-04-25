@@ -60,3 +60,9 @@ variable "env_variables" {
     value = string
   }))
 }
+
+variable "artifact_store_bucket_id" {
+  description = "The AWS S3 Bucket ID to store artifacts in"
+  type        = string
+  nullable    = false
+}
