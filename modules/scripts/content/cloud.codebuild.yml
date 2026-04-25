@@ -32,6 +32,7 @@ cache:
 artifacts:
   files:
     - tfplan
+    - "**/*.tf"
     - "**/*"
     # - "**.tf"
 
