@@ -24,22 +24,21 @@ cache:
   #   - tf-key-
   #   - tf-
   paths:
-    - ".terraform"
-    - ".terraform.lock.hcl"
+    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform"
+    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl"
     - "/usr/bin/terraform"
-    - "ci/load-env-vars.sh"
+    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/ci/load-env-vars.sh"
 
 artifacts:
   files:
     - tfplan
     - "**/*.tf"
     - "**/*"
-    # - "**.tf"
 
 phases:
   install:
     commands:
-      - ls -al
+      - ls -al $WORKING_DIR
 
       - |
         apt-get update -y \
