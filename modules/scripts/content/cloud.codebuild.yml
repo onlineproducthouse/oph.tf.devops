@@ -22,8 +22,8 @@ cache:
   paths:
     - /usr/local/bin/terraform
     - $CODEBUILD_SRC_DIR/$WORKING_DIR/ci/load-env-vars.sh
-    - $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform
     - $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl
+    # - $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform
 
 artifacts:
   files:
