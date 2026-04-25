@@ -47,7 +47,7 @@ phases:
             zip
 
       - |
-        if [ ! -f /usr/bin/terraform ]; then
+        if [[ ! -f /usr/bin/terraform ]]; then
           echo "Installing Terraform..."
 
           curl -s -qL -o terraform_install.zip https://releases.hashicorp.com/terraform/1.13.4/terraform_1.13.4_linux_amd64.zip \
@@ -70,7 +70,7 @@ phases:
         fi
 
         if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
-          if [ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]; then
+          if [[ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]]; then
             if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
               echo "load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
               exit 1
