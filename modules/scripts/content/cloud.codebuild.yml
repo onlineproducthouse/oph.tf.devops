@@ -18,22 +18,17 @@ env:
     LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
 
 cache:
-  key: tf-key-$(md5sum "$CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl")
-  # fallback-keys:
-  #   - tf-key-$(codebuild-hash-files "./.terraform.lock.hcl")
-  #   - tf-key-
-  #   - tf-
+  key: tf-key-$(md5sum $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl)
   paths:
-    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform"
-    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl"
-    - "/usr/local/bin/terraform"
-    - "$CODEBUILD_SRC_DIR/$WORKING_DIR/ci/load-env-vars.sh"
+    - /usr/local/bin/terraform
+    - $CODEBUILD_SRC_DIR/$WORKING_DIR/ci/load-env-vars.sh
+    - $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform
+    - $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl
 
 artifacts:
   files:
     - tfplan
     - "**/*.tf"
-    - "**/*"
 
 phases:
   install:
@@ -118,5 +113,4 @@ phases:
 
   post_build:
     commands:
-      - ls -R
       - echo "Terraform $JOB_ACTION finished"
