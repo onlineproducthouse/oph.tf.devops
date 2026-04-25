@@ -42,7 +42,8 @@ variable "repositories" {
   default     = []
 
   type = list(object({
-    name = string
+    name      = string
+    buildspec = string
 
     git_provider = string // Bitbucket, GitHub
     git_repo     = string

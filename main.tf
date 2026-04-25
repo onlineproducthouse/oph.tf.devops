@@ -77,9 +77,10 @@ module "pipeline" {
     vpc_security_group_ids = job.vpc_security_group_ids
 
     role_arn  = module.role[replace("${local.name}-${job.action}-${job.action_item}", "_", "-")].arn
-    buildspec = module.scripts.content["codebuild-job"].arn
+    buildspec = module.scripts.content[each.value.buildspec].arn
 
     env_variables = [
+      { key = "JOB_ACTION", value = job.action },
       { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
       { key = "TARGET_RUNTIME", value = job.target_runtime },
