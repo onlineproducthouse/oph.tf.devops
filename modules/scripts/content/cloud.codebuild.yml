@@ -31,8 +31,8 @@ cache:
 
 artifacts:
   files:
+    - tfplan
     - "**/*"
-    # - "tfplan"
     # - "**.tf"
 
 phases:
