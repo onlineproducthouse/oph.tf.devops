@@ -95,7 +95,7 @@ phases:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
-          terraform init
+          terraform init \
             && terraform validate \
             && terraform plan -input=false -out=tfplan
         fi
