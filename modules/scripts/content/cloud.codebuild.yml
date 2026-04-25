@@ -98,21 +98,21 @@ phases:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
           if [ ! -f '.terraform/terraform.tfstate' ]
+            echo 'terraform init'
             terraform init
           fi
 
-           terraform validate \
+          terraform validate \
             && terraform plan -input=false -out=tfplan
+        fi
 
-        elif [[ "$JOB_ACTION" == "test" ]]; then
+        if [[ "$JOB_ACTION" == "test" ]]; then
           echo "Not implemented"
+        fi
 
-        elif [[ "$JOB_ACTION" == "deploy" ]]; then
+        if [[ "$JOB_ACTION" == "deploy" ]]; then
+          echo "terraform apply tfplan"
           terraform apply tfplan
-
-        else
-          echo "Job action must be specified. Either 'build', 'test' or 'deploy'"
-          exit 1
         fi
 
   post_build:
