@@ -32,8 +32,6 @@ artifacts:
 phases:
   install:
     commands:
-      - ls -al $WORKING_DIR
-
       - |
         apt-get update -y \
           && apt-get install -y \
