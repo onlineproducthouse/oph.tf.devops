@@ -24,15 +24,15 @@ cache:
     - tf-key-
     - tf-
   paths:
-    - "./.terraform"
-    - "./.terraform.lock.hcl"
+    - ".terraform"
+    - ".terraform.lock.hcl"
     - "/usr/bin/terraform"
-    - "./ci/load-env-vars.sh"
+    - "ci/load-env-vars.sh"
 
 artifacts:
   files:
-    - "./tfplan"
-    - "./**.tf"
+    - "tfplan"
+    - "**.tf"
 
 phases:
   install:
