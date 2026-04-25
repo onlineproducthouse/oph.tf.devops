@@ -38,6 +38,8 @@ artifacts:
 phases:
   install:
     commands:
+      - ls -al
+
       - |
         apt-get update -y \
           && apt-get install -y \
