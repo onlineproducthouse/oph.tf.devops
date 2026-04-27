@@ -193,8 +193,8 @@ phases:
         if [[ "$JOB_ACTION" == "build" ]]; then
           docker buildx create --use --name multiarch
           docker buildx build --push --force-rm \
-            --cache-from $FULL_IMAGE_TAG
             --platform=linux/arm64,linux/amd64 \
+            --cache-from $FULL_IMAGE_TAG
             --tag $FULL_IMAGE_TAG \
             --tag $FULL_IMAGE_TAG_SOURCE_VERSION \
             --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
