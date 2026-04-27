@@ -19,15 +19,16 @@ env:
     ENV_FILE: ".env"
 
 cache:
-  key: tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
+  key: tf-key-$(cat $WORKING_DIR/cache-key.sha256sum)
   fallback-keys:
-    - tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
+    - tf-key-$(cat $WORKING_DIR/cache-key.sha256sum)
     - tf-key-
     - tf-
   paths:
     - /usr/bin/terraform
     - $WORKING_DIR/ci/load-env-vars.sh
     - $WORKING_DIR/.terraform.lock.hcl
+    - $WORKING_DIR/cache-key.sha256sum
 
 artifacts:
   files:
@@ -115,4 +116,6 @@ phases:
 
   post_build:
     commands:
-      - echo "Terraform $JOB_ACTION finished"
+      - |
+        sha256sum .terraform.lock.hcl > cache-key.sha256sum
+        echo "Terraform $JOB_ACTION finished"
