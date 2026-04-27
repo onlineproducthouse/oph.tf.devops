@@ -80,7 +80,9 @@ module "pipeline" {
     buildspec = module.scripts.content[each.value.buildspec].arn
 
     env_variables = [
+      { key = "HASH_FILE_PATH", value = job.hash_file_path },
       { key = "JOB_ACTION", value = job.action },
+      { key = "JOB_ACTION_ITEM", value = job.action_item },
       { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
       { key = "TARGET_RUNTIME", value = job.target_runtime },

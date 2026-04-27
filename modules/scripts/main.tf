@@ -18,6 +18,7 @@ locals {
 
     { name = "codebuild-job", key = "/oph/scripts/codebuild.job.yml", source_path = "${path.module}/content/codebuild.job.yml" },
     { name = "cloud-codebuild", key = "/oph/scripts/cloud.codebuild.yml", source_path = "${path.module}/content/cloud.codebuild.yml" },
+    { name = "container-codebuild", key = "/oph/scripts/container.codebuild.yml", source_path = "${path.module}/content/container.codebuild.yml" },
 
     { name = "deploy-cloud", key = "/oph/scripts/deploy-cloud.sh", source_path = "${path.module}/content/deploy-cloud.sh" },
     { name = "deploy-container-app", key = "/oph/scripts/deploy-container-app.sh", source_path = "${path.module}/content/deploy-container-app.sh" },

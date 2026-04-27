@@ -1,0 +1,233 @@
+#
+# This container.codebuild.yml file is for the building, testing and deploment of containerized projects
+#
+# Environment varibles:
+#
+# AWS_REGION - required
+# WORKING_DIR - optional
+#
+# JOB_ACTION - required. Must be one of: build, test, deploy
+# JOB_ACTION_ITEM - required. Must be one of: container-app, container-db, node, golang
+#
+# AWS_SSM_PARAMETER_PATHS - optional
+# LOAD_ENV_VARS_SCRIPT_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set
+# ENV_VARS_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set
+#
+# IMAGE_REGISTRY_BASE_URL - required
+# RELEASE_MANIFEST - required
+# HASH_FILE_PATH - required
+#
+# # If job action = 'build':
+#     GIT_BRANCH - required. Must be one of: develop, main
+#     IMAGE_REPOSITORY_NAME - required
+#     DOCKERFILE - required
+#     UPLOAD_RELEASE_ARTIFACT_ZIP - required. Must be true or false
+#     RELEASE_ARTIFACT_ZIP_NAME - required
+#     DEV_TOOLS_STORE - required
+#
+# # If job action = 'deploy':
+#     ...
+#
+# # If job action = 'deploy', job action item = 'container-db':
+#     ...
+#
+# # If job action = 'deploy', job action item = 'container-app':
+#     ENV_VARS_S3_ARN - required
+#     TASK_FAMILY - required
+#     TASK_ROLE_ARN - required
+#     CONTAINER_PORT - required
+#     CONTAINER_CPU - required
+#     CONTAINER_MEMORY_RESERVATION - required
+#     CLUSTER_NAME - required
+#     SERVICE_NAME - required
+#     LOG_GROUP_NAME - required
+#     LOG_STREAM_PREFIX - required
+#
+# # If job action = 'test', job action item = 'node':
+#     ...
+#
+# # If job action = 'test', job action item = 'golang':
+#     ...
+#
+
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
+    ENV_FILE: ".env"
+
+cache:
+  key: cntnr-key-$(sha256sum $HASH_FILE_PATH)
+  fallback-keys:
+    - cntnr-key-$(sha256sum $HASH_FILE_PATH)
+    - cntnr-key-
+    - cntnr-
+  paths:
+    - ~/.docker/cli-plugins/docker-buildx
+    - $WORKING_DIR/ci/load-env-vars.sh
+
+artifacts:
+  files:
+    - "**/*"
+
+phases:
+  install:
+    commands:
+      - |
+        apt-get update -y \
+          && apt-get install -y curl jq zip
+
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          echo 'Configuring docker-buildx'
+          if [ -e '~/.docker/cli-plugins/docker-buildx' ]; then
+            echo 'docker-buildx found from cache.'
+          else
+            echo 'docker-buildx not found from cache. Installing docker-buildx...'
+            export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r .tag_name)
+            curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
+            mkdir -p ~/.docker/cli-plugins
+            mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
+          fi
+
+          chmod +x ~/.docker/cli-plugins/docker-buildx
+        fi
+
+  pre_build:
+    commands:
+      - |
+        if [[ "$AWS_REGION" == "" ]];then
+          echo "AWS Region not set. please set AWS Region"
+          exit 1
+        fi
+
+        if [[ "$WORKING_DIR" == "" ]]; then
+          export WORKING_DIR=$CODEBUILD_SRC_DIR
+        else
+          export WORKING_DIR="$CODEBUILD_SRC_DIR/$WORKING_DIR"
+        fi
+
+        if [[ "$IMAGE_REGISTRY_BASE_URL" == "" ]];then
+          echo "image registry base url not set. please set image registry base url"
+          exit 1
+        fi
+
+        if [[ "$RELEASE_MANIFEST" == "" ]];then
+          echo "release manifest name not set. please set release manifest name"
+          exit 1
+        fi
+
+        if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
+          if [[ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]]; then
+            if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
+              echo "load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
+              exit 1
+            fi
+
+            if [[ "$ENV_VARS_S3_URL" == "" ]];then
+              echo ".env file AWS S3 URL not set. please set .env file AWS S3 URL"
+              exit 1
+            fi
+
+            aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+            export ENV_FILE="$WORKING_DIR/.env"
+            source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+          else
+            echo "Retrived $LOAD_ENV_VARS_SCRIPT_PATH from cache"
+          fi
+        fi
+
+        echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
+
+        if [[ "$JOB_ACTION" == "build" ]];then
+          if [[ "$GIT_BRANCH" == "" ]];then
+            echo "git branch name not set. please set git branch name"
+            exit 1
+          fi
+
+          if [[ "$IMAGE_REPOSITORY_NAME" == "" ]];then
+            echo "image registry not set. please set image registry name"
+            exit 1
+          fi
+
+          if [[ "$DOCKERFILE" == "" ]];then
+            echo "dockerfile not set. please set dockerfile name"
+            exit 1
+          fi
+
+          if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]];then
+            if [[ "$RELEASE_ARTIFACT_ZIP_NAME" == "" ]];then
+              echo "name for release artefact zip not set"
+              exit 1
+            fi
+
+            if [[ "$DEV_TOOLS_STORE" == "" ]];then
+              echo "S3 bucket for dev tools not set"
+              exit 1
+            fi
+          fi
+
+          if [[ "$GIT_BRANCH" == "develop" ]]; then
+            IMAGE_TAG="$IMAGE_REPOSITORY_NAME:latest"
+          elif [[ "$GIT_BRANCH" == "main" ]]; then
+            IMAGE_TAG="$IMAGE_REPOSITORY_NAME:release"
+          fi
+
+          IMAGE_TAG_SOURCE_VERSION="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+
+          export FULL_IMAGE_TAG=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG
+          export FULL_IMAGE_TAG_SOURCE_VERSION=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG_SOURCE_VERSION
+
+          docker run --rm \
+            --install arm64 \
+            --privileged "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest"
+        fi
+
+        cd $WORKING_DIR
+
+  build:
+    commands:
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          docker buildx create --use --name multiarch
+          docker buildx build --push --force-rm \
+            --cache-from $FULL_IMAGE_TAG
+            --platform=linux/arm64,linux/amd64 \
+            --tag $FULL_IMAGE_TAG \
+            --tag $FULL_IMAGE_TAG_SOURCE_VERSION \
+            --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
+            --file $DOCKERFILE \
+            $WORKING_DIR
+        fi
+
+        if [[ "$JOB_ACTION" == "test" ]]; then
+          echo "Not implemented"
+        fi
+
+        if [[ "$JOB_ACTION" == "deploy" ]]; then
+          if [[ "$JOB_ACTION_ITEM" == "container-app" ]]; then
+            echo "Not implemented"
+          fi
+
+          if [[ "$JOB_ACTION_ITEM" == "container-db" ]]; then
+            echo "Not implemented"
+          fi
+        fi
+
+  post_build:
+    commands:
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          if [[ "$GIT_BRANCH" != "develop" ]]; then
+            echo "DKR_IMAGE=$FULL_IMAGE_TAG_SOURCE_VERSION" >$RELEASE_MANIFEST
+          fi
+
+          if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
+            zip -r $RELEASE_ARTIFACT_ZIP_NAME ./*
+            aws s3 cp $RELEASE_ARTIFACT_ZIP_NAME $DEV_TOOLS_STORE/$RELEASE_ARTIFACT_ZIP_NAME
+          fi
+        fi
+
+        echo "$JOB_ACTION finished"

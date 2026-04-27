@@ -70,6 +70,7 @@ variable "repositories" {
     })
 
     jobs = list(object({
+      hash_file_path = string
       # Must be one of: dev, release
       branch_name = string
 
