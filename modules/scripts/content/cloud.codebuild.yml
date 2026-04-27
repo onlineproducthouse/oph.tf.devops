@@ -117,7 +117,12 @@ phases:
   post_build:
     commands:
       - |
-        cd $CODEBUILD_SRC_DIR
-        sha256sum .terraform.lock.hcl > $WORKING_DIR/cache-key.sha256sum
+        if [[ "$WORKING_DIR" == "" ]]; then
+          sha256sum .terraform.lock.hcl > $CODEBUILD_SRC_DIR/cache-key.sha256sum
+        else
+          sha256sum .terraform.lock.hcl > $CODEBUILD_SRC_DIR/$WORKING_DIR/cache-key.sha256sum
+        fi
+
         echo "Terraform $JOB_ACTION finished"
+
         ls -al
