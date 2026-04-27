@@ -1,0 +1,177 @@
+#
+# This web.codebuild.yml file is for the building, testing and deploment of containerized projects
+#
+# Environment varibles:
+#
+# JOB_ACTION - required. Must be one of: build, test, deploy
+# JOB_ACTION_ITEM - required. Must be one of: if JOB_ACTION = test: node, golang; if JOB_ACTION = deploy: container-app, container-db
+#
+# HASH_FILE_PATH - required
+#
+# # If job action = 'build':
+#     AWS_REGION - required
+#     WORKING_DIR - optional
+#     AWS_SSM_PARAMETER_PATHS - optional
+#     LOAD_ENV_VARS_SCRIPT_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set
+#     ENV_VARS_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set
+#
+# # If job action = 'test':
+#     RUN_TEST_COMMAND e.g. "npm run test"
+#
+# # If job action = 'deploy':
+#     S3_HOST_BUCKET_NAME - required
+#     WORKING_DIR - required
+#     CDN_ID - required
+#
+
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
+    ENV_FILE: ".env"
+
+cache:
+  key: cntnr-key-$(sha256sum $HASH_FILE_PATH)
+  fallback-keys:
+    - cntnr-key-$(sha256sum $HASH_FILE_PATH)
+    - cntnr-key-
+    - cntnr-
+  paths:
+    - $WORKING_DIR/ci/load-env-vars.sh
+
+artifacts:
+  files:
+    - "**/*"
+
+phases:
+  install:
+    commands:
+      - |
+        apt-get update -y \
+          && apt-get install -y curl jq zip
+
+      - |
+        n 25.2.1
+        node -v
+
+  pre_build:
+    commands:
+      - |
+        if [[ "$AWS_REGION" == "" ]];then
+          echo "AWS Region not set. please set AWS Region"
+          exit 1
+        fi
+
+        if [[ "$WORKING_DIR" == "" ]]; then
+          export WORKING_DIR=$CODEBUILD_SRC_DIR
+        else
+          export WORKING_DIR="$CODEBUILD_SRC_DIR/$WORKING_DIR"
+        fi
+
+      - |
+        if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
+          if [[ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]]; then
+            if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
+              echo "load-env-vars script AWS S3 URL not set. please set load-env-vars script AWS S3 URL"
+              exit 1
+            fi
+
+            if [[ "$ENV_VARS_S3_URL" == "" ]];then
+              echo ".env file AWS S3 URL not set. please set .env file AWS S3 URL"
+              exit 1
+            fi
+
+            aws s3 cp $LOAD_ENV_VARS_SCRIPT_S3_URL $LOAD_ENV_VARS_SCRIPT_PATH
+            export ENV_FILE="$WORKING_DIR/.env"
+            source $LOAD_ENV_VARS_SCRIPT_PATH $AWS_REGION $AWS_SSM_PARAMETER_PATHS $ENV_VARS_S3_URL $WORKING_DIR
+          else
+            echo "Retrived $LOAD_ENV_VARS_SCRIPT_PATH from cache"
+          fi
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "build" ]];then
+          if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]];then
+            if [[ "$RELEASE_ARTIFACT_ZIP_NAME" == "" ]];then
+              echo "name for release artefact zip not set"
+              exit 1
+            fi
+
+            if [[ "$DEV_TOOLS_STORE" == "" ]];then
+              echo "S3 bucket for dev tools not set"
+              exit 1
+            fi
+          fi
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "test" ]];then
+          if [[ "$RUN_TEST_COMMAND" == "" ]]; then
+            echo "[run-test]: tests command not set, please set RUN_TEST_COMMAND"
+            exit 1
+          fi
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "deploy" ]];then
+          if [[ "$S3_HOST_BUCKET_NAME" == "" ]];then
+            echo "AWS S3 Bucket name not set. please set AWS S3 Bucket name"
+            exit 1
+          fi
+
+          if [[ "$CDN_ID" == "" ]];then
+            echo "AWS CloudFront CDN id not set. please set AWS CloudFront CDN id"
+            exit 1
+          fi
+
+          export INVALIDATION_CONFIG_PATH=$(pwd)/inv-batch.json
+
+          echo '{
+            "Paths": {
+              "Quantity": 1,
+              "Items": ["/*"]
+            },
+            "CallerReference": "'$CODEBUILD_BUILD_NUMBER'"
+          }' >$INVALIDATION_CONFIG_PATH
+        fi
+
+      - cd $WORKING_DIR
+
+  build:
+    commands:
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          npm i && npm run build
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "test" ]]; then
+          eval $RUN_TEST_COMMAND
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "deploy" ]]; then
+          aws s3 sync $WORKING_DIR "s3://$S3_HOST_BUCKET_NAME"
+        fi
+
+  post_build:
+    commands:
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
+            zip -r $RELEASE_ARTIFACT_ZIP_NAME ./*
+            aws s3 cp $RELEASE_ARTIFACT_ZIP_NAME $DEV_TOOLS_STORE/$RELEASE_ARTIFACT_ZIP_NAME
+          fi
+        fi
+
+        if [[ "$JOB_ACTION" == "deploy" ]]; then
+          aws cloudfront create-invalidation \
+            --distribution-id $CDN_ID \
+            --invalidation-batch "file://$INVALIDATION_CONFIG_PATH"
+        fi
+
+        echo "$JOB_ACTION finished"
+
+        ls -al

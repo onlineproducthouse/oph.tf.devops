@@ -12,21 +12,11 @@ resource "aws_s3_object" "scripts" {
 
 locals {
   scripts = [
-    { name = "build-cloud", key = "/oph/scripts/build-cloud.sh", source_path = "${path.module}/content/build-cloud.sh" },
-    { name = "build-container", key = "/oph/scripts/build-container.sh", source_path = "${path.module}/content/build-container.sh" },
-    { name = "build-web", key = "/oph/scripts/build-web.sh", source_path = "${path.module}/content/build-web.sh" },
-
-    { name = "codebuild-job", key = "/oph/scripts/codebuild.job.yml", source_path = "${path.module}/content/codebuild.job.yml" },
     { name = "cloud-codebuild", key = "/oph/scripts/cloud.codebuild.yml", source_path = "${path.module}/content/cloud.codebuild.yml" },
     { name = "container-codebuild", key = "/oph/scripts/container.codebuild.yml", source_path = "${path.module}/content/container.codebuild.yml" },
-
-    { name = "deploy-cloud", key = "/oph/scripts/deploy-cloud.sh", source_path = "${path.module}/content/deploy-cloud.sh" },
-    { name = "deploy-container-app", key = "/oph/scripts/deploy-container-app.sh", source_path = "${path.module}/content/deploy-container-app.sh" },
-    { name = "deploy-container-db", key = "/oph/scripts/deploy-container-db.sh", source_path = "${path.module}/content/deploy-container-db.sh" },
-    { name = "deploy-web", key = "/oph/scripts/deploy-web.sh", source_path = "${path.module}/content/deploy-web.sh" },
+    { name = "web-codebuild", key = "/oph/scripts/web.codebuild.yml", source_path = "${path.module}/content/web.codebuild.yml" },
 
     { name = "load-env-vars", key = "/oph/scripts/load-env-vars.sh", source_path = "${path.module}/content/load-env-vars.sh" },
     { name = "local-env-vars", key = "/oph/scripts/local-env-vars.sh", source_path = "${path.module}/content/local-env-vars.sh" },
-    { name = "run-test", key = "/oph/scripts/run-test.sh", source_path = "${path.module}/content/run-test.sh" },
   ]
 }
