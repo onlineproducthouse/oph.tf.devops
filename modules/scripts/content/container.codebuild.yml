@@ -78,6 +78,18 @@ phases:
         apt-get update -y \
           && apt-get install -y curl jq zip
 
+      - |
+        if [[ "$JOB_ACTION" == "build" ]]; then
+          echo 'Configuring docker-buildx'
+
+          export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r .tag_name)
+          curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
+          mkdir -p ~/.docker/cli-plugins
+          mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
+
+          chmod +x ~/.docker/cli-plugins/docker-buildx
+        fi
+
   pre_build:
     commands:
       - |
@@ -163,23 +175,13 @@ phases:
         fi
 
         echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
-
+        docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
         cd $WORKING_DIR
 
   build:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
-          echo 'Configuring docker-buildx'
-
-          export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r .tag_name)
-          curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
-          mkdir -p ~/.docker/cli-plugins
-          mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
-
-          chmod +x ~/.docker/cli-plugins/docker-buildx
-
-          docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
           docker buildx create --use --name multiarch
           docker buildx build --push --force-rm \
             --platform=linux/arm64,linux/amd64 \
