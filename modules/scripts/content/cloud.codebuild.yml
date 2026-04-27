@@ -18,23 +18,21 @@ env:
     LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
 
 cache:
-  key: tf-key-$(sha256sum "$WORKING_DIR/.terraform.lock.hcl")
+  key: tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
   paths:
     - /usr/bin/terraform
     - $WORKING_DIR/ci/load-env-vars.sh
     - $WORKING_DIR/.terraform.lock.hcl
-    - $WORKING_DIR/.terraform
 
 artifacts:
   files:
+    - ".terraform"
     - "tfplan"
     - "**/*.tf"
 
 phases:
   install:
     commands:
-      - ls -al
-
       - |
         apt-get update -y \
           && apt-get install -y \
@@ -45,37 +43,21 @@ phases:
             zip
 
       - |
-        terraform --version
-        which terraform
-
+        echo 'Configuring Terraform'
         if [ -e '/usr/bin/terraform' ]; then
-          echo 'terraform bin exists'
-          chmod +x '/usr/bin/terraform'
+          echo 'terraform found from cache.'
         else
-          echo 'terraform bin does not exist'
-        fi
-
-        terraform --version
-        which terraform
-
-        if ! command -v terraform --version >/dev/null 2>&1
-        then
-          echo "Installing Terraform..."
-
+          echo 'terraform not found from cache. Installing Terraform...'
           curl -s -qL -o terraform_install.zip https://releases.hashicorp.com/terraform/1.13.4/terraform_1.13.4_linux_amd64.zip
           unzip terraform_install.zip -d /usr/bin/
-          chmod +x '/usr/bin/terraform'
-        else
-          echo "Using cached Terraform"
         fi
 
+        chmod +x '/usr/bin/terraform'
+
         terraform --version
-        which terraform
 
   pre_build:
     commands:
-      - ls -al
-
       - |
         if [[ "$WORKING_DIR" == "" ]]; then
           export WORKING_DIR=$CODEBUILD_SRC_DIR
