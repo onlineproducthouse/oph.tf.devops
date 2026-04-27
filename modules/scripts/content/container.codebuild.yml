@@ -7,7 +7,7 @@
 # WORKING_DIR - optional
 #
 # JOB_ACTION - required. Must be one of: build, test, deploy
-# JOB_ACTION_ITEM - required. Must be one of: container-app, container-db, node, golang
+# JOB_ACTION_ITEM - required. Must be one of: if JOB_ACTION = test: node, golang; if JOB_ACTION = deploy: container-app, container-db
 #
 # AWS_SSM_PARAMETER_PATHS - optional
 # LOAD_ENV_VARS_SCRIPT_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set
@@ -24,6 +24,9 @@
 #     UPLOAD_RELEASE_ARTIFACT_ZIP - required. Must be true or false
 #     RELEASE_ARTIFACT_ZIP_NAME - required
 #     DEV_TOOLS_STORE - required
+#
+# # If job action = 'test':
+#     RUN_TEST_COMMAND e.g. "npm run test"
 #
 # # If job action = 'deploy':
 #     ...
@@ -42,12 +45,6 @@
 #     SERVICE_NAME - required
 #     LOG_GROUP_NAME - required
 #     LOG_STREAM_PREFIX - required
-#
-# # If job action = 'test', job action item = 'node':
-#     ...
-#
-# # If job action = 'test', job action item = 'golang':
-#     ...
 #
 
 version: 0.2
@@ -90,6 +87,21 @@ phases:
           chmod +x ~/.docker/cli-plugins/docker-buildx
         fi
 
+      - |
+        if [[ "$JOB_ACTION" == "test" ]]; then
+          if [[ "$JOB_ACTION_ITEM" == "node" ]]; then
+            n 25.2.1
+            node -v
+          fi
+
+          if [[ "$JOB_ACTION_ITEM" == "golang" ]]; then
+            cd $HOME/.goenv && git pull --ff-only && cd -
+            goenv install 1.25.5
+            goenv local 1.25.5
+            go version
+          fi
+        fi
+
   pre_build:
     commands:
       - |
@@ -114,6 +126,7 @@ phases:
           exit 1
         fi
 
+      - |
         if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
           if [[ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]]; then
             if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
@@ -134,6 +147,7 @@ phases:
           fi
         fi
 
+      - |
         if [[ "$JOB_ACTION" == "build" ]];then
           if [[ "$GIT_BRANCH" == "" ]];then
             echo "git branch name not set. please set git branch name"
@@ -178,6 +192,115 @@ phases:
           docker buildx create --use --name multiarch
         fi
 
+      - |
+        if [[ "$JOB_ACTION" == "test" ]];then
+          if [[ "$RUN_TEST_COMMAND" == "" ]]; then
+            echo "[run-test]: tests command not set, please set RUN_TEST_COMMAND"
+            exit 1
+          fi
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "deploy" ]];then
+          if [[ "$JOB_ACTION_ITEM" == "container-app" ]]; then
+            if [[ "$ENV_VARS_S3_ARN" == "" ]];then
+              echo "AWS S3 arn for env variables not set. please set AWS S3 arn for env variables"
+              exit 1
+            fi
+
+            if [[ "$TASK_FAMILY" == "" ]];then
+              echo "AWS ECS task family not set. please set AWS ECS task family"
+              exit 1
+            fi
+
+            if [[ "$TASK_ROLE_ARN" == "" ]];then
+              echo "AWS ECS task role arn not set. please set AWS ECS task role arn"
+              exit 1
+            fi
+
+            if [[ "$CONTAINER_CPU" == "" ]];then
+              echo "AWS ECS container cpu not set. please set AWS ECS container cpu"
+              exit 1
+            fi
+
+            if [[ "$CONTAINER_MEMORY_RESERVATION" == "" ]];then
+              echo "AWS ECS container memory reservation not set. please set AWS ECS container memory reservation"
+              exit 1
+            fi
+
+            if [[ "$CLUSTER_NAME" == "" ]];then
+              echo "AWS ECS cluster name not set. please set AWS ECS cluster name"
+              exit 1
+            fi
+
+            if [[ "$SERVICE_NAME" == "" ]];then
+              echo "AWS ECS service name not set. please set AWS ECS cluster name"
+              exit 1
+            fi
+
+            if [[ "$LOG_GROUP_NAME" == "" ]];then
+              echo "AWS CloudWatch log group name not set. please set AWS CloudWatch log group name"
+              exit 1
+            fi
+
+            if [[ "$LOG_STREAM_PREFIX" == "" ]];then
+              echo "AWS CloudWatch log stream prefix not set. please set AWS CloudWatch log stream prefix"
+              exit 1
+            fi
+
+            export ECS_TASK="$WORKING_DIR/ci/task-ecs.json"
+
+            LOCAL_PORT_MAPPING='[]'
+            if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then
+              LOCAL_PORT_MAPPING='[
+                {
+                  "name": "'$TASK_FAMILY'",
+                  "protocol": "tcp",
+                  "containerPort": '$CONTAINER_PORT',
+                  "hostPort": '$CONTAINER_PORT'
+                }
+              ]'
+            fi
+
+            # populate ecs json files
+            source $RELEASE_MANIFEST \
+              && echo '{
+                "family": "'$TASK_FAMILY'",
+                "taskRoleArn": "'$TASK_ROLE_ARN'",
+                "executionRoleArn": "'$TASK_ROLE_ARN'",
+                "networkMode": "host",
+                "requiresCompatibilities": ["EC2"],
+                "cpu": "'$CONTAINER_CPU'",
+                "memory": "'$CONTAINER_MEMORY_RESERVATION'",
+                "containerDefinitions": [
+                  {
+                    "name": "'$TASK_FAMILY'",
+                    "essential": true,
+                    "image": "'$DKR_IMAGE'",
+                    "cpu": '$CONTAINER_CPU',
+                    "memory": '$CONTAINER_MEMORY_RESERVATION',
+                    "portMappings": '$LOCAL_PORT_MAPPING',
+                    "logConfiguration": {
+                      "logDriver": "awslogs",
+                      "options": {
+                        "awslogs-group": "'$LOG_GROUP_NAME'",
+                        "awslogs-region": "'$AWS_REGION'",
+                        "awslogs-stream-prefix": "'$LOG_STREAM_PREFIX'"
+                      }
+                    },
+                    "environmentFiles": [
+                      {
+                        "value": "'$ENV_VARS_S3_ARN'",
+                        "type": "s3"
+                      }
+                    ]
+                  }
+                ]
+              }' >$ECS_TASK
+          fi
+        fi
+
+      - |
         echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
 
         cd $WORKING_DIR
@@ -197,17 +320,27 @@ phases:
             .
         fi
 
+      - |
         if [[ "$JOB_ACTION" == "test" ]]; then
-          echo "Not implemented"
+          eval $RUN_TEST_COMMAND
         fi
 
+      - |
         if [[ "$JOB_ACTION" == "deploy" ]]; then
           if [[ "$JOB_ACTION_ITEM" == "container-app" ]]; then
-            echo "Not implemented"
+            aws ecs register-task-definition --family $TASK_FAMILY --cli-input-json file://$ECS_TASK
+            TASK_REVISION=$(aws ecs describe-task-definition --task-definition $TASK_FAMILY | jq '.taskDefinition.revision')
+
+            aws ecs update-service --force-new-deployment \
+              --cluster $CLUSTER_NAME \
+              --service $SERVICE_NAME \
+              --task-definition $TASK_FAMILY:$TASK_REVISION
           fi
 
           if [[ "$JOB_ACTION_ITEM" == "container-db" ]]; then
-            echo "Not implemented"
+            source $RELEASE_MANIFEST && \
+              docker pull $DKR_IMAGE && \
+              docker run --env-file $ENV_FILE $DKR_IMAGE
           fi
         fi
 
@@ -226,3 +359,5 @@ phases:
         fi
 
         echo "$JOB_ACTION finished"
+
+        ls -al
