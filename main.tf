@@ -83,7 +83,7 @@ module "pipeline" {
       { key = "HASH_FILE_PATH", value = each.value.hash_file_path },
       { key = "JOB_ACTION", value = job.action },
       { key = "JOB_ACTION_ITEM", value = job.action_item },
-      { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
+      # { key = "JOB_SCRIPT_STORE_URL", value = module.scripts.content["${job.action}-${job.action_item}"].url },
       { key = "ENVIRONMENT_NAME", value = job.environment_name },
       { key = "TARGET_RUNTIME", value = job.target_runtime },
       { key = "DEV_TOOLS_STORE", value = "s3://${module.store.id}/artifacts" },
