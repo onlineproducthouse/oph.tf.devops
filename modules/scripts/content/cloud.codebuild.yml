@@ -56,6 +56,7 @@ phases:
         fi
 
         terraform --version
+        which terraform
 
   pre_build:
     commands:
