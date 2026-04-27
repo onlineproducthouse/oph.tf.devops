@@ -31,7 +31,7 @@ cache:
 
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
 
 phases:
   install:
@@ -97,8 +97,6 @@ phases:
 
   build:
     commands:
-      - ls -al
-
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
           terraform init \
@@ -117,5 +115,4 @@ phases:
 
   post_build:
     commands:
-      - ls -al
       - echo "Terraform $JOB_ACTION finished"
