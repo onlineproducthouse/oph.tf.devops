@@ -172,11 +172,14 @@ phases:
 
           export FULL_IMAGE_TAG=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG
           export FULL_IMAGE_TAG_SOURCE_VERSION=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG_SOURCE_VERSION
+
+          echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
+          docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
+          docker buildx create --use --name multiarch
         fi
 
         echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
-        docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
-        docker buildx create --use --name multiarch
+
         cd $WORKING_DIR
 
   build:
