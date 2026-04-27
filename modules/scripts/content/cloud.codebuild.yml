@@ -19,6 +19,10 @@ env:
 
 cache:
   key: tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
+  fallback-keys:
+    - tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
+    - tf-key-
+    - tf-
   paths:
     - /usr/bin/terraform
     - $WORKING_DIR/ci/load-env-vars.sh
