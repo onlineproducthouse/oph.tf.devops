@@ -176,19 +176,20 @@ phases:
 
         echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
         docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
+        docker buildx create --use --name multiarch
         cd $WORKING_DIR
 
   build:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
-          docker buildx create --use --name multiarch
           docker buildx build --push --force-rm \
             --platform=linux/arm64,linux/amd64 \
-            --cache-from $FULL_IMAGE_TAG \
+            --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
+            --cache-from=type=registry,ref=$FULL_IMAGE_TAG \
+            --cache-to=type=registry,ref=$FULL_IMAGE_TAG,mode=max \
             --tag $FULL_IMAGE_TAG \
             --tag $FULL_IMAGE_TAG_SOURCE_VERSION \
-            --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
             --file $DOCKERFILE \
             .
         fi
