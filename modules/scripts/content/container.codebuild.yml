@@ -79,22 +79,6 @@ phases:
         apt-get update -y \
           && apt-get install -y curl jq zip
 
-      - |
-        if [[ "$JOB_ACTION" == "build" ]]; then
-          echo 'Configuring docker-buildx'
-          if [ -e '~/.docker/cli-plugins/docker-buildx' ]; then
-            echo 'docker-buildx found from cache.'
-          else
-            echo 'docker-buildx not found from cache. Installing docker-buildx...'
-            export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r .tag_name)
-            curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
-            mkdir -p ~/.docker/cli-plugins
-            mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
-          fi
-
-          chmod +x ~/.docker/cli-plugins/docker-buildx
-        fi
-
   pre_build:
     commands:
       - |
@@ -139,8 +123,6 @@ phases:
           fi
         fi
 
-        echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
-
         if [[ "$JOB_ACTION" == "build" ]];then
           if [[ "$GIT_BRANCH" == "" ]];then
             echo "git branch name not set. please set git branch name"
@@ -179,11 +161,9 @@ phases:
 
           export FULL_IMAGE_TAG=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG
           export FULL_IMAGE_TAG_SOURCE_VERSION=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG_SOURCE_VERSION
-
-          docker run --rm \
-            --install arm64 \
-            --privileged "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest"
         fi
+
+        echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
 
         cd $WORKING_DIR
 
@@ -191,6 +171,22 @@ phases:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
+          echo 'Configuring docker-buildx'
+          if [ -e '~/.docker/cli-plugins/docker-buildx' ]; then
+            echo 'docker-buildx found from cache.'
+          else
+            echo 'docker-buildx not found from cache. Installing docker-buildx...'
+            export BUILDX_VERSION=$(curl --silent "https://api.github.com/repos/docker/buildx/releases/latest" | jq -r .tag_name)
+            curl -JLO "https://github.com/docker/buildx/releases/download/$BUILDX_VERSION/buildx-$BUILDX_VERSION.linux-amd64"
+            mkdir -p ~/.docker/cli-plugins
+            mv "buildx-$BUILDX_VERSION.linux-amd64" ~/.docker/cli-plugins/docker-buildx
+          fi
+
+          chmod +x ~/.docker/cli-plugins/docker-buildx
+
+          docker run --rm \
+            --install arm64 \
+            --privileged "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest"
           docker buildx create --use --name multiarch
           docker buildx build --push --force-rm \
             --platform=linux/arm64,linux/amd64 \
