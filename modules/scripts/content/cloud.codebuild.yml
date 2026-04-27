@@ -16,6 +16,7 @@ env:
   shell: bash
   variables:
     LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
+    ENV_FILE: ".env"
 
 cache:
   key: tf-key-$(sha256sum $WORKING_DIR/.terraform.lock.hcl)
