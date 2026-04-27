@@ -65,7 +65,6 @@ cache:
     - cntnr-key-
     - cntnr-
   paths:
-    - ~/.docker/cli-plugins/docker-buildx
     - $WORKING_DIR/ci/load-env-vars.sh
 
 artifacts:
@@ -183,13 +182,13 @@ phases:
           docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
           docker buildx create --use --name multiarch
           docker buildx build --push --force-rm \
-            --platform=linux/arm64,linux/amd64 \
             --cache-from $FULL_IMAGE_TAG
+            --platform=linux/arm64,linux/amd64 \
+            --file $DOCKERFILE \
+            --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
             --tag $FULL_IMAGE_TAG \
             --tag $FULL_IMAGE_TAG_SOURCE_VERSION \
-            --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
-            --file $DOCKERFILE \
-            $WORKING_DIR
+            .
         fi
 
         if [[ "$JOB_ACTION" == "test" ]]; then
