@@ -31,10 +31,7 @@ cache:
 
 artifacts:
   files:
-    - ".terraform"
-    - "tfplan"
-    - ".terraform.lock.hcl"
-    - "**/*.tf"
+    - "**/*"
 
 phases:
   install:
