@@ -76,7 +76,7 @@ module "pipeline" {
     vpc_subnets            = job.vpc_subnets
     vpc_security_group_ids = job.vpc_security_group_ids
 
-    role_arn  = module.role[replace("${local.name}-${job.action}-${job.action_item}", "_", "-")].arn
+    role_arn  = module.role[replace("${local.name}-${each.value.buildspec}", "_", "-")].arn
     buildspec = module.scripts.content[each.value.buildspec].arn
 
     env_variables = [
