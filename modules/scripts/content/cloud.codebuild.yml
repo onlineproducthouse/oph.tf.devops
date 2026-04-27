@@ -119,3 +119,4 @@ phases:
       - |
         sha256sum .terraform.lock.hcl > cache-key.sha256sum
         echo "Terraform $JOB_ACTION finished"
+        ls -al
