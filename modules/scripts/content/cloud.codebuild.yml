@@ -23,7 +23,7 @@ cache:
     - /usr/bin/terraform
     - $WORKING_DIR/ci/load-env-vars.sh
     - $WORKING_DIR/.terraform.lock.hcl
-    - $WORKING_DIR/.terraform/terraform.tfstate
+    - $WORKING_DIR/.terraform
 
 artifacts:
   files:
