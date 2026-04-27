@@ -43,7 +43,7 @@ phases:
             zip
 
       - |
-        if ! command -v terraform -version >/dev/null 2>&1
+        if ! command -v terraform --version >/dev/null 2>&1
         then
           echo "Installing Terraform..."
 
