@@ -1,5 +1,5 @@
 #
-# This codebuild.yml file is for the building, testing and deploment of terraform projects
+# This cloud.codebuild.yml file is for the building, testing and deploment of terraform projects
 #
 # Environment varibles:
 #   JOB_ACTION - required. Must be one of: build, test, deploy
@@ -117,6 +117,7 @@ phases:
   post_build:
     commands:
       - |
+        cd $CODEBUILD_SRC_DIR
         sha256sum .terraform.lock.hcl > $WORKING_DIR/cache-key.sha256sum
         echo "Terraform $JOB_ACTION finished"
         ls -al
