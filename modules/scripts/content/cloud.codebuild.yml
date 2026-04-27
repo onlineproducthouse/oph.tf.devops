@@ -33,6 +33,8 @@ artifacts:
 phases:
   install:
     commands:
+      - ls -al
+
       - |
         apt-get update -y \
           && apt-get install -y \
@@ -44,6 +46,18 @@ phases:
 
       - |
         terraform --version
+        which terraform
+
+        if [ -e '/usr/bin/terraform' ]; then
+          echo 'terraform bin exists'
+          chmod +x '/usr/bin/terraform'
+        else
+          echo 'terraform bin does not exist'
+        fi
+
+        terraform --version
+        which terraform
+
         if ! command -v terraform --version >/dev/null 2>&1
         then
           echo "Installing Terraform..."
@@ -60,6 +74,8 @@ phases:
 
   pre_build:
     commands:
+      - ls -al
+
       - |
         if [[ "$WORKING_DIR" == "" ]]; then
           export WORKING_DIR=$CODEBUILD_SRC_DIR
@@ -96,6 +112,8 @@ phases:
 
   build:
     commands:
+      - ls -al
+
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
           terraform init \
@@ -114,5 +132,5 @@ phases:
 
   post_build:
     commands:
-      - ls -R
+      - ls -al
       - echo "Terraform $JOB_ACTION finished"
