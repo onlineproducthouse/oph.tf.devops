@@ -27,7 +27,8 @@ cache:
 
 artifacts:
   files:
-    - "**/*"
+    - "tfplan"
+    - "**/*.tf"
 
 phases:
   install:
@@ -111,4 +112,5 @@ phases:
 
   post_build:
     commands:
+      - ls -R
       - echo "Terraform $JOB_ACTION finished"
