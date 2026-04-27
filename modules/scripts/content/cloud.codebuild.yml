@@ -18,7 +18,7 @@ env:
     LOAD_ENV_VARS_SCRIPT_PATH: "./ci/load-env-vars.sh"
 
 cache:
-  key: tf-key-$(sha256sum $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform/terraform.tfstate)
+  key: tf-key-$(sha256sum $CODEBUILD_SRC_DIR/$WORKING_DIR/.terraform.lock.hcl)
   paths:
     - /usr/bin/terraform
     - $WORKING_DIR/ci/load-env-vars.sh
