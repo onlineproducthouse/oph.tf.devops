@@ -42,8 +42,9 @@ variable "repositories" {
   default     = []
 
   type = list(object({
-    name      = string
-    buildspec = string
+    name           = string
+    buildspec      = string
+    hash_file_path = string
 
     git_provider = string // Bitbucket, GitHub
     git_repo     = string
@@ -70,7 +71,6 @@ variable "repositories" {
     })
 
     jobs = list(object({
-      hash_file_path = string
       # Must be one of: dev, release
       branch_name = string
 
