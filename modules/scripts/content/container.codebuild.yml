@@ -176,16 +176,13 @@ phases:
             fi
           fi
 
+          CACHE_IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$GIT_BRANCH"
+          IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
           if [[ "$GIT_BRANCH" == "develop" ]]; then
             IMAGE_TAG="$IMAGE_REPOSITORY_NAME:latest"
-          elif [[ "$GIT_BRANCH" == "main" ]]; then
-            IMAGE_TAG="$IMAGE_REPOSITORY_NAME:release"
           fi
 
-          IMAGE_TAG_SOURCE_VERSION="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
-
           export FULL_IMAGE_TAG=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG
-          export FULL_IMAGE_TAG_SOURCE_VERSION=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG_SOURCE_VERSION
 
           echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
           docker run --privileged --rm "$IMAGE_REGISTRY_BASE_URL/tonistiigi/binfmt:latest" --install arm64
@@ -322,10 +319,10 @@ phases:
           docker buildx build --push --force-rm \
             --platform=$DKR_BUILD_PLATFORM \
             --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
-            --cache-from=type=registry,ref=$FULL_IMAGE_TAG \
-            --cache-to=type=registry,ref=$FULL_IMAGE_TAG,mode=max \
+            --cache-from=type=registry,ref=$CACHE_IMAGE_TAG \
+            --cache-to=type=registry,ref=$CACHE_IMAGE_TAG,mode=max \
+            --tag $CACHE_IMAGE_TAG \
             --tag $FULL_IMAGE_TAG \
-            --tag $FULL_IMAGE_TAG_SOURCE_VERSION \
             --file $DOCKERFILE \
             .
         fi
@@ -359,7 +356,7 @@ phases:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
           if [[ "$GIT_BRANCH" != "develop" ]]; then
-            echo "DKR_IMAGE=$FULL_IMAGE_TAG_SOURCE_VERSION" >$RELEASE_MANIFEST
+            echo "DKR_IMAGE=$FULL_IMAGE_TAG" >$RELEASE_MANIFEST
           fi
 
           if [[ "$UPLOAD_RELEASE_ARTIFACT_ZIP" == "true" ]]; then
