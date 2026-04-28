@@ -201,103 +201,107 @@ phases:
         fi
 
       - |
-        if [[ "$JOB_ACTION" == "deploy" ]];then
-          if [[ "$JOB_ACTION_ITEM" == "container-app" ]]; then
-            if [[ "$ENV_VARS_S3_ARN" == "" ]];then
-              echo "AWS S3 arn for env variables not set. please set AWS S3 arn for env variables"
-              exit 1
-            fi
+        if [[ "$JOB_ACTION" == "deploy" && "$JOB_ACTION_ITEM" == "container-app" ]]; then
+          if [[ "$ENV_VARS_S3_ARN" == "" ]];then
+            echo "AWS S3 arn for env variables not set. please set AWS S3 arn for env variables"
+            exit 1
+          fi
 
-            if [[ "$TASK_FAMILY" == "" ]];then
-              echo "AWS ECS task family not set. please set AWS ECS task family"
-              exit 1
-            fi
+          if [[ "$TASK_FAMILY" == "" ]];then
+            echo "AWS ECS task family not set. please set AWS ECS task family"
+            exit 1
+          fi
 
-            if [[ "$TASK_ROLE_ARN" == "" ]];then
-              echo "AWS ECS task role arn not set. please set AWS ECS task role arn"
-              exit 1
-            fi
+          if [[ "$TASK_ROLE_ARN" == "" ]];then
+            echo "AWS ECS task role arn not set. please set AWS ECS task role arn"
+            exit 1
+          fi
 
-            if [[ "$CONTAINER_CPU" == "" ]];then
-              echo "AWS ECS container cpu not set. please set AWS ECS container cpu"
-              exit 1
-            fi
+          if [[ "$CONTAINER_CPU" == "" ]];then
+            echo "AWS ECS container cpu not set. please set AWS ECS container cpu"
+            exit 1
+          fi
 
-            if [[ "$CONTAINER_MEMORY_RESERVATION" == "" ]];then
-              echo "AWS ECS container memory reservation not set. please set AWS ECS container memory reservation"
-              exit 1
-            fi
+          if [[ "$CONTAINER_MEMORY_RESERVATION" == "" ]];then
+            echo "AWS ECS container memory reservation not set. please set AWS ECS container memory reservation"
+            exit 1
+          fi
 
-            if [[ "$CLUSTER_NAME" == "" ]];then
-              echo "AWS ECS cluster name not set. please set AWS ECS cluster name"
-              exit 1
-            fi
+          if [[ "$CLUSTER_NAME" == "" ]];then
+            echo "AWS ECS cluster name not set. please set AWS ECS cluster name"
+            exit 1
+          fi
 
-            if [[ "$SERVICE_NAME" == "" ]];then
-              echo "AWS ECS service name not set. please set AWS ECS cluster name"
-              exit 1
-            fi
+          if [[ "$SERVICE_NAME" == "" ]];then
+            echo "AWS ECS service name not set. please set AWS ECS cluster name"
+            exit 1
+          fi
 
-            if [[ "$LOG_GROUP_NAME" == "" ]];then
-              echo "AWS CloudWatch log group name not set. please set AWS CloudWatch log group name"
-              exit 1
-            fi
+          if [[ "$LOG_GROUP_NAME" == "" ]];then
+            echo "AWS CloudWatch log group name not set. please set AWS CloudWatch log group name"
+            exit 1
+          fi
 
-            if [[ "$LOG_STREAM_PREFIX" == "" ]];then
-              echo "AWS CloudWatch log stream prefix not set. please set AWS CloudWatch log stream prefix"
-              exit 1
-            fi
+          if [[ "$LOG_STREAM_PREFIX" == "" ]];then
+            echo "AWS CloudWatch log stream prefix not set. please set AWS CloudWatch log stream prefix"
+            exit 1
+          fi
+        fi
 
-            export ECS_TASK="$WORKING_DIR/ci/task-ecs.json"
+      - |
+        if [[ "$JOB_ACTION" == "deploy" && "$JOB_ACTION_ITEM" == "container-app" ]]; then
+          export ECS_TASK="$WORKING_DIR/ci/task-ecs.json"
 
-            LOCAL_PORT_MAPPING='[]'
-            if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then
-              LOCAL_PORT_MAPPING='[
+          LOCAL_PORT_MAPPING='[]'
+          if [[ "$CONTAINER_PORT" != "" && $CONTAINER_PORT != "0" ]]; then
+            LOCAL_PORT_MAPPING='[
+              {
+                "name": "'$TASK_FAMILY'",
+                "protocol": "tcp",
+                "containerPort": '$CONTAINER_PORT',
+                "hostPort": '$CONTAINER_PORT'
+              }
+            ]'
+          fi
+        fi
+
+      - |
+        if [[ "$JOB_ACTION" == "deploy" && "$JOB_ACTION_ITEM" == "container-app" ]]; then
+          # populate ecs json files
+          source $RELEASE_MANIFEST \
+            && echo '{
+              "family": "'$TASK_FAMILY'",
+              "taskRoleArn": "'$TASK_ROLE_ARN'",
+              "executionRoleArn": "'$TASK_ROLE_ARN'",
+              "networkMode": "host",
+              "requiresCompatibilities": ["EC2"],
+              "cpu": "'$CONTAINER_CPU'",
+              "memory": "'$CONTAINER_MEMORY_RESERVATION'",
+              "containerDefinitions": [
                 {
                   "name": "'$TASK_FAMILY'",
-                  "protocol": "tcp",
-                  "containerPort": '$CONTAINER_PORT',
-                  "hostPort": '$CONTAINER_PORT'
+                  "essential": true,
+                  "image": "'$DKR_IMAGE'",
+                  "cpu": '$CONTAINER_CPU',
+                  "memory": '$CONTAINER_MEMORY_RESERVATION',
+                  "portMappings": '$LOCAL_PORT_MAPPING',
+                  "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                      "awslogs-group": "'$LOG_GROUP_NAME'",
+                      "awslogs-region": "'$AWS_REGION'",
+                      "awslogs-stream-prefix": "'$LOG_STREAM_PREFIX'"
+                    }
+                  },
+                  "environmentFiles": [
+                    {
+                      "value": "'$ENV_VARS_S3_ARN'",
+                      "type": "s3"
+                    }
+                  ]
                 }
-              ]'
-            fi
-
-            # populate ecs json files
-            source $RELEASE_MANIFEST \
-              && echo '{
-                "family": "'$TASK_FAMILY'",
-                "taskRoleArn": "'$TASK_ROLE_ARN'",
-                "executionRoleArn": "'$TASK_ROLE_ARN'",
-                "networkMode": "host",
-                "requiresCompatibilities": ["EC2"],
-                "cpu": "'$CONTAINER_CPU'",
-                "memory": "'$CONTAINER_MEMORY_RESERVATION'",
-                "containerDefinitions": [
-                  {
-                    "name": "'$TASK_FAMILY'",
-                    "essential": true,
-                    "image": "'$DKR_IMAGE'",
-                    "cpu": '$CONTAINER_CPU',
-                    "memory": '$CONTAINER_MEMORY_RESERVATION',
-                    "portMappings": '$LOCAL_PORT_MAPPING',
-                    "logConfiguration": {
-                      "logDriver": "awslogs",
-                      "options": {
-                        "awslogs-group": "'$LOG_GROUP_NAME'",
-                        "awslogs-region": "'$AWS_REGION'",
-                        "awslogs-stream-prefix": "'$LOG_STREAM_PREFIX'"
-                      }
-                    },
-                    "environmentFiles": [
-                      {
-                        "value": "'$ENV_VARS_S3_ARN'",
-                        "type": "s3"
-                      }
-                    ]
-                  }
-                ]
-              }' >$ECS_TASK
-          fi
+              ]
+            }' >$ECS_TASK
         fi
 
       - |
