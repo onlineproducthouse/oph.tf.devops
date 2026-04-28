@@ -176,12 +176,12 @@ phases:
             fi
           fi
 
-          CACHE_IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$GIT_BRANCH"
-          IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+          export IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION"
           if [[ "$GIT_BRANCH" == "develop" ]]; then
-            IMAGE_TAG="$IMAGE_REPOSITORY_NAME:latest"
+            export IMAGE_TAG="$IMAGE_REPOSITORY_NAME:latest"
           fi
 
+          export CACHE_IMAGE_TAG="$IMAGE_REPOSITORY_NAME:$GIT_BRANCH"
           export FULL_IMAGE_TAG=$IMAGE_REGISTRY_BASE_URL/$IMAGE_TAG
 
           echo $(aws ecr get-login-password | docker login --username AWS --password-stdin $IMAGE_REGISTRY_BASE_URL)
