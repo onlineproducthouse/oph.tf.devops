@@ -33,11 +33,11 @@ env:
     ENV_FILE: ".env"
 
 cache:
-  key: cntnr-key-$(sha256sum $HASH_FILE_PATH)
+  key: web-key-$(sha256sum $HASH_FILE_PATH)
   fallback-keys:
-    - cntnr-key-$(sha256sum $HASH_FILE_PATH)
-    - cntnr-key-
-    - cntnr-
+    - web-key-$(sha256sum $HASH_FILE_PATH)
+    - web-key-
+    - web-
   paths:
     - $WORKING_DIR/ci/load-env-vars.sh
     - $WORKING_DIR/node_modules/**/*
