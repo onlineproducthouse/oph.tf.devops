@@ -313,8 +313,14 @@ phases:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
+          DKR_BUILD_PLATFORM=linux/amd64
+
+          if [[ "$GIT_BRANCH" == "develop" ]];then
+            DKR_BUILD_PLATFORM=linux/arm64,linux/amd64
+          fi
+
           docker buildx build --push --force-rm \
-            --platform=linux/arm64,linux/amd64 \
+            --platform=$DKR_BUILD_PLATFORM \
             --build-arg IMAGE_REGISTRY_BASE_URL=$IMAGE_REGISTRY_BASE_URL \
             --cache-from=type=registry,ref=$FULL_IMAGE_TAG \
             --cache-to=type=registry,ref=$FULL_IMAGE_TAG,mode=max \
