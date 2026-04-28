@@ -69,6 +69,7 @@ phases:
           export WORKING_DIR="$CODEBUILD_SRC_DIR/$WORKING_DIR"
         fi
 
+      - |
         if [[ "$AWS_SSM_PARAMETER_PATHS" != "" ]];then
           if [[ ! -f $LOAD_ENV_VARS_SCRIPT_PATH ]]; then
             if [[ "$LOAD_ENV_VARS_SCRIPT_S3_URL" == "" ]];then
@@ -105,10 +106,12 @@ phases:
             && terraform plan -input=false -out=tfplan
         fi
 
+      - |
         if [[ "$JOB_ACTION" == "test" ]]; then
           echo "Not implemented"
         fi
 
+      - |
         if [[ "$JOB_ACTION" == "deploy" ]]; then
           echo "terraform apply tfplan"
           terraform apply tfplan
