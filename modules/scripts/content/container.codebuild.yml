@@ -310,10 +310,10 @@ phases:
     commands:
       - |
         if [[ "$JOB_ACTION" == "build" ]]; then
-          DKR_BUILD_PLATFORM=linux/amd64
 
-          if [[ "$GIT_BRANCH" == "develop" ]];then
-            DKR_BUILD_PLATFORM=linux/arm64,linux/amd64
+          DKR_BUILD_PLATFORM=linux/arm64,linux/amd64
+          if [[ "$GIT_BRANCH" != "develop" ]];then
+            DKR_BUILD_PLATFORM=linux/amd64
           fi
 
           docker buildx build --push --force-rm \
