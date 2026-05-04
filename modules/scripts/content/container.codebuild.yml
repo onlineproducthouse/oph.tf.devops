@@ -7,7 +7,10 @@
 # WORKING_DIR - optional
 #
 # JOB_ACTION - required. Must be one of: build, test, deploy
-# JOB_ACTION_ITEM - required. Must be one of: if JOB_ACTION = test: node, golang; if JOB_ACTION = deploy: container-app, container-db
+# JOB_ACTION_ITEM - required. Must be one of:
+#   - if JOB_ACTION = build: container;
+#   - if JOB_ACTION = test: node, golang;
+#   - if JOB_ACTION = deploy: container-app, container-db
 #
 # AWS_SSM_PARAMETER_PATHS - optional
 # LOAD_ENV_VARS_SCRIPT_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set

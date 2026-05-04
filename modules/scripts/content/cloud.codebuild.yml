@@ -2,7 +2,8 @@
 # This cloud.codebuild.yml file is for the building, testing and deploment of terraform projects
 #
 # Environment varibles:
-#   JOB_ACTION - required. Must be one of: build, test, deploy
+#   JOB_ACTION - required. Must be one of: build, deploy
+#   JOB_ACTION_ITEM - required. Must be cloud
 #   WORKING_DIR - optional
 #   AWS_SSM_PARAMETER_PATHS - optional
 #   LOAD_ENV_VARS_SCRIPT_S3_URL - required if AWS_SSM_PARAMETER_PATHS is set

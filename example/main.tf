@@ -44,11 +44,13 @@ module "complete" {
 
   repositories = [
     {
-      name         = "api"
-      git_provider = "Bitbucket"
-      git_repo     = "example-api"
-      is_container = true
-      dockerfile   = "Dockerfile"
+      name           = "api"
+      buildspec      = "container-codebuild"
+      hash_file_path = "package-lock.json"
+      git_provider   = "Bitbucket"
+      git_repo       = "example-api"
+      is_container   = true
+      dockerfile     = "Dockerfile"
 
       pipelines = [
         { type = "complete", branch_name = "develop" },
@@ -121,8 +123,8 @@ module "complete" {
             "npm run unit-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -190,8 +192,8 @@ module "complete" {
             "npm run unit-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -259,8 +261,8 @@ module "complete" {
             "npm run int-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -367,11 +369,13 @@ module "build" {
 
   repositories = [
     {
-      name         = "api"
-      git_provider = "Bitbucket"
-      git_repo     = "example-api"
-      is_container = true
-      dockerfile   = "Dockerfile"
+      name           = "api"
+      buildspec      = "container-codebuild"
+      hash_file_path = "package-lock.json"
+      git_provider   = "Bitbucket"
+      git_repo       = "example-api"
+      is_container   = true
+      dockerfile     = "Dockerfile"
 
       pipelines = [
         { type = "build", branch_name = "main" },
@@ -443,8 +447,8 @@ module "build" {
             "npm run unit-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -512,8 +516,8 @@ module "build" {
             "npm run unit-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -545,11 +549,13 @@ module "release" {
 
   repositories = [
     {
-      name         = "api"
-      git_provider = "Bitbucket"
-      git_repo     = "example-api"
-      is_container = true
-      dockerfile   = "Dockerfile"
+      name           = "api"
+      buildspec      = "container-codebuild"
+      hash_file_path = "package-lock.json"
+      git_provider   = "Bitbucket"
+      git_repo       = "example-api"
+      is_container   = true
+      dockerfile     = "Dockerfile"
 
       pipelines = [
         { type = "release", branch_name = "main" },
@@ -621,8 +627,8 @@ module "release" {
             "npm run int-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
@@ -724,11 +730,13 @@ module "integration" {
 
   repositories = [
     {
-      name         = "api"
-      git_provider = "Bitbucket"
-      git_repo     = "example-api"
-      is_container = true
-      dockerfile   = "Dockerfile"
+      name           = "api"
+      buildspec      = "container-codebuild"
+      hash_file_path = "package-lock.json"
+      git_provider   = "Bitbucket"
+      git_repo       = "example-api"
+      is_container   = true
+      dockerfile     = "Dockerfile"
 
       pipelines = [
         { type = "integration", branch_name = "main" },
@@ -768,8 +776,8 @@ module "integration" {
             "npm run int-test",
           ]
 
-          action                      = "run"
-          action_item                 = "test"
+          action                      = "test"
+          action_item                 = "node"
           upload_release_artifact_zip = false
 
           task_family                  = ""
